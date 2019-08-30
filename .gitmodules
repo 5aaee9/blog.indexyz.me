@@ -1,0 +1,3 @@
+[submodule "themes/hugo-theme-index"]
+	path = themes/hugo-theme-index
+	url = git@github.com:Indexyz/hugo-theme-index.git
