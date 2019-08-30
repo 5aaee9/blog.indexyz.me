@@ -8,7 +8,6 @@ author = "Indexyz"
 copyright = "Copyright © 2018-{year}, Indexyz"
 paginate = 8
 
-themesdir = ".."
 theme = "hugo-theme-index"
 
 pygmentsCodeFences = true
