@@ -1,0 +1,14 @@
+---
+install:
+- apt-get update
+- apt-get install hugo -y
+
+script:
+- hugo
+
+deploy:
+- provider: pages
+  skip-cleanup: true
+  local-dir: public
+  github-token: $GITHUB_TOKEN
+  keep-history: false
