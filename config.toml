@@ -2,7 +2,7 @@ ignoreFiles = [
     "content/draft"
 ]
 
-baseURL = "https://indexyz-blog.netlify.com/"
+baseURL = "https://blog.indexyz.me/"
 title = "Indexyz Blog"
 author = "Indexyz"
 copyright = "Copyright © 2018-{year}, Indexyz"
