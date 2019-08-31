@@ -1,7 +1,7 @@
 ---
 install:
-- apt-get update
-- apt-get install hugo -y
+- sudo apt-get update -y
+- sudo apt-get install hugo -y
 
 script:
 - hugo
