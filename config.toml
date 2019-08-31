@@ -27,6 +27,9 @@ disableKinds = ["taxonomyTerm"]
         siteName = "Indexyz Blog"
         api = "https://disqus.skk.moe/disqus/"
         apikey = "VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw"
+    [params.analytics]
+        type = "gtag"
+        id = "UA-97074604-1"
 
 [menu]
     [[menu.main]]
