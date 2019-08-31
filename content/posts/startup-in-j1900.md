@@ -68,6 +68,7 @@ initrd /initramfs-linux.img
 options root=PARTUUID=YOUR_PART_ROOT_PART_UUID rw
 ```
 > YOUR_PART_ROOT_PART_UUID 可以通过 blkid -s PARTUUID -o value /dev/sda2 来获取
+
 接下来执行
 ```bash
 # 添加用户
@@ -85,6 +86,7 @@ reboot
 首先先在 /etc/systemd/network 下建立 wired.network 文件
 
 > systemd 全家桶大法好
+
 内容为
 ```conf
 [Match]
