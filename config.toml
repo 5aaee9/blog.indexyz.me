@@ -2,7 +2,7 @@ ignoreFiles = [
     "content/draft"
 ]
 
-baseURL = "https://blog.indexyz.me/"
+baseURL = "https://indexyz-blog.netlify.com/"
 title = "Indexyz Blog"
 author = "Indexyz"
 copyright = "Copyright © 2018-{year}, Indexyz"
@@ -42,3 +42,6 @@ disableKinds = ["taxonomyTerm"]
         name = "友链"
         url = "/friends/"
         weight = 2
+
+[permalinks]
+    posts = "/archives/:filename"
