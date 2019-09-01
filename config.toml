@@ -2,6 +2,7 @@ ignoreFiles = [
     "content/draft"
 ]
 
+languageCode = "zh-cn"
 baseURL = "https://blog.indexyz.me/"
 title = "Indexyz Blog"
 author = "Indexyz"
