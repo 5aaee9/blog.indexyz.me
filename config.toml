@@ -46,3 +46,11 @@ disableKinds = ["taxonomyTerm"]
 
 [permalinks]
     posts = "/archives/:filename"
+
+[outputs]
+  home = [ "HTML", "RSS" ]
+
+[outputFormats]
+[outputFormats.RSS]
+  mediatype = "application/rss"
+  baseName = "feed"
