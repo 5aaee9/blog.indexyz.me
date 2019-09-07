@@ -23,9 +23,9 @@ thumbnail: https://img10.360buyimg.com/img/jfs/t1/53248/33/9911/29762/5d73b659E5
 如果你的服务商没有提供配置文件,请自行参考百度进行配置文件的编写
 ###通过菜单导入配置文件
 导入 > 从SD卡导入来进行导入
-![Screenshot_20160617-211458.png](https://publish.indexyz.me/images/2016/06/2384172290.png?imageView2/2/w/300)
+![Screenshot_20160617-211458.png](https://img10.360buyimg.com/img/jfs/t1/65623/15/9574/166620/5d73c51bE35f3cf40/01824192875c4cdb.png?imageView2/2/w/300)
 
-![Screenshot_20160617-211500.png](https://publish.indexyz.me/images/2016/06/4214865866.png?imageView2/2/w/300)
+![Screenshot_20160617-211500.png](https://img10.360buyimg.com/img/jfs/t1/42186/35/14367/172824/5d73c51dE463823e7/b71baf6cd7017b77.png?imageView2/2/w/300)
 
 ###使用QQ发送配置文件
 将配置文件使用QQ发送到手机
@@ -51,9 +51,9 @@ Enjoy it!
 ![QQ图片20160617212723.png][6]
 
 
-  [1]: https://publish.indexyz.me/images/2016/06/3848708350.png?imageView2/2/w/300
-  [2]: https://publish.indexyz.me/images/2016/06/3783479544.png?imageView2/2/w/300
-  [3]: https://publish.indexyz.me/images/2016/06/760227249.png?imageView2/2/w/300
-  [4]: https://publish.indexyz.me/images/2016/06/2798648429.png?imageView2/2/w/300
-  [5]: https://publish.indexyz.me/images/2016/06/1400159461.png?imageView2/2/w/300
-  [6]: https://publish.indexyz.me/images/2016/06/3012130306.png?imageView2/2/w/300
+  [1]: https://img10.360buyimg.com/img/jfs/t1/61731/13/9649/29363/5d73c51eE1b01e734/eb0a35306a6e247a.png?imageView2/2/w/300
+  [2]: https://img10.360buyimg.com/img/jfs/t1/70094/1/9427/73773/5d73c51fE7944d487/e20b193d1951d971.png?imageView2/2/w/300
+  [3]: https://img10.360buyimg.com/img/jfs/t1/43385/39/14311/83532/5d73c520Edf92ce9b/9a52288ab089c0e5.png?imageView2/2/w/300
+  [4]: https://img10.360buyimg.com/img/jfs/t1/75854/13/9627/61285/5d73c521E7b2f87c8/0d263a2dbd3ad1f6.png?imageView2/2/w/300
+  [5]: https://img10.360buyimg.com/img/jfs/t1/55961/7/10046/141696/5d73c522Eedb36b3b/f8182af02c4c6828.png?imageView2/2/w/300
+  [6]: https://img10.360buyimg.com/img/jfs/t1/59489/39/9645/162987/5d73c523E987925e0/955c1216315f5bd0.png?imageView2/2/w/300

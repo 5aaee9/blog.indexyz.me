@@ -25,7 +25,7 @@ git version 1.7.1
 
 于是我们需要更新Git到新版本
 
-  [1]: https://publish.indexyz.me/images/2016/05/1334795755.png
+  [1]: https://ae01.alicdn.com/kf/U9501e7de678249adb726a2a49955fb19e.png
 
 
 <!--more-->

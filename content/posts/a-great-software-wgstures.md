@@ -32,5 +32,5 @@ updated: 2017-09-01 18:13:54
 [官方网站](http://www.yingdev.com/projects/wgestures)
 [下载地址](https://share.weiyun.com/73e102102c144c21eafe0bddf4eb0ef3)
 
-  [1]: https://publish.indexyz.me/images/2017/01/803580975.png
-  [2]: https://publish.indexyz.me/images/2017/01/1583153580.png
+  [1]: https://img10.360buyimg.com/img/jfs/t1/72833/31/9531/70746/5d73c527Ef5de42fc/5216440fd77afbc7.png
+  [2]: https://img10.360buyimg.com/img/jfs/t1/83171/38/9547/106173/5d73c528E286295b1/06c2e8b1c1931496.png

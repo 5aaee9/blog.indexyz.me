@@ -118,10 +118,10 @@ server {
 > 因为Rancher使用了Webshock 所以和正常的反代方式有些不同
 
 
-  [1]: https://publish.indexyz.me/images/2017/01/3269573140.png
-  [2]: https://publish.indexyz.me/images/2017/01/3952703091.png
-  [3]: https://publish.indexyz.me/images/2017/01/4151018919.png
-  [4]: https://publish.indexyz.me/images/2017/01/4219189877.png
-  [5]: https://publish.indexyz.me/images/2017/01/3018941036.png
-  [6]: https://publish.indexyz.me/images/2017/01/1644447780.png
-  [7]: https://publish.indexyz.me/images/2017/01/3126909881.png
+  [1]: https://img10.360buyimg.com/img/jfs/t1/69129/22/9644/22177/5d73c506E2e528312/3bec8c006a60b143.png
+  [2]: https://img10.360buyimg.com/img/jfs/t1/43375/11/14390/45512/5d73c507E5016c418/53b765745bbfeea8.png
+  [3]: https://img10.360buyimg.com/img/jfs/t1/56676/14/10054/22781/5d73c508Ebb3421c6/8c362d12962deeda.png
+  [4]: https://img10.360buyimg.com/img/jfs/t1/76659/12/9547/61674/5d73c509E10501a69/64193b824a9e7439.png
+  [5]: https://img10.360buyimg.com/img/jfs/t1/68951/22/9549/25477/5d73c50aEe1418d60/8802e87eb229f149.png
+  [6]: https://ae01.alicdn.com/kf/H48a2e8f5fcb241b7bb7a9157a2fd25e5K.png
+  [7]: https://img10.360buyimg.com/img/jfs/t1/52559/21/10076/35468/5d73c50cE770254af/e97e0390d09bcd3c.png

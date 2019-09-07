@@ -104,19 +104,19 @@ ShadowSocks自带了从GFW List获取PAC的方法
   [2]: https://github.com/shadowsocks/shadowsocks-windows/
   [3]: https://github.com/shadowsocks/shadowsocks-android
   [4]: https://github.com/shadowsocks/shadowsocks-iOS
-  [5]: https://publish.indexyz.me/images/2016/05/3648777761.png
-  [6]: https://publish.indexyz.me/images/2016/05/3417398088.png
-  [7]: https://publish.indexyz.me/images/2016/05/2121727418.png
-  [8]: https://publish.indexyz.me/images/2016/05/3908564421.png
-  [9]: https://publish.indexyz.me/images/2016/05/4276940742.png
+  [5]: https://img10.360buyimg.com/img/jfs/t1/76709/11/9574/232805/5d73c50dE9d01ce99/761f8dd86abe243a.png
+  [6]: https://img10.360buyimg.com/img/jfs/t1/78501/15/9574/201343/5d73c50eE7d31bd9c/86e4ebb524064236.png
+  [7]: https://img10.360buyimg.com/img/jfs/t1/83747/1/9468/94326/5d73c50fEecdddccd/c0437cea88a88278.png
+  [8]: https://img10.360buyimg.com/img/jfs/t1/40925/11/14364/19874/5d73c510E55f89e5d/c876226a9bd6da55.png
+  [9]: https://ae01.alicdn.com/kf/Hed9eead8c38c4d1d877ce30e9017bcdch.png
   [10]: https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif?hl=zh-CN
   [11]: https://github.com/FelisCatus/SwitchyOmega
-  [12]: https://publish.indexyz.me/images/2016/05/2218849068.png
-  [13]: https://publish.indexyz.me/images/2016/05/1619808061.png
-  [14]: https://publish.indexyz.me/images/2016/05/2403373922.png
-  [15]: https://publish.indexyz.me/images/2016/05/2696533201.png
+  [12]: https://ae01.alicdn.com/kf/U581d2d171c844aef984f87bb16907e08F.png
+  [13]: https://img10.360buyimg.com/img/jfs/t1/47533/16/10026/72413/5d73c513E67dc04b2/9ce8e1d4ed816189.png
+  [14]: https://img10.360buyimg.com/img/jfs/t1/68736/20/9547/51767/5d73c514Eb7c6d052/6a7ad3ed0b1e9a66.png
+  [15]: https://ae01.alicdn.com/kf/U2d302fdb969e4cb0a6aaf5754b78ef3aW.png
   [16]: https://addons.mozilla.org/zh-CN/firefox/addon/autoproxy/
-  [17]: https://publish.indexyz.me/images/2016/05/1376335465.png
-  [18]: https://publish.indexyz.me/images/2016/05/1196130009.png
-  [19]: https://publish.indexyz.me/images/2016/05/3351527960.png
-  [20]: https://publish.indexyz.me/images/2016/05/772997332.png
+  [17]: https://img10.360buyimg.com/img/jfs/t1/49430/6/10197/96146/5d73c516Edc2d5294/3be393b7ecb19360.png
+  [18]: https://img10.360buyimg.com/img/jfs/t1/70057/32/9704/23788/5d73c517Ec69d3d3a/b45596bfe04663e1.png
+  [19]: https://img10.360buyimg.com/img/jfs/t1/83944/15/9592/30701/5d73c518Ea12f2e5e/9f8c1148ad4238ee.png
+  [20]: https://img10.360buyimg.com/img/jfs/t1/44055/16/14143/14290/5d73c519E5a586d5e/21c68736c5c98689.png

@@ -87,9 +87,9 @@ Linux 用户如果是选择包安装可以在系统的Dock什么的位置找到�
 ![QQ截图20170121123000.png][5]
 
 
-  [1]: https://publish.indexyz.me/images/2017/01/974912626.png
-  [2]: https://publish.indexyz.me/images/2017/01/1111769254.png
-  [3]: https://publish.indexyz.me/images/2017/01/4198598707.png
-  [4]: https://publish.indexyz.me/images/2017/01/4269960964.png
-  [5]: https://publish.indexyz.me/images/2017/01/4219265299.png
+  [1]: https://img10.360buyimg.com/img/jfs/t1/50484/13/9983/29129/5d73c52aEbcc97c9d/58b920ab88c1e078.png
+  [2]: https://img10.360buyimg.com/img/jfs/t1/54976/16/10067/27264/5d73c52bEa33da0e6/e0275e991d50804b.png
+  [3]: https://img10.360buyimg.com/img/jfs/t1/66519/39/9507/20829/5d73c52cE4fef5e32/283762c1927a709d.png
+  [4]: https://img10.360buyimg.com/img/jfs/t1/71818/38/9537/52910/5d73c52dEec40e028/83dc644db70e6902.png
+  [5]: https://img10.360buyimg.com/img/jfs/t1/61955/40/9410/55282/5d73c52eE2fd82989/26f74cec572d5203.png
 

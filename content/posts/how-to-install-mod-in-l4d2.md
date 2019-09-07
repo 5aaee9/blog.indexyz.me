@@ -40,5 +40,5 @@ thumbnail: https://img10.360buyimg.com/img/jfs/t1/49448/34/9925/2428016/5d73b665
 2.查找你所需要的mod.
 3.进入mod页面, 点击订阅, 打开游戏便会自动下载安装
 
-  [1]: https://publish.indexyz.me/images/2016/06/1455334116.png?imageView2/2/w/500
-  [2]: https://publish.indexyz.me/images/2016/06/1507364620.png?imageView2/2/w/500
+  [1]: https://img10.360buyimg.com/img/jfs/t1/52627/29/9986/474529/5d73c525E4e171abe/bcda3935d1d81c45.png?imageView2/2/w/500
+  [2]: https://img10.360buyimg.com/img/jfs/t1/76043/30/9561/175374/5d73c526E19293a77/eafbb3f898fae913.png?imageView2/2/w/500
