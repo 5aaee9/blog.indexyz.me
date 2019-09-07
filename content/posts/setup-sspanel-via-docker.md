@@ -1,6 +1,6 @@
 ---
 title: 使用 Docker 快速安装 ss-panel-v3-mod
-tags: 
+tags:
     - Docker
     - Shadowsocks
 categories:
@@ -12,6 +12,7 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/paperplane.png
 `ss-panel-v3-mod` 是一个美观 功能强大的代理管理面板 但是依赖什么的对新手简直是爆炸 装个 `lnmp` 都要一个小时左右 现在使用 `Docker` 可以快速的完成面板的搭建
 
 <!-- more -->
+
 
 # 始
 我们需要首先安装 `Docker`
@@ -30,7 +31,7 @@ systemctl start docker
 - phpmyadmin/phpmyadmin
 
 全部的文件储存在 `/data` 这个 `Endpoint` 下面
-使用 
+使用
 ```bash
 mkdir /data
 cd /data
@@ -58,7 +59,7 @@ docker run --name panel-phpmyadmin \
     -p 8080:80 \
     phpmyadmin/phpmyadmin
 ```
-然后访问 `http://localhost:8080` 就能看到 `PHPMyAdmin` 的界面了 
+然后访问 `http://localhost:8080` 就能看到 `PHPMyAdmin` 的界面了
 使用用户名 `root` 和密码 `pa44w@rd` 就能登录到数据库了
 ## 创建数据库
 在 PHPMyAdmin 创建一个数据库

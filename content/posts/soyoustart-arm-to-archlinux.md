@@ -9,6 +9,7 @@ Arch Linux 大法好!
 
 <!--more-->
 
+
 之前入了 Soyoustart 的 ARM 独立服务器, 官方只提供了 Ubuntu 和 Debian 的系统镜像, 但是这些系统下的软件包有很多缺失的(比如 `fish`), 这时候就想将系统装成 archlinuxarm 来快速滚包 (雾)
 
 把安装过程写成了一个脚本, 公布在 gist

@@ -1,6 +1,6 @@
 ---
 title: 网络重装 CentOS
-tags: 
+tags:
     - Linux
     - CentOS
 categories:
@@ -17,7 +17,8 @@ thumbnail: https://publish.indexyz.me/images/2018/03/24/centos-logo.png
 
 <!-- more -->
 
-本文主体部分主要是重装 CentOS 6, 会在最后列出重装 `CentOS 7` 和 `CentOS 6` 的区别 
+
+本文主体部分主要是重装 CentOS 6, 会在最后列出重装 `CentOS 7` 和 `CentOS 6` 的区别
 
 # CentOS 6 (GRUB 1)
 
@@ -143,6 +144,6 @@ CentOS 7 的 格式如下
 
 `vnc` 的密码是在 `vmlinuz` 那段定义的 在上面的几段配置文件中都为 `12345678`
 
-可以通过 修改 `vncpassword`和 `inst.vncpassword` 的方式来修改密码 
+可以通过 修改 `vncpassword`和 `inst.vncpassword` 的方式来修改密码
 
 > 密码必须长于 8 位

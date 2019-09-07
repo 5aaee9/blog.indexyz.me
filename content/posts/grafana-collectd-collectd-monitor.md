@@ -1,6 +1,6 @@
 ---
 title: Linux 搭建 grafana + influxdb + collectd
-tags: 
+tags:
     - Linux
     - Monitor
     - Dashboard
@@ -13,6 +13,7 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/grafana.png
 最近一直想搞个监控系统来检测下大陆到国外的延时什么的, 但是 `SmokePing` 的图表太玄学了 而且界面像是上个世纪的 所以想坑一下计划了很久的 `Grafana`.
 
 <!-- more -->
+
 
 > 抽烟ping看得懂的，都是文森特凡高的后代啊（蔡博语）…… 来搞IT可惜了…… —— 某大佬
 
@@ -52,7 +53,7 @@ systemctl enable collectd
 systemctl start collectd
 ```
 # InfluxDB
-首先我们需要生成配置文件 
+首先我们需要生成配置文件
 ```bash
 docker run --rm influxdb:alpine influxd config > influxdb.conf
 ```
@@ -81,12 +82,12 @@ influx
 # 创建数据库
 > CREATE DATABASE collectdb
 > quit
-# ^P + Q 
+# ^P + Q
 ```
 然后编辑 `influxdb.conf`
 ```bash
 $ nano influxdb.conf
-# 找到 
+# 找到
 # [http]
 #  enabled = true
 #  bind-address = ":8086"
@@ -121,7 +122,7 @@ BaseDir "/etc/collectd"
 PIDFile "/run/collectd.pid"
 Hostname "localhost"
 Interval 60
-<loadplugin df> 
+<loadplugin df>
     Interval 120
 </loadplugin>
 LoadPlugin disk

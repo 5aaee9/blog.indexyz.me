@@ -1,6 +1,6 @@
 ---
 title: 在Linux系统上使用ASF挂卡
-tags: 
+tags:
     - Linux
     - Usage
     - Steam
@@ -14,18 +14,19 @@ Steam的卡片可是可以回本的 但是 `Idle Master` 这些挂机需要使�
 
 <!-- more -->
 
+
 本文的系统环境是 `CentOS 7` 其他发行版可能需要自己更换部分代码 (比如包管理安装包什么的)
 # 准备工作
 
 环境的部署
 ```bash
 yum -y install epel-release
-yum -y install yum-utils tmux wget unzip 
-rpm --import "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF"   
+yum -y install yum-utils tmux wget unzip
+rpm --import "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF"
 yum-config-manager --add-repo http://download.mono-project.com/repo/centos/
 yum -y install mono-complete
 ```
-这样就部署了 `Mono` 
+这样就部署了 `Mono`
 输入以下指令来测试
 ```bash
 mono -V

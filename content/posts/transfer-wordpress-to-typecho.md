@@ -1,15 +1,17 @@
 ---
 title: 从WordPress迁移到了Typecho
-tags: 
+tags:
     - Blog
 categories:
     - Blog
 date: 2017-08-09 17:44:27
 updated: 2017-09-01 18:18:54
 ---
-> 渣渣WordPress         
+> 渣渣WordPress
 
-<!--more-->                                
+<!--more-->
+
+
 ><p style="text-align:right">--Indexyz <p>
 
 然而这并不能算迁移，因为任何数据都没有保留![无奈][1]

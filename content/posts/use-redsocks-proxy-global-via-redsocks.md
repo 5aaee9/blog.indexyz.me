@@ -1,9 +1,9 @@
 ---
 title: 在 Linux 上使用 redsocks 进行全局 socks5
-tags: 
+tags:
     - Linux
     - Proxy
-    - iptables    
+    - iptables
 categories:
     - Linux
 date: 2017-10-22 15:40:15
@@ -13,6 +13,7 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/paperplane.png
 在中国大陆由于一些众所周知以及网络环境有时候会比较差的原因, 我们可能会需要使用代理服务器来进行转发流量. 但是有些软件不支持代理, 如何让它走代理呢? 那就要介绍下 `redsocks` 了.
 
 <!-- more -->
+
 
 # 安装
 redsocks 的安装比较方便 从 GitHub 检出代码然后编译就好了
@@ -25,7 +26,7 @@ make
 默认我们认为本地 `socks` 代理在 `127.0.0.1:1080`
 将配置文件配为下面这样
 ```conf
-// $ cat redsocks.conf 
+// $ cat redsocks.conf
 base {
     log_debug = off;
     log_info = off;
@@ -40,7 +41,7 @@ base {
 redsocks {
     local_ip = 127.0.0.1;
     local_port = 31338;
-    
+
     ip = 127.0.0.1;
     port = 1080;
 

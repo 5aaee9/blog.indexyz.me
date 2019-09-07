@@ -10,6 +10,7 @@ categories:
 
 <!--more-->
 
+
 # 节点的部署
 在 manager 机器上使用 `docker swarm init` 你将会得到用与加入 swarm 集群的命令 将这个命令在 worker 机器上执行就可以将机器加入集群了
 ## 注意事项

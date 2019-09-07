@@ -1,6 +1,6 @@
 ---
 title: Windows 下的包管理器 - Scoop
-tags: 
+tags:
     - Windows
     - Package Manager
 categories:
@@ -13,11 +13,12 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/window.png
 
 <!-- more -->
 
+
 # Scoop
 GitHub: [链接](https://github.com/lukesampson/scoop)
 官方网站: [链接](https://scoop.sh)
 
-## 安装方法 
+## 安装方法
 安装方法挺简单的 直接打开 PowerShell 然后输入
 ```powershell
 iex (new-object net.webclient).downloadstring('https://get.scoop.sh')

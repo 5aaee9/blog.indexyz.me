@@ -114,6 +114,7 @@ nc.stdout.on('data', chunk => {
 ## 猫咪遥控器
 根据移动轨迹做出点图, 然后使用 `Desmos` 进行画图得到 flag
 下面是我使用的代码
+
 ```javascript
 const origin = require('fs').readFileSync('seq.in').toString()
 let x = 0, y = 0
@@ -151,7 +152,8 @@ for (pair of points) {
     result += `(${pair[0]}, ${pair[1]}), `
 }
 
-require('fs').writeFileSync('seq_result', result)```
+require('fs').writeFileSync('seq_result', result)
+```
 
 ## 猫咪和键盘
 打开 typed_printf.cpp 可以看到每列都被打乱了. 根据 main 函数等地方整理之后得到原始代码
