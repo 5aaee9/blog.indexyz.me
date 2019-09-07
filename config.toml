@@ -45,7 +45,7 @@ disableKinds = ["taxonomyTerm"]
         weight = 2
 
 [permalinks]
-    posts = "/archives/:filename"
+    posts = "/archives/:filename.html"
 
 [outputs]
   home = [ "HTML", "RSS" ]
