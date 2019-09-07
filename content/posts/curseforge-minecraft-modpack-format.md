@@ -7,7 +7,7 @@ categories:
     - Minecraft
 date: 2017-08-16 04:14:35
 updated: 2017-09-01 18:10:47
-thumbnail: https://publish.indexyz.me/images/2017/12/10/forge.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/65394/17/9453/833816/5d73b66cEb3cae2c6/caf2a37bc24fd218.png
 ---
 最近在写启动器关于curseforge整合包的导入 然后研究了下如何把curseforge的整合包转换为classic的整合包
 

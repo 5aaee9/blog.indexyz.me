@@ -8,7 +8,7 @@ categories:
     - Linux
 date: 2017-08-09 17:50:31
 updated: 2017-09-01 18:18:45
-thumbnail: https://publish.indexyz.me/images/2017/12/10/python.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/72768/4/9450/21247/5d73b67aE2b9c77f8/462a1d025c3d9ab6.png
 ---
 在CentOS6上，默认安装的Python版本是2.6，然而有些软件需要使用Python2.7
 

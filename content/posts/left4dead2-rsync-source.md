@@ -7,7 +7,7 @@ categories:
     - Game
 date: 2017-08-09 18:04:09
 updated: 2017-09-01 18:16:06
-thumbnail: https://publish.indexyz.me/images/2017/12/10/left4dead2.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/49448/34/9925/2428016/5d73b665Ea3617b46/43ddd8f10d28089d.png
 ---
 > 最近因为L4D2的某些原因(Downtown插件需要GLIBC2.15以上然而CentOS6无法提供), 
 重装了服务器, 然而阿里云上的SteamCMD老是拉不下来端, 

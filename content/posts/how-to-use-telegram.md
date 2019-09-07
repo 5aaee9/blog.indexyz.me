@@ -6,7 +6,7 @@ categories:
     - Telegram
 date: 2017-08-09 18:26:23
 updated: 2017-09-01 18:12:48
-thumbnail: https://publish.indexyz.me/images/2017/12/10/telegram.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/77333/34/9551/209114/5d73b671E08fbfd6d/b76184cc7453d36e.png
 ---
 > Telegram Messenger 是一个跨平台的即时通信软件，它的客户端是自由及开放源代码软件，但是它的服务器是专有软件。用户可以相互交换加密与自析构的消息，以及照片、视频、文件，支持所有的文件类型。官方提供移动端（Android、iOS、Windows Phone）、桌面端（Windows、macOS、Linux）和网页端（官方在线版）应用；同时官方开放应用程序接口，因此拥有许多第三方的客户端可供选择。  --Wikipedia CN
 

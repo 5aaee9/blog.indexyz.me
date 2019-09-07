@@ -7,7 +7,7 @@ categories:
     - Usage
 date: 2017-08-09 17:54:18
 updated: 2017-09-01 18:18:07
-thumbnail: https://publish.indexyz.me/images/2017/12/10/paperplane.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/63451/4/9609/85882/5d73b65cEcfcb2cc8/fa1c325ee679689b.png
 ---
 > 最近开了一个ShadowSocks的服务器，然而发现很多的童鞋都不会用SS科学上网
   我只能说:"Naive!"

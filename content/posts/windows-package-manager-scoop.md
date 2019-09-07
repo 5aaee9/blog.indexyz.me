@@ -7,7 +7,7 @@ categories:
     - Windows
 date: 2017-09-01 18:19:33
 updated: 2017-09-01 18:28:01
-thumbnail: https://publish.indexyz.me/images/2017/12/10/window.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/75748/7/9449/18867/5d73b659Ed2f3dda0/6d4a0753f2bbca8b.png
 ---
 提起包管理器肯定是想起了 `Linux` 下的 `yum`, `apt-get`, `pacman` 之流 但是其实Windows下面也是有包管理器的
 

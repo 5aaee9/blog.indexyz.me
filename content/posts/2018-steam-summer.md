@@ -7,7 +7,7 @@ categories:
     - Life
 date: 2018-06-22 21:51:14
 updated: 2018-06-22 21:51:14
-thumbnail: https://publish.indexyz.me/images/2017/12/10/steam.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/80182/35/9641/1832605/5d73b65fE4cb88cb8/0bb371e7eca87cd6.png
 ---
 高考完了干什么, 当然是打游戏啊
 

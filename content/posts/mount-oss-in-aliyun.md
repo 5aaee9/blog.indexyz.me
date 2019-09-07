@@ -7,7 +7,7 @@ categories:
     - Linux
 date: 2017-08-09 18:13:59
 updated: 2017-09-01 18:14:49
-thumbnail: https://publish.indexyz.me/images/2017/12/10/aliyun.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/45735/36/9838/88642/5d73b678E4e4ae5a9/9e625cc1798a14b6.png
 ---
 > 最近有一部分文件要用到大容量的储存，然而阿里云的磁盘IO和大小我就不说什么了，这时候我看到了阿里云的OSS，搜索了一下发现可以挂载成虚拟硬盘
 

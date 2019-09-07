@@ -7,7 +7,7 @@ categories:
     - Linux
 date: 2017-08-09 18:33:14
 updated: 2017-09-01 18:11:15
-thumbnail: https://publish.indexyz.me/images/2017/12/10/saltstack.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/53200/13/10056/28221/5d73b65bE2f8ca75b/78e1b7c5b5c118c8.png
 ---
 Saltstack 是一个使用 Python 编写的开源项目 扩展性很好 可以方便快速的管理大量服务器 它使用了 ZeroMQ 消息队列实现服务端之间的秒级通讯
 

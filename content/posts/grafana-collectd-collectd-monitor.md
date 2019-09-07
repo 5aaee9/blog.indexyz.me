@@ -8,7 +8,7 @@ categories:
     - Linux
 date: 2017-10-28 08:18:21
 updated: 2017-10-28 15:29:18
-thumbnail: https://publish.indexyz.me/images/2017/12/10/grafana.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/58977/2/10054/47849/5d73b652E00d1c086/52195d30e1b541c6.png
 ---
 最近一直想搞个监控系统来检测下大陆到国外的延时什么的, 但是 `SmokePing` 的图表太玄学了 而且界面像是上个世纪的 所以想坑一下计划了很久的 `Grafana`.
 
@@ -167,20 +167,20 @@ docker run \
 ```
 访问 `http://localhost:3000` 就可以看到面板了
 默认账号和密码都是 `admin` 请及时修改
-![Grafana Index](https://publish.indexyz.me/images/2017/12/12/Grafana-Index.png)
+![Grafana Index](https://img10.360buyimg.com/img/jfs/t1/55249/33/9919/55816/5d73b654E29c5cb0c/6c0e7927b39ba188.png)
 
 ## 数据源
 点击 `Getting Started` 中的 `Add data source` 我们来添加 `influxdb` 作为数据源
 按照下图设置数据源 然后点击 `Add` 按钮 如果可以链接就代表成功了
-![Grafana Data Source](https://publish.indexyz.me/images/2017/12/12/Grafana-Data-Source.png)
+![Grafana Data Source](https://img10.360buyimg.com/img/jfs/t1/43202/10/14332/38581/5d73b655E8ab93566/8c80116ae64f465a.png)
 
 ## 创建图表
 `Create Dashboard` 然后选 `Graph`
 然后点击 `Panel Title` 在弹出的选项中点击 `Edit` 然后就可以添加查询了
 一个查询可能长这样
-![Grafana Add Query](https://publish.indexyz.me/images/2017/12/12/Grafana-Add-Query.png)
+![Grafana Add Query](https://img10.360buyimg.com/img/jfs/t1/46709/5/10198/28137/5d73b656E6bfef304/f63df99524cbd8e0.png)
 
 # 成果
 最后多添加几个查询 然后改下 `Title` 什么的 一个监控面板就出来了
-![Grafana Dashboard](https://publish.indexyz.me/images/2017/12/12/Grafana-Dashboard.png)
+![Grafana Dashboard](https://img10.360buyimg.com/img/jfs/t1/65285/9/9532/124178/5d73b657E0363f327/96c8937be1c9da3f.png)
 当然这里没有细讲各个组件的高级应用 自己慢慢玩吧(

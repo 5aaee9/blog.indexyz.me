@@ -8,7 +8,7 @@ categories:
     - Minecraft
 date: 2017-08-09 18:24:07
 updated: 2017-09-01 18:13:16
-thumbnail: https://publish.indexyz.me/images/2017/12/10/multimc.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/81799/35/9432/443759/5d73b679E1be8972e/a6c05b9083ded0af.png
 ---
 > MultiMC 是一个免费, 开源的[Minecraft](https://minecraft.net/zh-hans/)启动器. 它最大的特点便是允许用户定义自己的整合包(在MMC中这个概念为 `instances`) 并且可以方便的管理他们
 

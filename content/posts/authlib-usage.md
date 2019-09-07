@@ -8,7 +8,7 @@ categories:
     - Minecraft
 date: 2017-08-09 18:35:11
 updated: 2017-09-01 09:12:29
-thumbnail: https://publish.indexyz.me/images/2017/12/10/minecraft.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/41523/40/14243/813394/5d73b670Edf9fa014/73037199c47ecb1e.png
 ---
 总所周知 Minecraft 使用了被称为 `Yggdrasil`  的正版认证系统 实现了在对等情况下的身份认证
 

@@ -6,7 +6,7 @@ categories:
     - Blog
 date: 2017-08-09 18:29:01
 updated: 2017-09-01 18:11:58
-thumbnail: https://publish.indexyz.me/images/2017/12/10/jekyll.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/63209/6/9502/282851/5d73b66aEc773df5e/75014ee2976887eb.png
 ---
 ## 再次更换博客的构架
 

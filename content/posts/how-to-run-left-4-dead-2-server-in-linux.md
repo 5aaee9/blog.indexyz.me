@@ -7,7 +7,7 @@ categories:
     - Game
 date: 2017-08-09 18:31:55
 updated: 2017-09-01 18:12:13
-thumbnail: https://publish.indexyz.me/images/2017/12/10/left4dead2.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/49448/34/9925/2428016/5d73b665Ea3617b46/43ddd8f10d28089d.png
 ---
 ~~话说求生火了这么久 怎么还不出3啊233~~
 

@@ -7,7 +7,7 @@ categories:
     - Game
 date: 2017-08-09 18:00:34
 updated: 2017-09-01 18:16:50
-thumbnail: https://publish.indexyz.me/images/2017/12/10/left4dead2.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/49448/34/9925/2428016/5d73b665Ea3617b46/43ddd8f10d28089d.png
 ---
 > 又到了一年一度的暑假啦, 小伙伴们是不是很兴奋呐
 

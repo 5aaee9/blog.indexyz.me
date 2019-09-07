@@ -8,7 +8,7 @@ categories:
     - Usage
 date: 2017-08-09 18:00:02
 updated: 2017-09-01 18:17:22
-thumbnail: https://publish.indexyz.me/images/2017/12/10/openvpn.png
+thumbnail: https://img10.360buyimg.com/img/jfs/t1/53248/33/9911/29762/5d73b659E585170dd/a03508f9aee499c5.png
 ---
 > OpenVPN什么的应该是我的VPN食用方法的第二弹了吧Orz
 
