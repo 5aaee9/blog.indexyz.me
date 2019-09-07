@@ -11,7 +11,7 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/forge.png
 ---
 最近在写启动器关于curseforge整合包的导入 然后研究了下如何把curseforge的整合包转换为classic的整合包
 
-<!-- more -->
+<!--more-->
 
 首先来看`manifest.json`中的对于filed和定义
 ```json

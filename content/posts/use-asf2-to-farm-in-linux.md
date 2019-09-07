@@ -12,7 +12,7 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/steam.png
 ---
 Steam的卡片可是可以回本的 但是 `Idle Master` 这些挂机需要使用 `Windows` 的虚拟机 但是 Windows 的机器并不好搞 然后我就发现了 `Archi's Steam Farm` 简称 `ASF`, 这位dalao模拟了 Steam 客户端的操作进行挂卡 虽然是 `Dot Net` 写的 但是可以在 Linux 上使用 `Mono` 运行 最新的 ASF 甚至已经可以脱离 Mono 运行了 这篇文章就是记录了怎么在Linux上运行ASF 2, ASF 3 有可能在未来开一篇文章单独讲
 
-<!-- more -->
+<!--more-->
 
 
 本文的系统环境是 `CentOS 7` 其他发行版可能需要自己更换部分代码 (比如包管理安装包什么的)

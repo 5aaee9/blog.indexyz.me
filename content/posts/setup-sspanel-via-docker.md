@@ -11,7 +11,7 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/paperplane.png
 ---
 `ss-panel-v3-mod` 是一个美观 功能强大的代理管理面板 但是依赖什么的对新手简直是爆炸 装个 `lnmp` 都要一个小时左右 现在使用 `Docker` 可以快速的完成面板的搭建
 
-<!-- more -->
+<!--more-->
 
 
 # 始

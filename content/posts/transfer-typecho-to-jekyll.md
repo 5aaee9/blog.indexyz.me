@@ -10,7 +10,7 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/jekyll.png
 ---
 ## 再次更换博客的构架
 
-<!-- more -->
+<!--more-->
 
 
 ### 原因?

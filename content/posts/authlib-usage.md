@@ -12,7 +12,7 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/minecraft.png
 ---
 总所周知 Minecraft 使用了被称为 `Yggdrasil`  的正版认证系统 实现了在对等情况下的身份认证
 
-<!-- more -->
+<!--more-->
 
 但是在开启了离线模式的服务器中 也有着许多的身份认证方式 例如使用 `AuthMe` 或者 `CrazyLogin` 之类的登陆插件
 

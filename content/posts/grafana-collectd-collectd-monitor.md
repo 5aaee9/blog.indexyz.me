@@ -12,7 +12,7 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/grafana.png
 ---
 最近一直想搞个监控系统来检测下大陆到国外的延时什么的, 但是 `SmokePing` 的图表太玄学了 而且界面像是上个世纪的 所以想坑一下计划了很久的 `Grafana`.
 
-<!-- more -->
+<!--more-->
 
 
 > 抽烟ping看得懂的，都是文森特凡高的后代啊（蔡博语）…… 来搞IT可惜了…… —— 某大佬

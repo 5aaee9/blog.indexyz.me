@@ -15,7 +15,7 @@ thumbnail: https://publish.indexyz.me/images/2018/03/24/centos-logo.png
 
 但是 `RedHat` 系的系统也是可以从网络重装的 下面就介绍一种网络重装的方法
 
-<!-- more -->
+<!--more-->
 
 
 本文主体部分主要是重装 CentOS 6, 会在最后列出重装 `CentOS 7` 和 `CentOS 6` 的区别

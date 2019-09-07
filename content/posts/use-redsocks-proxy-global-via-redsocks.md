@@ -12,7 +12,7 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/paperplane.png
 ---
 在中国大陆由于一些众所周知以及网络环境有时候会比较差的原因, 我们可能会需要使用代理服务器来进行转发流量. 但是有些软件不支持代理, 如何让它走代理呢? 那就要介绍下 `redsocks` 了.
 
-<!-- more -->
+<!--more-->
 
 
 # 安装

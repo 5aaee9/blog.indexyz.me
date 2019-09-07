@@ -11,7 +11,7 @@ thumbnail: https://publish.indexyz.me/images/2017/12/10/bitcoin.png
 ---
 最近这玩意好像很火的样子
 
-<!-- more -->
+<!--more-->
 
 
 # 矿池
