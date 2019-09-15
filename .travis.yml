@@ -4,7 +4,7 @@ install:
 - sudo dpkg -i hugo_extended_0.57.2_Linux-64bit.deb
 
 script:
-- hugo
+- hugo --minify
 
 deploy:
 - provider: pages
