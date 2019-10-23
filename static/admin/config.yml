@@ -7,6 +7,11 @@ backend:
 media_folder: static/img
 public_folder: /img
 
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "_"
+
 collections:
   - name: "posts"
     label: "Post"
@@ -19,3 +24,18 @@ collections:
       - {label: "Tags", name: "tags", widget: "list"}
       - {label: "Categories", name: "categories", widget: "list"}
       - {label: "Body", name: "body", widget: "markdown"}
+  - label: Friend Links
+    name: friends
+    file: content/friends.md
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Layout", name: "layout", widget: "hidden", default: "card"}
+      - {label: "Type", name: "type", widget: "hidden", default: "links"}
+      - label: Links
+        name: links
+        widget: list
+        fields:
+          - {label: Name, name: name, widget: string}
+          - {label: Description, name: descp, widget: string}
+          - {label: URL, name: url, widget: string}
+          - {label: Image, name: image, widget: image}
