@@ -97,7 +97,8 @@ http://web/flag?@example.com
 [拓展阅读](https://www.regular-expressions.info/catastrophic.html)
 
 ```
-Regex: (a*)*$String: aaaaaaaaaaaaaaaaaaaaaaab
+Regex: (a*)*$
+String: aaaaaaaaaaaaaaaaaaaaaaab
 ```
 
 这道题长度卡的太死了（不然肯定各种奇怪的正则（跑
