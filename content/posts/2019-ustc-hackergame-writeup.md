@@ -464,3 +464,5 @@ for char in origin[:-1]:
 再加上这几天都在摸鱼没怎么搞（不是
 
 最后拿了 top40 也满足了（跑
+
+![image.png](https://i.loli.net/2019/10/23/lr5yfC2TInP8tqx.png)
