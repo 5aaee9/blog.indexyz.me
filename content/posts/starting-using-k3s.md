@@ -1,8 +1,13 @@
 ---
 title: k3s 踩坑
 date: '2019-04-16T11:44:00+08:00'
+updated: 2019-10-23T07:45:12.143Z
+tags:
+  - Docker
+  - Kubernetes
+  - Linux
 categories:
-- Kubernetes
+  - Kubernetes
 ---
 Kubernetes 之前很火, 但是因为对每个计算节点的配置要求非常之高, 我一直是在使用 Rancher 的 `Cattle` 而并非使用 k8s.
 最近听说 Rancher Labs 推出了 k3s 并且据说资源占用特别小, 那就来踩下坑（跑
@@ -64,7 +69,7 @@ rm -f k3s.sh
 
 ## 安装 Nginx-Ingress
 apply 这个 yml
-```
+```yaml
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
