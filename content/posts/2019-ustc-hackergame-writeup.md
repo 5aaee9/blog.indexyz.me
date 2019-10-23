@@ -94,7 +94,7 @@ http://web/flag?@example.com
 
 是利用正则表达式的灾难性回溯卡 Python 一秒来获取 flag
 
-[拓展阅读](www.regular-expressions.info/catastrophic.html)
+[拓展阅读](https://www.regular-expressions.info/catastrophic.html)
 
 ```
 Regex: (a*)*$String: aaaaaaaaaaaaaaaaaaaaaaab
@@ -167,7 +167,11 @@ ffmpeg -i out.mp4 -f image2 %02d.png
 
 ## 献给最好的你
 
-反编译 JAR, 找到 `com.hackergame.eternalEasterlyWind.data.LoginDataSource` 看到了一串 base64
+反编译 JAR, 找到 
+
+`com.hackergame.eternalEasterlyWind.data.LoginDataSource` 
+
+看到了一串 base64
 
 然后看了下前面的逻辑是把小写转大写, 大写转小写, 反操作一下就拿到了密码
 
