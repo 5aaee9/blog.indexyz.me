@@ -160,7 +160,7 @@ r.interactive()
 
 参考 <https://stackoverflow.com/questions/37088517/ffmpeg-remove-sequentially-duplicate-frames> 删除重复帧然后把帧抽成图片
 
-```
+```bash
 ffmpeg -i input.mp4 -vf mpdecimate,setpts=N/FRAME_RATE/TB out.mp4
 ffmpeg -i out.mp4 -f image2 %02d.png
 ```
@@ -373,7 +373,7 @@ print("".join(map(chr, result)))
 
 我写的攻击合约是这样的
 
-```
+```solidity
 pragma solidity >=0.4.26;
 
 contract Target {
