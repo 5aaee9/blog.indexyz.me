@@ -1,0 +1,32 @@
+name: On Push
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  lint:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Install hugo
+      run: |
+        wget https://github.com/gohugoio/hugo/releases/download/v0.57.2/hugo_extended_0.57.2_Linux-64bit.deb
+        sudo dpkg -i hugo_extended_0.57.2_Linux-64bit.deb
+
+    - name: Build site
+      run: hugo --minify
+
+    - name: Deploy to pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
+        force_orphan: true
+        user_name: 'github-actions[bot]'
+        user_email: 'github-actions[bot]@users.noreply.github.com'
+        commit_message: ${{ github.event.head_commit.message }}
