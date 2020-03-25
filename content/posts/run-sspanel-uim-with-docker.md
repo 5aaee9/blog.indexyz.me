@@ -8,7 +8,7 @@ categories:
 
 Docker is awesome!
 
-<!-- more -->
+<!--more-->
 
 ## 安装环境
 
