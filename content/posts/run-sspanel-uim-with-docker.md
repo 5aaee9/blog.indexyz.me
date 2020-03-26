@@ -10,12 +10,23 @@ Docker is awesome!
 
 <!--more-->
 
+## TL; DR
+
+```bash
+curl https://gist.github.com/Indexyz/d548520f2f742d9694140e162e76e3b0/raw/c8fce2c510340f10912fb1a86fc88ee8cbf22da0/install.sh | bash
+```
+
+<script src="https://gist.github.com/Indexyz/d548520f2f742d9694140e162e76e3b0.js"></script>
+
+然后访问 http://ip 就可以看到 SSPanel 了
+
 ## 安装环境
 
 以下使用 Debian 10 作为基础环境, 通过 Docker 官方的安装方式安装的 Docker
 
 ```bash
 curl -sSL get.docker.com | bash
+systemctl enable --now docker
 ```
 
 ## 安装数据库
