@@ -111,6 +111,14 @@ systemctl enable --now bluetooth
 
 启用之后 KDE 的托盘部分就会显示蓝牙图标了
 
+为了使用蓝牙耳机，还需要安装 PulseAudio 的蓝牙模块
+
+```
+pacman -S pulseaudio-bluetooth
+pluseaudio -k
+pactl load-module module-bluetooth-discover
+```
+
 ## 配置中文输入法
 
 作为一个中文为母语的人，当然要先配置中文输入法啦，在 KDE 上使用中文输入法也非常简单
