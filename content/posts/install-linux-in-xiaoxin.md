@@ -1,12 +1,8 @@
 ---
 title: 在小新 13 Pro 上安装 Linux Desktop 环境
-tags:
-    - Linux
-    - Laptop
 categories:
     - Linux
-date: 2020-06-10 14:37:13
-updated: 2020-06-10 14:37:13
+date: '2020-06-10T14:37:13+08:00'
 ---
 最近在尝试有啥舒服的开发环境，将 Windows 更新到了 2004 之后启用 WSL 2 还是不能满足我的大部分需求，而 MacOS 对于某些开发工具支持有问题（说的就是你 Forge Gradle）。最后不如直接尝试一下开源 ~~拖拉机~~, 直接在实体机上安装 Linux 作为日用系统。
 
