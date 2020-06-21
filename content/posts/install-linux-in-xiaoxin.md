@@ -8,7 +8,7 @@ date: '2020-06-10T14:37:13+08:00'
 
 <!--more-->
 
-![System details](https://i.loli.net/2020/06/10/XwPjD2lumSvqbLo.png)
+![System details](https://i.loli.net/2020/06/21/rkPuze9V6RLlJdy.jpg)
 
 ~~AMD YES!~~
 
