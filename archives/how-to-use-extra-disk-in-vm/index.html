@@ -1,0 +1,79 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>在Linux主机上扩展主机硬盘 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/how-to-use-extra-disk-in-vm/ itemprop=url>在Linux主机上扩展主机硬盘</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-08-09T18:06:32Z>2017-08-09</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/linux itemprop=url rel=index><span itemprop=name>Linux</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p>很多主机商的VPS中,
+在安装完系统之后所给的硬盘大小并不是标注的硬盘大小(而且不同系统有时候大小还不一样).
+在这种情况下就要自己扩充硬盘大小了.</p><p>首先登陆到服务器</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>fdisk –l</code></pre></div><pre><code>[root@localhost ~]# fdisk -l
+
+Disk /dev/sda: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x000aea04
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048     1026047      512000   83  Linux
+/dev/sda2         1026048    20971519     9972736   8e  Linux LVM
+
+Disk /dev/sdb: 42.9 GB, 42949672960 bytes, 83886080 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x789cab85
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb3              63    83875364    41937651   8e  Linux LVM
+
+Disk /dev/mapper/centos-root: 9093 MB, 9093251072 bytes, 17760256 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/centos-swap: 1073 MB, 1073741824 bytes, 2097152 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+</code></pre><p>这里的sdb3就是我们要操作的硬盘了, 我们要把它合并到/dev/centos/root</p><p>首先</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>fdisk /dev/sdb3
+<span class=ln>2</span>n
+<span class=ln>3</span>p
+<span class=ln>4</span><span class=m>3</span>
+<span class=ln>5</span><span class=c1># 默认</span>
+<span class=ln>6</span><span class=c1># 默认</span>
+<span class=ln>7</span>t
+<span class=ln>8</span>8e
+<span class=ln>9</span>w</code></pre></div><p>这时候重启一次系统, 让分区表重新加载</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>pvcreate /dev/sdb3
+<span class=ln>2</span><span class=c1># 如果出现错误则是服务商已经把这个硬盘划给了另外一个Group 加上-ff参数就好了</span>
+<span class=ln>3</span>vgextend centos /dev/sdb3
+<span class=ln>4</span>vgdisplay</code></pre></div><pre><code>  --- Volume group ---
+  VG Name               centos
+  System ID             
+  Format                lvm2
+  Metadata Areas        2
+  Metadata Sequence No  4
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                2
+  Open LV               2
+  Max PV                0
+  Cur PV                2
+  Act PV                2
+  VG Size               49.50 GiB
+  PE Size               4.00 MiB
+  Total PE              12672
+  Alloc PE / Size       2424 / 9.47 GiB
+  Free  PE / Size       10248 / 40.03 GiB
+  VG UUID               #####
+</code></pre><p>这时候</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>lvresize -L +40.03G /dev/centos/root</code></pre></div><p>最后</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>resize2fs /dev/centos/root</code></pre></div><p>如果出现以下提示的话</p><pre><code>resize2fs 1.42.9 (28-Dec-2013)
+resize2fs: Bad magic number in super-block while trying to open /dev/centos/root
+Couldn't find valid filesystem superblock.
+</code></pre><p>使用</p><pre><code>xfs_growfs /dev/centos/root
+</code></pre></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/how-to-use-hyper_sh/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">Hyper的使用教程以及VPN的搭建</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/hello-study-year/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">致开学</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

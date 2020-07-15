@@ -1,0 +1,174 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>OpenVPN安装和面板的对接 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/how-to-install-openvpn/ itemprop=url>OpenVPN安装和面板的对接</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-08-09T17:57:17Z>2017-08-09</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/linux itemprop=url rel=index><span itemprop=name>Linux</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><blockquote><p>OpenVPN是一个用于创建虚拟专用网络加密通道的软件包，最早由James Yonan编写。OpenVPN允许创建的VPN使用公开密钥、电子证书、或者用户名／密码来进行身份验证。
+<a href=https://zh.wikipedia.org/wiki/OpenVPN>Wikipedia</a></p></blockquote><p>话说看到了<a href=http://www.wooyun.org/bugs/wooyun-2015-0165733>乌云</a>上一个关于OpenVPN免流的Bug,同时最近在写<a href=http://www.evplex.xyz>Project
+Evplex</a>,打算给他加上关于面板的对接和用户认证还有流量统计什么的.</p><h2 id=安装openvpn>安装OpenVPN</h2><p>修改网络支持转发</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln> 1</span><span class=c1># 关闭SELinux</span>
+<span class=ln> 2</span>setenforce <span class=m>0</span>
+<span class=ln> 3</span>vi /etc/sysctl.conf
+<span class=ln> 4</span><span class=c1># 修改参数 net.ipv4.ip_forward = 1 如果默认是空内容，请自行加上</span>
+<span class=ln> 5</span>sysctl -p
+<span class=ln> 6</span><span class=c1># 修改防火墙参数</span>
+<span class=ln> 7</span>iptables -t nat -A POSTROUTING -s <span class=m>10</span>.8.0.0/24 -o eth0 -j MASQUERADE
+<span class=ln> 8</span>iptables -A INPUT -p TCP --dport <span class=m>443</span> -j ACCEPT
+<span class=ln> 9</span>iptables -A INPUT -p TCP --dport <span class=m>8080</span> -j ACCEPT
+<span class=ln>10</span>iptables -A INPUT -p TCP --dport <span class=m>22</span> -j ACCEPT
+<span class=ln>11</span>iptables -t nat -A POSTROUTING -j MASQUERADE
+<span class=ln>12</span>iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+<span class=ln>13</span>service iptables save
+<span class=ln>14</span>service iptables restart</code></pre></div><p>###安装本体</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln> 1</span>yum install epel-release -y
+<span class=ln> 2</span>yum update -y
+<span class=ln> 3</span><span class=c1># 安装依赖</span>
+<span class=ln> 4</span>yum install -y wget openssl openssl-devel lzo lzo-devel pam pam-devel automake 
+<span class=ln> 5</span>pkgconfig
+<span class=ln> 6</span>yum install -y openvpn
+<span class=ln> 7</span>cp /usr/share/doc/openvpn-*/sample/sample-config-files/server.conf  /etc/openvpn
+<span class=ln> 8</span>
+<span class=ln> 9</span><span class=c1># 安装EasyRSA</span>
+<span class=ln>10</span>wget --no-check-certificate https://ftp.iinde.xyz/Useful/openvpn/EasyRSA.tar.gz
+<span class=ln>11</span>tar zxvf EasyRSA.tar.gz -C /etc/openvpn/
+<span class=ln>12</span>rm -f EasyRSA.tar.gz
+<span class=ln>13</span><span class=nb>cd</span> /etc/openvpn/EasyRsa/
+<span class=ln>14</span><span class=nb>source</span> vars
+<span class=ln>15</span>./clean-all
+<span class=ln>16</span>./build-ca
+<span class=ln>17</span>./build-key-server server
+<span class=ln>18</span><span class=c1># 实际上，对于用户名/密码认证机制来说，./build-key user01可以省略掉</span>
+<span class=ln>19</span>./build-key user01
+<span class=ln>20</span>./build-dh
+<span class=ln>21</span><span class=nb>cd</span> ..
+<span class=ln>22</span>openvpn --genkey --secret static.key</code></pre></div><p>###启动OpenVPN服务</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>service openvpn start</code></pre></div><p>###配置文件例子</p><div class=highlight><pre class=chroma><code class=language-cfg data-lang=cfg><span class=ln> 1</span><span class=na>port 443</span>
+<span class=ln> 2</span><span class=na>proto tcp</span>
+<span class=ln> 3</span><span class=na>dev tun</span>
+<span class=ln> 4</span><span class=na>ca /etc/openvpn/EasyRsa/keys/ca.crt</span>
+<span class=ln> 5</span><span class=na>cert /etc/openvpn/EasyRsa/keys/server.crt</span>
+<span class=ln> 6</span><span class=na>key /etc/openvpn/EasyRsa/keys/server.key</span>
+<span class=ln> 7</span><span class=na>dh /etc/openvpn/EasyRsa/keys/dh2048.pem</span>
+<span class=ln> 8</span><span class=na>auth-user-pass-verify /etc/openvpn/verify.sh via-env</span>
+<span class=ln> 9</span><span class=na>client-cert-not-required</span>
+<span class=ln>10</span><span class=na>username-as-common-name</span>
+<span class=ln>11</span><span class=na>script-security 3 system</span>
+<span class=ln>12</span><span class=na>server 10.8.0.0 255.255.255.0</span>
+<span class=ln>13</span><span class=na>ifconfig-pool-persist /etc/openvpn/ipp.txt</span>
+<span class=ln>14</span><span class=na>push &#34;redirect-gateway def1 bypass-dhcp&#34;</span>
+<span class=ln>15</span><span class=na>push &#34;dhcp-option DNS 8.8.8.8&#34;</span>
+<span class=ln>16</span><span class=na>push &#34;dhcp-option DNS 8.8.4.4&#34;</span>
+<span class=ln>17</span><span class=na>keepalive 10 120 </span>
+<span class=ln>18</span><span class=na>tls-auth /etc/openvpn/static.key 0  </span>
+<span class=ln>19</span><span class=na>comp-lzo</span>
+<span class=ln>20</span><span class=na>max-clients 12</span>
+<span class=ln>21</span><span class=na>persist-key</span>
+<span class=ln>22</span><span class=na>persist-tun</span>
+<span class=ln>23</span><span class=na>log /etc/openvpn/openvpn.log</span>
+<span class=ln>24</span><span class=na>log-append /etc/openvpn/openvpn.log</span>
+<span class=ln>25</span><span class=na>verb 3</span></code></pre></div><h2 id=免流部分>免流部分</h2><h3 id=安装mproxy进行流量转发>安装MProxy进行流量转发</h3><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=c1># 自编译安装</span>
+<span class=ln>2</span>yum install git gcc -y
+<span class=ln>3</span>git clone https://github.com/Indexyz/mproxy.git mproxy
+<span class=ln>4</span><span class=nb>cd</span> mproxy
+<span class=ln>5</span>gcc -o mproxy mproxy.c
+<span class=ln>6</span><span class=c1># mproxy/mroxy 就是生成的可执行文件了</span>
+<span class=ln>7</span>
+<span class=ln>8</span><span class=c1># 当然 你也可以选择我已经编译过的文件</span>
+<span class=ln>9</span>curl -skSL -o mproxy https://ftp.iinde.xyz/Useful/openvpn/mproxy<span class=p>;</span>chmod +x mproxy</code></pre></div><h4 id=运行mproxy>运行MProxy</h4><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>./mproxy -l <span class=m>8080</span> -d</code></pre></div><h3 id=安装squid进行流量转发>安装Squid进行流量转发</h3><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=nb>cd</span> /etc/squid/
+<span class=ln>2</span>rm -f ./squid.conf
+<span class=ln>3</span>vi squid.conf
+<span class=ln>4</span><span class=c1># 编辑你自己的配置文件</span>
+<span class=ln>5</span>chmod <span class=m>0755</span> /etc/squid/squid.conf
+<span class=ln>6</span>squid -z
+<span class=ln>7</span>squid -s</code></pre></div><p>配置文件例子</p><pre><code>acl SSL_ports port 443
+acl Safe_ports port 80
+acl Safe_ports port 21
+acl Safe_ports port 443
+acl Safe_ports port 70
+acl Safe_ports port 210
+acl Safe_ports port 1025-65535
+acl Safe_ports port 280
+acl Safe_ports port 488
+acl Safe_ports port 591
+acl Safe_ports port 777
+acl CONNECT method CONNECT
+via on
+request_header_access X-Forwarded-For deny all
+request_header_access user-agent  deny all
+reply_header_access X-Forwarded-For deny all
+reply_header_access user-agent  deny all
+http_port 80
+http_access allow  all
+access_log /var/log/squid/access.log
+visible_hostname Indexyz Technology Inc.
+cache_mgr Incloud_Everythings
+</code></pre><h2 id=openvpn-配置文件>OpenVPN 配置文件</h2><h3 id=使用mproxy的例子>使用MProxy的例子</h3><pre><code>setenv IV_GUI_VER &quot;de.blinkt.openvpn 0.6.17&quot; 
+machine-readable-output
+client
+dev tun
+proto tcp
+connect-retry-max 5
+connect-retry 5
+resolv-retry 60
+remote wap.10086.cn 80
+http-proxy-retry
+http-proxy-option EXT1 POST http://wap.10086.cn
+http-proxy-option EXT1 Host wap.10086.cn
+http-proxy-option EXT1 Host: wap.10086.cn / HTTP/1.1
+http-proxy-option EXT1 CONNECT
+http-proxy {your server ip} 8080
+
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+push route 114.114.114.114 114.114.115.115
+
+&lt;ca&gt;
+Enter Your CA here
+&lt;/ca&gt;
+key-direction 1
+&lt;tls-auth&gt;
+Enter your static key here
+&lt;/tls-auth&gt;
+auth-user-pass
+ns-cert-type server
+comp-lzo
+verb 3
+</code></pre><h3 id=使用squid的例子>使用Squid的例子</h3><pre><code>setenv IV_GUI_VER &quot;de.blinkt.openvpn 0.6.17&quot; 
+machine-readable-output
+client
+dev tun
+connect-retry-max 5
+connect-retry 5
+resolv-retry 60
+http-proxy-option EXT1 &quot;POST http://rd.go.10086.cn&quot; 
+http-proxy-option EXT1 &quot;GET http://rd.go.10086.cn&quot; 
+http-proxy-option EXT1 &quot;X-Online-Host: rd.go.10086.cn&quot; 
+http-proxy-option EXT1 &quot;POST http://rd.go.10086.cn&quot; 
+http-proxy-option EXT1 &quot;X-Online-Host: rd.go.10086.cn&quot; 
+http-proxy-option EXT1 &quot;POST http://rd.go.10086.cn&quot; 
+http-proxy-option EXT1 &quot;Host: rd.go.10086.cn&quot; 
+http-proxy-option EXT1 &quot;GET http://rd.go.10086.cn&quot; 
+http-proxy-option EXT1 &quot;Host: rd.go.10086.cn&quot;
+http-proxy {your server ip} 80
+
+remote {your server ip} {your server port} tcp-client
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+push route 114.114.114.114 114.114.115.115
+
+&lt;ca&gt;
+Enter your CA here
+&lt;/ca&gt;
+key-direction 1
+&lt;tls-auth&gt;
+Enter your static key here
+&lt;/tls-auth&gt;
+auth-user-pass
+ns-cert-type server
+comp-lzo
+verb 3
+</code></pre><h2 id=用户认证和面板对接>用户认证和面板对接</h2><p>详见<a href=https://blog.iinde.xyz/index.php/archives/33/>这里</a></p></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/openvpn-auth-system/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">关于OpenVPN的用户认证的研究</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/how-to-install-tsunamiudp/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">在Linux上安装TsunamiUDP进行快速传输</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

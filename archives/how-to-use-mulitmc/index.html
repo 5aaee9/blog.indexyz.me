@@ -1,0 +1,36 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>MultiMC 的简单使用教程 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/how-to-use-mulitmc/ itemprop=url>MultiMC 的简单使用教程</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-08-09T18:24:07Z>2017-08-09</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/minecraft itemprop=url rel=index><span itemprop=name>Minecraft</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><blockquote><p>MultiMC 是一个免费, 开源的<a href=https://minecraft.net/zh-hans/>Minecraft</a>启动器. 它最大的特点便是允许用户定义自己的整合包(在MMC中这个概念为 <code>instances</code>) 并且可以方便的管理他们</p></blockquote><h2 id=基本介绍>基本介绍</h2><p>首先来看看官网的features</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln> 1</span>Manage multiple instances of Minecraft at once
+<span class=ln> 2</span>Start Minecraft with a custom resolution
+<span class=ln> 3</span>Change Java<span class=s1>&#39;s runtime options (including memory options)
+</span><span class=ln> 4</span><span class=s1>Shows Minecraft&#39;</span>s console output in a color-coded window
+<span class=ln> 5</span>Kill Minecraft easily <span class=k>if</span> it crashes/freezes
+<span class=ln> 6</span>Custom icons and groups <span class=k>for</span> instances
+<span class=ln> 7</span>Forge integration <span class=o>(</span>automatic installation, version downloads, mod management<span class=o>)</span>
+<span class=ln> 8</span>Minecraft world management
+<span class=ln> 9</span>Import and <span class=nb>export</span> Minecraft instances to share them with anyone
+<span class=ln>10</span>Supports every version of Minecraft that the vanilla launcher does</code></pre></div><p><em>简单的说就是个大号的启动器</em></p><h3 id=下载使用>下载使用</h3><p>在 <a href=https://multimc.org/>官网</a> 中可以找到各个系统的最新下载地址
+当然你觉得 无聊和没事找事 什么的 你可以在
+<a href=https://github.com/MultiMC/MultiMC5>GitHub</a> 上找到最新的源代码并且自己编译安装
+&gt; Note: MultiMC 的官方版是强制要求正版验证的 盗版的同学请去下修改版的MMC</p><p>当你下载完成之后解压缩后
+Windows 用户 请直接打开 MultiMC.exe
+OS X 用户请直接安装MultiMC.app
+Linux 用户如果是选择包安装可以在系统的Dock什么的位置找到它
+不是包安装请直接./MulitMC
+&gt; 下文都在Windows平台上完成</p><h2 id=第一次见面>第一次见面</h2><blockquote><p>部分用户在第一次启动的时候会没有中文 这种情况出现在MultiMC的旧版本
+解决方法也很简单 重启一次启动器就好了</p></blockquote><p>现在第一次启动的时候有个安装界面 一路下一步就好了 请记得在第一步选择简体中文
+<img src=https://img10.360buyimg.com/img/jfs/t1/50484/13/9983/29129/5d73c52aEbcc97c9d/58b920ab88c1e078.png alt=QQ截图20170121115953.png></p><h2 id=在开始直接我们还要>在开始直接我们还要&hellip;</h2><h3 id=添加账号>添加账号</h3><p>在右上角有个配置文件 添加自己的Minecraft账号 (<code>配置文件 -&gt; 管理账号 -&gt; 添加</code>)</p><p><img src=https://img10.360buyimg.com/img/jfs/t1/54976/16/10067/27264/5d73c52bEa33da0e6/e0275e991d50804b.png alt="`$60H1EXDEDMA(IVM_@3DSH.png"></p><p>上图是我添加完成之后的效果</p><h3 id=设置代理服务器-选做>设置代理服务器(选做)</h3><p><img src=https://img10.360buyimg.com/img/jfs/t1/66519/39/9507/20829/5d73c52cE4fef5e32/283762c1927a709d.png alt=QQ截图20170121120524.png></p><p>因为Minecraft的源 <code>亚马逊S3</code> 在国内速度简直爆炸
+所以我们最好通过代理服务器来下载游戏资源
+<code>设置 -&gt; 代理</code> 修改代理为你的服务器然后确定 (上图是纸飞机的默认端口)
+&gt; 设置完代理请重启启动器来使代理生效</p><h2 id=让我们开始吧>让我们开始吧</h2><h3 id=导入一个整合包>导入一个整合包</h3><p><code>新建 -&gt; 导入Mod整合包</code>选择你的整合包地址或者选择一个本地的整合包
+按下OK之后便直接导入到了MMC当中了</p><p><img src=https://img10.360buyimg.com/img/jfs/t1/71818/38/9537/52910/5d73c52dEec40e028/83dc644db70e6902.png alt="Z~`IYT{14UW)4M~~I4ZYA4.png"></p><blockquote><p>在第一次启动的时候获取相关文件需要较长时间 请等待 如果速度较慢建议设置代理</p></blockquote><h3 id=创建自己的第一个实例>创建自己的第一个实例</h3><p>在 <code>新建 -&gt; 纯净Minecraft</code> 中选择一个版本 OK之后就会
+添加这个版本的Minecraft到你的库中</p><h3 id=复制实例>复制实例</h3><p>在实例上右键 选择<code>复制实例</code> 可以获得当前这个实例的子实例(几乎一样)</p><h3 id=创建forge实例>创建Forge实例</h3><p>在新建了的 纯净Minecraft 中(你也可以选择复制一份)
+右击 实例 选择 <code>修改实例</code>
+然后按下 <code>版本 -&gt; 安装Forge</code> 选择一个你需要的Forge版本点击OK就可以安装上Forge了
+<img src=https://img10.360buyimg.com/img/jfs/t1/61955/40/9410/55282/5d73c52eE2fd82989/26f74cec572d5203.png alt=QQ截图20170121123000.png></p></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/xiaomi-miflash-error/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">小米MiFlash出现remote partition table doesn&#39;t exist的解决方法</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/how-to-use-rancher-to-manage-docker/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">Rancher 的使用和容器的管理</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

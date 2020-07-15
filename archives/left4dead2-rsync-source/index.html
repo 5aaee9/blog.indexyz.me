@@ -1,0 +1,20 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>Left 4 Dead 2 服务器Rsync同步源 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/left4dead2-rsync-source/ itemprop=url>Left 4 Dead 2 服务器Rsync同步源</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-08-09T18:04:09Z>2017-08-09</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/game itemprop=url rel=index><span itemprop=name>Game</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><blockquote><p>最近因为L4D2的某些原因(Downtown插件需要GLIBC2.15以上然而CentOS6无法提供),
+重装了服务器, 然而阿里云上的SteamCMD老是拉不下来端,
+于是我在国外的文件服务器上搭建了Rsync源来解决服务端问题</p></blockquote><h2 id=使用方法>使用方法</h2><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>yum install rsync
+<span class=ln>2</span>// 链接密码root
+<span class=ln>3</span>rsync -avzP --delete root@rsync.indexs.lol::l4d2server serverfiles</code></pre></div><h3 id=另>另</h3><pre><code>// 阿里云安装时错误代码
+Error! App '222860' state is 0x402 after update job.
+CWorkThreadPool::~CWorkThreadPool: work complete queue not empty, 36 items 
+discarded.
+CWorkThreadPool::~CWorkThreadPool: work processing queue not empty: 22 items 
+discarded.
+// 求大佬分析
+</code></pre></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/hello-study-year/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">致开学</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/python-clean-screen/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">Python实现清屏</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

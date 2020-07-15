@@ -1,0 +1,108 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>在星际蜗牛主机上使用 LVM 安装 Arch Linux 以及常用软件 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/startup-in-j1900/ itemprop=url>在星际蜗牛主机上使用 LVM 安装 Arch Linux 以及常用软件</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2019-06-21T15:30:00&#43;0800>2019-06-21</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/linux itemprop=url rel=index><span itemprop=name>Linux</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p>之前星际蜗牛矿难, 流出了一大堆矿难机器, 正好收过来做 NAS (绝对超值)</p><h1 id=intro>Intro</h1><p>星际蜗牛的机器差不多是这样的配置
+<a href=https://ark.intel.com/content/www/cn/zh/ark/products/78867/intel-celeron-processor-j1900-2m-cache-up-to-2-42-ghz.html>Intel J1900</a>
+4GB 不知名 DDR3 内存
+16GB 垃圾板载 SSD（U 盘水平）
+四个硬盘位
+千兆网口</p><p>虽然这个配置不咋的, 但是拿来做 NAS 绰绰有余了, 接下来将讲述如何挂载上多枚硬盘并且作为 NAS 来使用</p><h1 id=安装>安装</h1><h2 id=安装-arch-linux>安装 Arch Linux</h2><p>虽然到手之后自带了一个 CentOS 不过我们不知道 root 密码也不知道里面有着什么鬼东西, 直接整个抹盘重装.</p><p>此处准备了一个存有 ArchLinux ISO 的 U盘并 Boot 到 LiveCD 模式
+首先 fdisk -l 列出磁盘, 我内置的磁盘在 /dev/sda 下面</p><p>然后清空磁盘并分区</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>dd <span class=k>if</span><span class=o>=</span>/dev/zero <span class=nv>of</span><span class=o>=</span>/dev/sda
+<span class=ln>2</span><span class=c1>#^C</span>
+<span class=ln>3</span>cfdisk /dev/sda</code></pre></div><p>我的分区如下</p><ul><li>300M EFI System 分区 /dev/sda1</li><li>剩余空间 EXT4 /dev/sda2</li></ul><p>使用以下命令挂载系统分区</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>mount /dev/sda2 /mnt
+<span class=ln>2</span><span class=nb>cd</span> /mnt
+<span class=ln>3</span>mkdir -p boot
+<span class=ln>4</span>mount /dev/sda1 boot</code></pre></div><p>然后插上网线就可以开始安装 ArchLinux 了</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>pacstrap -i /mnt base base-devel</code></pre></div><blockquote><p>该过程会联网下载 ArchLinux 相关软件包, 可能会占用较长时间, 泡杯咖啡然后坐和放宽</p></blockquote><p>完成系统安装和安装引导</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>genfstab -U /mnt &gt; /mnt/etc/fstab
+<span class=ln>2</span>bootctl --path<span class=o>=</span>/boot install
+<span class=ln>3</span>
+<span class=ln>4</span><span class=nb>cd</span> /boot/loader/entires
+<span class=ln>5</span>nano default.conf</code></pre></div><p>编写 启动项 这里给上我的来参考</p><div class=highlight><pre class=chroma><code class=language-conf data-lang=conf><span class=ln>1</span>title Arch Linux
+<span class=ln>2</span>linux /vmlinuz-linux
+<span class=ln>3</span>initrd /initramfs-linux.img
+<span class=ln>4</span>options root=PARTUUID=YOUR_PART_ROOT_PART_UUID rw</code></pre></div><blockquote><p>YOUR_PART_ROOT_PART_UUID 可以通过 blkid -s PARTUUID -o value /dev/sda2 来获取</p></blockquote><p>接下来执行</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=c1># 添加用户</span>
+<span class=ln>2</span>useradd -m indexyz
+<span class=ln>3</span><span class=c1># 修改密码</span>
+<span class=ln>4</span>passwd
+<span class=ln>5</span><span class=nb>exit</span>
+<span class=ln>6</span>reboot
+<span class=ln>7</span><span class=c1># 拔掉 U 盘</span></code></pre></div><h2 id=配置-arch-linux>配置 Arch Linux</h2><p>上一个步骤完成了 Arch Linux 的安装 接下来就该配置 Arch Linux 了</p><p>首先先在 /etc/systemd/network 下建立 wired.network 文件</p><blockquote><p>systemd 全家桶大法好</p></blockquote><p>内容为</p><div class=highlight><pre class=chroma><code class=language-conf data-lang=conf><span class=ln>1</span>[Match]
+<span class=ln>2</span>Name=enp*
+<span class=ln>3</span>
+<span class=ln>4</span>[Network]
+<span class=ln>5</span>DHCP=ipv4</code></pre></div><p>然后执行</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>systemctl <span class=nb>enable</span> --now systemd-networkd
+<span class=ln>2</span>systemctl <span class=nb>enable</span> --now systemd-resolved</code></pre></div><p>就为全部的有线网口启用了 DHCP 了</p><blockquote><p>如果要自己配置静态地址的话 参考 <a href=https://wiki.archlinux.org/index.php/Systemd-networkd>Arch Linux WIKI - systemd-network</a></p></blockquote><p>然后可以安装 OpenSSH Server 来远程访问</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>pacman -S openssh
+<span class=ln>2</span>systemctl <span class=nb>enable</span> --now sshd</code></pre></div><h2 id=储存>储存</h2><p>我这里使用了 LVM 来进行储存
+&gt; 如果不配置 RAID 就直接 LVM 的话有数据丢失风险!</p><p>将磁盘格式化成 Linux LVM 格式</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln> 1</span><span class=c1># fdisk -l</span>
+<span class=ln> 2</span>Disk /dev/sdb: <span class=m>3</span>.65 TiB, <span class=m>4000787030016</span> bytes, <span class=m>7814037168</span> sectors
+<span class=ln> 3</span>Units: sectors of <span class=m>1</span> * <span class=nv>512</span> <span class=o>=</span> <span class=m>512</span> bytes
+<span class=ln> 4</span>Sector size <span class=o>(</span>logical/physical<span class=o>)</span>: <span class=m>512</span> bytes / <span class=m>512</span> bytes
+<span class=ln> 5</span>I/O size <span class=o>(</span>minimum/optimal<span class=o>)</span>: <span class=m>512</span> bytes / <span class=m>512</span> bytes
+<span class=ln> 6</span>Disklabel type: gpt
+<span class=ln> 7</span>
+<span class=ln> 8</span>Device     Start        End    Sectors  Size Type
+<span class=ln> 9</span>/dev/sdb1   <span class=m>2048</span> <span class=m>7814037134</span> <span class=m>7814035087</span>  <span class=m>3</span>.7T Linux LVM
+<span class=ln>10</span>
+<span class=ln>11</span>
+<span class=ln>12</span>Disk /dev/sdc: <span class=m>3</span>.65 TiB, <span class=m>4000787030016</span> bytes, <span class=m>7814037168</span> sectors
+<span class=ln>13</span>Units: sectors of <span class=m>1</span> * <span class=nv>512</span> <span class=o>=</span> <span class=m>512</span> bytes
+<span class=ln>14</span>Sector size <span class=o>(</span>logical/physical<span class=o>)</span>: <span class=m>512</span> bytes / <span class=m>512</span> bytes
+<span class=ln>15</span>I/O size <span class=o>(</span>minimum/optimal<span class=o>)</span>: <span class=m>512</span> bytes / <span class=m>512</span> bytes
+<span class=ln>16</span>Disklabel type: gpt
+<span class=ln>17</span>
+<span class=ln>18</span>Device     Start        End    Sectors  Size Type
+<span class=ln>19</span>/dev/sdc1   <span class=m>2048</span> <span class=m>7814037134</span> <span class=m>7814035087</span>  <span class=m>3</span>.7T Linux LVM</code></pre></div><p>然后进行创建</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln> 1</span><span class=c1># pvcreate /dev/sdb1 /dev/sdc1</span>
+<span class=ln> 2</span><span class=c1># vgcreate data /dev/sdb1 /dev/sdc1</span>
+<span class=ln> 3</span><span class=c1># pvs</span>
+<span class=ln> 4</span>  PV         VG   Fmt  Attr PSize  PFree
+<span class=ln> 5</span>  /dev/sdb1  data lvm2 a--  &lt;<span class=m>3</span>.64t &lt;<span class=m>3</span>.64t
+<span class=ln> 6</span>  /dev/sdc1  data lvm2 a--  &lt;<span class=m>3</span>.64t &lt;<span class=m>3</span>.64t
+<span class=ln> 7</span><span class=c1># lvcreate --name storage -l 100%FREE data</span>
+<span class=ln> 8</span><span class=c1># lvdisplay</span>
+<span class=ln> 9</span>  --- Logical volume ---
+<span class=ln>10</span>  LV Path                /dev/data/storage
+<span class=ln>11</span>  LV Name                storage
+<span class=ln>12</span>  VG Name                data
+<span class=ln>13</span>  LV Write Access        read/write
+<span class=ln>14</span>  LV Creation host, <span class=nb>time</span> nas.internal.indexyz.me, <span class=m>2019</span>-06-21 <span class=m>07</span>:15:54 +0000
+<span class=ln>15</span>  LV Status              available
+<span class=ln>16</span>  <span class=c1># open                 0</span>
+<span class=ln>17</span>  LV Size                &lt;<span class=m>10</span>.92 TiB
+<span class=ln>18</span>  Current LE             <span class=m>2861583</span>
+<span class=ln>19</span>  Segments               <span class=m>3</span>
+<span class=ln>20</span>  Allocation             inherit
+<span class=ln>21</span>  Read ahead sectors     auto
+<span class=ln>22</span>  - currently <span class=nb>set</span> to     <span class=m>256</span>
+<span class=ln>23</span>  Block device           <span class=m>254</span>:0
+<span class=ln>24</span><span class=c1># mkfs.ext4 /dev/data/storage</span>
+<span class=ln>25</span><span class=c1># mkdir /data</span>
+<span class=ln>26</span><span class=c1># mount /dev/data/storage /data</span>
+<span class=ln>27</span><span class=c1># blkid | grep data-storage # 获取磁盘的 UUID</span></code></pre></div><p>然后编辑 /etc/fstab 加入</p><div class=highlight><pre class=chroma><code class=language-conf data-lang=conf><span class=ln>1</span># LVM Data
+<span class=ln>2</span>UUID=磁盘UUID /data ext4 defaults 0 2</code></pre></div><p>然后执行 <code>mount -a</code> 就可以看到</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=c1># df -h</span>
+<span class=ln>2</span>/dev/mapper/data-storage   11T   61M   11T   <span class=m>1</span>% /data</code></pre></div><h1 id=应用>应用</h1><h2 id=安装-docker>安装 Docker</h2><blockquote><p><del>Docker 大法好</del></p></blockquote><p>先在 Data 卷下面划分出一个文件夹软链接到 <code>/var/lib/docker</code> 下, 因为内置就只有一个 16GB 的垃圾 SSD, 储存 Docker Image 可能会不够用</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=nb>cd</span> /data
+<span class=ln>2</span>mkdir docker
+<span class=ln>3</span>ln -s /data/docker /var/lib/docker</code></pre></div><p>然后安装 Docker</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>pacman -S docker
+<span class=ln>2</span>systemctl <span class=nb>enable</span> --now docker</code></pre></div><h2 id=安装-smb>安装 smb</h2><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>pacman -S samba
+<span class=ln>2</span>nano /etc/samba/smb.conf
+<span class=ln>3</span><span class=c1># 编辑配置文件</span>
+<span class=ln>4</span>smbpasswd -a indexyz</code></pre></div><p>我的配置文件为</p><div class=highlight><pre class=chroma><code class=language-conf data-lang=conf><span class=ln> 1</span>[global]
+<span class=ln> 2</span>  workgroup =
+<span class=ln> 3</span>  server string = Indexyz NAS
+<span class=ln> 4</span>  server role = standalone server
+<span class=ln> 5</span>  log file = /var/log/samba/%m.log
+<span class=ln> 6</span>  max log size = 50
+<span class=ln> 7</span>  wins support = yes
+<span class=ln> 8</span>
+<span class=ln> 9</span>[Indexyz]
+<span class=ln>10</span>  comment = Indexyz Shared Files
+<span class=ln>11</span>  browseable = yes
+<span class=ln>12</span>  writable = yes
+<span class=ln>13</span>  path = /data/files
+<span class=ln>14</span>  valid users = indexyz
+<span class=ln>15</span>  public = yes
+<span class=ln>16</span>  printable = no
+<span class=ln>17</span>  guest ok = no</code></pre></div><p>可以用于参考</p></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/dubbo-with-kotlin-in-spring-boot/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">在 Spring Boot 中使用 Dubbo 以及 Kotlin 的坑</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/install-pingfang-font-in-windwows/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">提取 macOS 上的苹方字体并在 Windows 上安装</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

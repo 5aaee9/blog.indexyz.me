@@ -1,0 +1,50 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>在Linux上安装并且运行求生之路2服务器 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/how-to-run-left-4-dead-2-server-in-linux/ itemprop=url>在Linux上安装并且运行求生之路2服务器</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-08-09T18:31:55Z>2017-08-09</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/game itemprop=url rel=index><span itemprop=name>Game</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p><del>话说求生火了这么久 怎么还不出3啊233</del></p><blockquote><p>求生之路是一个多人联机的第一人称射击游戏 求生的社区服务器比较多 但是国内的 某些服务器 有的时候会被别人恶意攻击 这时候自建一个社区服务器是一个不错的选择</p></blockquote><h2 id=手动安装>手动安装</h2><h3 id=依赖安装>依赖安装</h3><p>在安装开始前 你需要</p><ul><li>一个含有 <code>Left 4 Dead 2</code> 的 <code>Steam</code> 账号 (可选)</li><li>一台服务器 要求有 <code>10GB</code> 以上的硬盘 推荐 <code>2GB</code> 以上的内存</li></ul><h4 id=debian-ubuntu>Debian / Ubuntu</h4><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>sudo dpkg --add-architecture i386
+<span class=ln>2</span>sudo apt-get update <span class=o>&amp;&amp;</span> sudo apt-get upgrade
+<span class=ln>3</span><span class=c1># 64 位</span>
+<span class=ln>4</span>sudo apt-get install mailutils postfix curl lib32gcc1 libstdc++6 
+<span class=ln>5</span>libstdc++6:i386
+<span class=ln>6</span><span class=c1># 32位</span>
+<span class=ln>7</span>sudo apt-get install mailutils postfix curl libstdc++6</code></pre></div><h4 id=centos-redhat>CentOS / RedHat</h4><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>yum install epel-release -y
+<span class=ln>2</span><span class=c1># 64 位</span>
+<span class=ln>3</span>yum install mailx postfix curl glibc.i686 libstdc++ libstdc++.i686
+<span class=ln>4</span><span class=c1># 32位</span>
+<span class=ln>5</span>yum install mailx postfix curl libstdc++ </code></pre></div><h3 id=安装steamcmd>安装SteamCMD</h3><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>mkdir Steam
+<span class=ln>2</span>mkdir left4dead2
+<span class=ln>3</span><span class=nb>cd</span> Steam
+<span class=ln>4</span>wget http://media.steampowered.com/installer/steamcmd_linux.tar.gz
+<span class=ln>5</span>
+<span class=ln>6</span>tar -xvzf steamcmd_linux.tar.gz
+<span class=ln>7</span>rm steamcmd_linux.tar.gz</code></pre></div><h3 id=通过steamcmd安装服务器>通过SteamCMD安装服务器</h3><pre><code>./steamcmd.sh
+</code></pre><p>第一次运行会自带下载安装升级
+安装完出现 <code>Steam&gt;</code> 的时候输入</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>login anonymous
+<span class=ln>2</span>force_install_dir ~/left4dead2
+<span class=ln>3</span>app_update <span class=m>222860</span> validate</code></pre></div><p>当你看见</p><pre><code>Success! App '222860' fully installed.
+</code></pre><p>的时候 服务器便已经安装在 <code>~/left4dead2</code> 了
+输入 <code>quit</code> 来退出Steam CMD (当然你可以直接 <code>^C</code> )</p><h3 id=配置服务器>配置服务器</h3><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=nb>cd</span> ~/left4dead2/left4dead2/cfg</code></pre></div><p>这时候</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>nano server.cfg</code></pre></div><p>我使用的配置文件为</p><pre><code>hostname &quot;Indexyz Veritas&quot;     // 服务器名
+sv_voiceenable 1               // 开启语音
+sv_steamgroup &quot;Group&quot;          // 设置为 ID 为 Group 的组服务器 
+Steam组管理员可以查询到组ID
+sv_steamgroup_exclusive 1      //将服务器设为Steam组私有
+</code></pre><h3 id=服务器启动>服务器启动</h3><p>创建一个 <code>run</code> 文件并且给它可执行权限</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=nb>cd</span> ~/left4dead2
+<span class=ln>2</span>touch run
+<span class=ln>3</span>chmod +x run</code></pre></div><p>现在可以编辑启动文件</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>nano run
+<span class=ln>2</span><span class=c1># 输入</span>
+<span class=ln>3</span>./srcds_run -game left4dead2 +exec server.cfg</code></pre></div><p>启动器服务器只需要 <code>./run</code></p><p>推荐使用 <code>tmux</code> 来管理会话 否则关闭终端之后服务器将退出 关于 <code>tmux</code>
+请自行搜索引擎</p><h2 id=自动安装>自动安装</h2><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>adduser l4d2server
+<span class=ln>2</span>su - l4d2server
+<span class=ln>3</span>wget http://gameservermanagers.com/dl/l4d2server
+<span class=ln>4</span>chmod +x l4d2server</code></pre></div><p>现在</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>./l4d2server install
+<span class=ln>2</span><span class=c1># 会询问服务器信息</span></code></pre></div><p>安装完成之后</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>./l4d2server start</code></pre></div><p>以后每次需要操作服务器的时候只需要</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>su - l4d2server
+<span class=ln>2</span>./l4d2server command</code></pre></div><h2 id=其他的坑>其他的坑</h2><h3 id=无法链接-或者-无法找到服务器>无法链接 或者 无法找到服务器</h3><p>尝试允许l4d2服务器数据包</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>iptables -A INPUT -p udp- m udp --sport <span class=m>4380</span> --dport <span class=m>1025</span>:65355 -j ACCEPT
+<span class=ln>2</span>iptables -A INPUT -p udp -m udp --sport <span class=m>10999</span> --dport <span class=m>1025</span>:65355 -j ACCEPT
+<span class=ln>3</span>iptables -A INPUT -p udp -m udp --sport <span class=m>7777</span> --dport <span class=m>1025</span>:65355 -j ACCEPT
+<span class=ln>4</span>iptables -A INPUT -p udp -m udp --sport <span class=m>27015</span> --dport <span class=m>1025</span>:65355 -j ACCEPT
+<span class=ln>5</span>service iptables save</code></pre></div></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/how-to-use-saltstack/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">使用 SaltStack 进行集群管理</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/how-to-use-proxychains-to-speedup-network/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">使用 proxychains 加速国外资源访问</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

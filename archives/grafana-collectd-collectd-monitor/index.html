@@ -1,0 +1,85 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>Linux 搭建 grafana &#43; influxdb &#43; collectd - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/grafana-collectd-collectd-monitor/ itemprop=url>Linux 搭建 grafana &#43; influxdb &#43; collectd</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-10-28T08:18:21Z>2017-10-28</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/linux itemprop=url rel=index><span itemprop=name>Linux</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p>最近一直想搞个监控系统来检测下大陆到国外的延时什么的, 但是 <code>SmokePing</code> 的图表太玄学了 而且界面像是上个世纪的 所以想坑一下计划了很久的 <code>Grafana</code>.</p><blockquote><p>抽烟ping看得懂的，都是文森特凡高的后代啊（蔡博语）…… 来搞IT可惜了…… —— 某大佬</p></blockquote><h1 id=环境>环境</h1><p>本文接下来都在 <code>Arch Linux</code> 上安装 大部分软件的搭建使用 <code>Docker</code> 来保证别的系统也可用
+数据储存在 <code>/data</code></p><h2 id=安装-docker>安装 Docker</h2><p>对于其他系统, 官方已经准备了一键安装脚本 执行就好了</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>curl -sSL get.docker.com <span class=p>|</span> bash</code></pre></div><p>对于 <code>Arch Linux</code> 官方的源中已经有了 <code>Docker</code> 的存在</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>pacman -S docker
+<span class=ln>2</span>systemctl start docker
+<span class=ln>3</span>systemctl <span class=nb>enable</span> docker</code></pre></div><h2 id=pull-所需的映像>Pull 所需的映像</h2><ul><li>influxdb:alpine</li><li>grafana/grafana</li><li>busybox:latest</li></ul><h1 id=collectd>Collectd</h1><p>对于 <code>Collectd</code> 我们使用从包管理器安装的方法安装 而不是运行 <code>Docker 映像</code> 因为 <code>Collectd</code> 的数据收集 <code>CPU 内存 网络使用</code> 需要收集宿主机的信息</p><h2 id=安装>安装</h2><p>默认包管理已经有现成的了</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>pacman -S collectd</code></pre></div><p>其他系统请参考 <a href=https://collectd.org/download.shtml>官方教程</a></p><h2 id=启动>启动</h2><p>使用 <code>systemd</code> 管理</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>systemctl <span class=nb>enable</span> collectd
+<span class=ln>2</span>systemctl start collectd</code></pre></div><h1 id=influxdb>InfluxDB</h1><p>首先我们需要生成配置文件</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>docker run --rm influxdb:alpine influxd config &gt; influxdb.conf</code></pre></div><p>这时候在本目录 <code>/data</code> 下可以看见 <code>influxdb.conf</code> 这一个配置文件了</p><h2 id=运行>运行</h2><p><code>Docker</code> 运行就好了</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>docker run -d -p <span class=m>8086</span>:8086 -p <span class=m>8083</span>:8083 -p <span class=m>25826</span>:25826/udp <span class=se>\
+</span><span class=ln>2</span><span class=se></span>  -v /data/influxdb_volume:/var/lib/influxdb <span class=se>\
+</span><span class=ln>3</span><span class=se></span>  -v /data/influxdb.conf:/etc/influxdb/influxdb.conf:ro <span class=se>\
+</span><span class=ln>4</span><span class=se></span>  -v /usr/share/collectd/types.db:/usr/share/collectd/types.db <span class=se>\
+</span><span class=ln>5</span><span class=se></span>  --restart<span class=o>=</span>always --name influxdb <span class=se>\
+</span><span class=ln>6</span><span class=se></span>  -e <span class=nv>GOGC</span><span class=o>=</span><span class=m>10</span> <span class=se>\
+</span><span class=ln>7</span><span class=se></span>  -e <span class=nv>INFLUXDB_DATA_INDEX_VERSION</span><span class=o>=</span>tsi1 <span class=se>\
+</span><span class=ln>8</span><span class=se></span>  -e <span class=nv>INFLUXDB_ADMIN_ENABLED</span><span class=o>=</span><span class=nb>true</span> <span class=se>\
+</span><span class=ln>9</span><span class=se></span>  influxdb:alpine -config /etc/influxdb/influxdb.conf</code></pre></div><p>这时候就运行了 <code>influxdb</code> 了</p><h2 id=身份验证>身份验证</h2><p>通过 <code>exec</code> 进入容器创建账户</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>docker <span class=nb>exec</span> -it <span class=o>{</span>container_id<span class=o>}</span> bash
+<span class=ln>2</span>influx
+<span class=ln>3</span><span class=c1># 创建账户</span>
+<span class=ln>4</span>&gt; CREATE USER &lt;username&gt; WITH PASSWORD <span class=s1>&#39;&lt;password&gt;&#39;</span> WITH ALL PRIVILEGES
+<span class=ln>5</span><span class=c1># 创建数据库</span>
+<span class=ln>6</span>&gt; CREATE DATABASE collectdb
+<span class=ln>7</span>&gt; quit
+<span class=ln>8</span><span class=c1># ^P + Q</span></code></pre></div><p>然后编辑 <code>influxdb.conf</code></p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>$ nano influxdb.conf
+<span class=ln>2</span><span class=c1># 找到</span>
+<span class=ln>3</span><span class=c1># [http]</span>
+<span class=ln>4</span><span class=c1>#  enabled = true</span>
+<span class=ln>5</span><span class=c1>#  bind-address = &#34;:8086&#34;</span>
+<span class=ln>6</span><span class=c1>#  auth-enabled = false     &lt;---</span></code></pre></div><p>将 <code>auth-enabled</code> 改为 <code>true</code> 然后保存退出 最后重启容器</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>docker restart <span class=o>{</span>container_id<span class=o>}</span></code></pre></div><p>这时候 <code>InfluxDB</code> 已经安装成功了</p><h2 id=和-collectd-对接>和 Collectd 对接</h2><h3 id=influxdb-部分>InfluxDB 部分</h3><p>打开 <code>influxdb.conf</code> 配置文件
+找到</p><div class=highlight><pre class=chroma><code class=language-conf data-lang=conf><span class=ln>1</span>[[collectd]]
+<span class=ln>2</span>  enabled = false             // &lt;-----
+<span class=ln>3</span>  bind-address = &#34;:25826&#34;
+<span class=ln>4</span>  database = &#34;collectd&#34;       // &lt;-----</code></pre></div><p>将这里的 <code>enable</code> 改为 <code>true</code> 打开 <code>collectd</code> 收集
+同时将 <code>database</code> 改为要收集到的数据库 根据上下文应该为 <code>collectdb</code>
+&gt; 注意 25826/udp 是可以绕过账户保护的 请对这个端口使用防火墙什么的</p><p>修改完成后重启 <code>influxdb</code> 接下来要修改 <code>collectd</code> 配置文件了</p><h3 id=collectd-部分>Collectd 部分</h3><p><code>collectd</code> 的配置文件在 <code>/etc/collectd.conf</code>
+我使用的配置文件为</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln> 1</span><span class=c1># cat /etc/collectd.conf</span>
+<span class=ln> 2</span>BaseDir <span class=s2>&#34;/etc/collectd&#34;</span>
+<span class=ln> 3</span>PIDFile <span class=s2>&#34;/run/collectd.pid&#34;</span>
+<span class=ln> 4</span>Hostname <span class=s2>&#34;localhost&#34;</span>
+<span class=ln> 5</span>Interval <span class=m>60</span>
+<span class=ln> 6</span>&lt;loadplugin df&gt;
+<span class=ln> 7</span>    Interval <span class=m>120</span>
+<span class=ln> 8</span>&lt;/loadplugin&gt;
+<span class=ln> 9</span>LoadPlugin disk
+<span class=ln>10</span>LoadPlugin interface
+<span class=ln>11</span>LoadPlugin load
+<span class=ln>12</span>LoadPlugin memory
+<span class=ln>13</span>LoadPlugin network
+<span class=ln>14</span>LoadPlugin processes
+<span class=ln>15</span>LoadPlugin users
+<span class=ln>16</span>LoadPlugin ping
+<span class=ln>17</span>&lt;plugin interface&gt;
+<span class=ln>18</span>    Interface <span class=s2>&#34;eth0&#34;</span>
+<span class=ln>19</span>    IgnoreSelected <span class=nb>false</span>
+<span class=ln>20</span>&lt;/plugin&gt;
+<span class=ln>21</span>&lt;plugin network&gt;
+<span class=ln>22</span>    Server <span class=s2>&#34;{ InfluxDB Host }&#34;</span> <span class=s2>&#34;25826&#34;</span>
+<span class=ln>23</span>&lt;/plugin&gt;
+<span class=ln>24</span>&lt;plugin ping&gt;
+<span class=ln>25</span>    Host <span class=s2>&#34;{ Host you want to ping }&#34;</span>
+<span class=ln>26</span>    Host <span class=s2>&#34;{ Another host you want to ping }&#34;</span>
+<span class=ln>27</span>    Interval <span class=m>5</span>.0
+<span class=ln>28</span>    Timeout <span class=m>0</span>.9
+<span class=ln>29</span>    TTL <span class=m>255</span>
+<span class=ln>30</span>&lt;/plugin&gt;</code></pre></div><p>你可以参考我的配置文件对 <code>collectd</code> 进行配置
+配置完成之后</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>systemctl restart collectd</code></pre></div><h1 id=grafana>Grafana</h1><h2 id=安装-1>安装</h2><p><code>Grafana</code> 的安装很简单 只需要</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>docker run -d -v /var/lib/grafana --name grafana-storage busybox:latest
+<span class=ln>2</span>docker run <span class=se>\
+</span><span class=ln>3</span><span class=se></span>  -d <span class=se>\
+</span><span class=ln>4</span><span class=se></span>  -p <span class=m>3000</span>:3000 <span class=se>\
+</span><span class=ln>5</span><span class=se></span>  --name<span class=o>=</span>grafana <span class=se>\
+</span><span class=ln>6</span><span class=se></span>  --volumes-from grafana-storage <span class=se>\
+</span><span class=ln>7</span><span class=se></span>  grafana/grafana</code></pre></div><p>访问 <code>http://localhost:3000</code> 就可以看到面板了
+默认账号和密码都是 <code>admin</code> 请及时修改
+<img src=https://img10.360buyimg.com/img/jfs/t1/55249/33/9919/55816/5d73b654E29c5cb0c/6c0e7927b39ba188.png alt="Grafana Index"></p><h2 id=数据源>数据源</h2><p>点击 <code>Getting Started</code> 中的 <code>Add data source</code> 我们来添加 <code>influxdb</code> 作为数据源
+按照下图设置数据源 然后点击 <code>Add</code> 按钮 如果可以链接就代表成功了
+<img src=https://img10.360buyimg.com/img/jfs/t1/43202/10/14332/38581/5d73b655E8ab93566/8c80116ae64f465a.png alt="Grafana Data Source"></p><h2 id=创建图表>创建图表</h2><p><code>Create Dashboard</code> 然后选 <code>Graph</code>
+然后点击 <code>Panel Title</code> 在弹出的选项中点击 <code>Edit</code> 然后就可以添加查询了
+一个查询可能长这样
+<img src=https://img10.360buyimg.com/img/jfs/t1/46709/5/10198/28137/5d73b656E6bfef304/f63df99524cbd8e0.png alt="Grafana Add Query"></p><h1 id=成果>成果</h1><p>最后多添加几个查询 然后改下 <code>Title</code> 什么的 一个监控面板就出来了
+<img src=https://img10.360buyimg.com/img/jfs/t1/65285/9/9532/124178/5d73b657E0363f327/96c8937be1c9da3f.png alt="Grafana Dashboard">
+当然这里没有细讲各个组件的高级应用 自己慢慢玩吧(</p></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/setup-sspanel-via-docker/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">使用 Docker 快速安装 ss-panel-v3-mod</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/use-redsocks-proxy-global-via-redsocks/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">在 Linux 上使用 redsocks 进行全局 socks5</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

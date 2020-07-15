@@ -1,0 +1,30 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>Authlib 使用教程 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/authlib-usage/ itemprop=url>Authlib 使用教程</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-08-09T18:35:11Z>2017-08-09</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/minecraft itemprop=url rel=index><span itemprop=name>Minecraft</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p>总所周知 Minecraft 使用了被称为 <code>Yggdrasil</code> 的正版认证系统 实现了在对等情况下的身份认证</p><p>但是在开启了离线模式的服务器中 也有着许多的身份认证方式 例如使用 <code>AuthMe</code> 或者 <code>CrazyLogin</code> 之类的登陆插件</p><p>但是这些插件对与Mod开发者并不友好 在某些使用了 <code>FakePlayer</code> 的环境下会把假人也当为玩家 这时候这个假人的各种操作就炸了</p><p>有没有解决这些问题的登陆方式呢 那当然是有的啦 这就是 <a href=https://github.com/to2mbn/authlib-agent>authlib</a></p><h2 id=原理>原理</h2><p>通过对 <code>Java字节码</code> 的修改 将 <code>Mojang</code> 的请求重定向到自己的认证服务器</p><h3 id=identity-和-authlib-的-agent-的区别>Identity 和 Authlib 的 Agent 的区别</h3><p>大体构建相同 都是使用自己的API Server重定向请求
+Identity最主要的特点是开箱即用 这点比官方的Authlib要好
+事实上我和Authlib作者聊过 在未来可能会规范API的路由
+有可能 <del>(这个Flag立的)</del> 我会在未来的某个时候完全重写Identity也不一定 咳咳扯远了</p><h2 id=使用>使用</h2><h3 id=安装>安装</h3><p>前提环境是 <code>Nodejs</code> 我们可以使用 <a href=https://github.com/creationix/nvm>NVM</a> 来方便的进行Nodejs的安装
+数据库环境需要 <code>MongoDB</code> 和 <code>Redis</code> 这两个环境的安装在互联网上已经很多了 这里不在讲述
+&gt; 注意
+&gt; MongoDB 请不要在没有设置账户验证的情况下将端口开放到公网 就算是设定了账户认证最好也不要开放到公网
+&gt; Redis在不开放到公网的情况下建议设置强密码加密</p><p>这时候就可以通过Git获取最新的源代码安装了</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>git clone -b reload https://github.com/Indexyz/Identity.git
+<span class=ln>2</span>npm install
+<span class=ln>3</span>// Configure your settings in config.js
+<span class=ln>4</span>npm run start</code></pre></div><p>这时候访问你的localhost:3000
+你就成功了</p><h3 id=使用docker安装>使用Docker安装</h3><p>Docker运行应该是最方便的运行方式了 他可以方便快捷的管理每个服务</p><pre><code>docker run -d -v /data/identity/db:/data/db --name MongoDB-Identity mongo
+docker run -d --name Redis-Identity redis
+docker run --link MongoDB-Identity:mongo --link Redis-Identiy:redis \
+    # -e ENV_KEY=ENV_VALUE
+    -p 80:3000 indexyz/identity
+</code></pre><p>其中的 <code>ENV_KEY</code> 和 <code>ENV_VALUE</code> 可以在 <a href=https://github.com/Indexyz/Identity/wiki/Environment>Identity Wiki-Environment</a> 看到
+然后访问本地的80端口 你就可以看到Identity的界面了</p><h2 id=和authlib-agent进行配合>和Authlib-agent进行配合</h2><p>使用我修改过的 <a href=https://github.com/Indexyz/authlib-agent>authlib-agent</a> 修改其中的链接然后进行打包</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>git clone https://github.com/Indexyz/authlib-agent
+<span class=ln>2</span>nano configure.sh            <span class=c1># 修改 AGENT_API_ROOT 和 AGENT_SKIN_DOMAINS</span>
+<span class=ln>3</span>sh build.sh</code></pre></div><p>运行之后你会在根目录下见到 <code>authlibagent.jar</code> 这就是打包出来的jar了
+如果你想不接入自己的 Identity 可以选择使用 <a href=http://authentication.mcdev.se/>官方服务器</a>
+这是他的<a href=https://public.hyperworld.xyz/Gamer/Minecraft/AuthLib/authlibagent.jar>AuthlibAgent.jar</a></p></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/curseforge-minecraft-modpack-format/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">CurseForge 整合包格式研究</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/how-to-use-saltstack/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">使用 SaltStack 进行集群管理</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

@@ -1,0 +1,49 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>在Linux系统上使用ASF挂卡 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/use-asf2-to-farm-in-linux/ itemprop=url>在Linux系统上使用ASF挂卡</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-10-04T07:32:11Z>2017-10-04</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/steam itemprop=url rel=index><span itemprop=name>Steam</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p>Steam的卡片可是可以回本的 但是 <code>Idle Master</code> 这些挂机需要使用 <code>Windows</code> 的虚拟机 但是 Windows 的机器并不好搞 然后我就发现了 <code>Archi's Steam Farm</code> 简称 <code>ASF</code>, 这位dalao模拟了 Steam 客户端的操作进行挂卡 虽然是 <code>Dot Net</code> 写的 但是可以在 Linux 上使用 <code>Mono</code> 运行 最新的 ASF 甚至已经可以脱离 Mono 运行了 这篇文章就是记录了怎么在Linux上运行ASF 2, ASF 3 有可能在未来开一篇文章单独讲</p><p>本文的系统环境是 <code>CentOS 7</code> 其他发行版可能需要自己更换部分代码 (比如包管理安装包什么的)</p><h1 id=准备工作>准备工作</h1><p>环境的部署</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>yum -y install epel-release
+<span class=ln>2</span>yum -y install yum-utils tmux wget unzip
+<span class=ln>3</span>rpm --import <span class=s2>&#34;http://keyserver.ubuntu.com/pks/lookup?op=get&amp;search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF&#34;</span>
+<span class=ln>4</span>yum-config-manager --add-repo http://download.mono-project.com/repo/centos/
+<span class=ln>5</span>yum -y install mono-complete</code></pre></div><p>这样就部署了 <code>Mono</code>
+输入以下指令来测试</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>mono -V</code></pre></div><h1 id=获取-asf>获取 ASF</h1><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>mkdir steam
+<span class=ln>2</span><span class=nb>cd</span> steam
+<span class=ln>3</span>wget https://github.com/JustArchi/ArchiSteamFarm/releases/download/2.3.2.4/ASF.zip
+<span class=ln>4</span>unzip ASF.zip</code></pre></div><p>这样就获得了 ASF2 的最后一个 <code>Release</code></p><h1 id=配置>配置</h1><h2 id=全局配置文件>全局配置文件</h2><p>可以在 <code>config/ASF.json</code> 中配置全局配置 默认配置如下</p><div class=highlight><pre class=chroma><code class=language-json data-lang=json><span class=ln> 1</span><span class=p>{</span>
+<span class=ln> 2</span>    <span class=nt>&#34;AutoRestart&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+<span class=ln> 3</span>    <span class=nt>&#34;AutoUpdates&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+<span class=ln> 4</span>    <span class=nt>&#34;Blacklist&#34;</span><span class=p>:</span> <span class=p>[],</span>
+<span class=ln> 5</span>    <span class=nt>&#34;ConnectionTimeout&#34;</span><span class=p>:</span> <span class=mi>60</span><span class=p>,</span>
+<span class=ln> 6</span>    <span class=nt>&#34;CurrentCulture&#34;</span><span class=p>:</span> <span class=kc>null</span><span class=p>,</span>
+<span class=ln> 7</span>    <span class=nt>&#34;Debug&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+<span class=ln> 8</span>    <span class=nt>&#34;FarmingDelay&#34;</span><span class=p>:</span> <span class=mi>15</span><span class=p>,</span>
+<span class=ln> 9</span>    <span class=nt>&#34;GiftsLimiterDelay&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+<span class=ln>10</span>    <span class=nt>&#34;Headless&#34;</span><span class=p>:</span> <span class=kc>false</span><span class=p>,</span>
+<span class=ln>11</span>    <span class=nt>&#34;IdleFarmingPeriod&#34;</span><span class=p>:</span> <span class=mi>3</span><span class=p>,</span>
+<span class=ln>12</span>    <span class=nt>&#34;InventoryLimiterDelay&#34;</span><span class=p>:</span> <span class=mi>3</span><span class=p>,</span>
+<span class=ln>13</span>    <span class=nt>&#34;LoginLimiterDelay&#34;</span><span class=p>:</span> <span class=mi>10</span><span class=p>,</span>
+<span class=ln>14</span>    <span class=nt>&#34;MaxFarmingTime&#34;</span><span class=p>:</span> <span class=mi>10</span><span class=p>,</span>
+<span class=ln>15</span>    <span class=nt>&#34;MaxTradeHoldDuration&#34;</span><span class=p>:</span> <span class=mi>15</span><span class=p>,</span>
+<span class=ln>16</span>    <span class=nt>&#34;OptimizationMode&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln>17</span>    <span class=nt>&#34;Statistics&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+<span class=ln>18</span>    <span class=nt>&#34;SteamOwnerID&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln>19</span>    <span class=nt>&#34;SteamProtocol&#34;</span><span class=p>:</span> <span class=mi>6</span><span class=p>,</span>
+<span class=ln>20</span>    <span class=nt>&#34;UpdateChannel&#34;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+<span class=ln>21</span>    <span class=nt>&#34;WCFBinding&#34;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+<span class=ln>22</span>    <span class=nt>&#34;WCFHost&#34;</span><span class=p>:</span> <span class=s2>&#34;127.0.0.1&#34;</span><span class=p>,</span>
+<span class=ln>23</span>    <span class=nt>&#34;WCFPort&#34;</span><span class=p>:</span> <span class=mi>1242</span>
+<span class=ln>24</span><span class=p>}</span></code></pre></div><p>配置项的意义可以在 <a href=https://github.com/JustArchi/ArchiSteamFarm/wiki/Configuration>官方Wiki</a> 中看到</p><h2 id=个人配置文件>个人配置文件</h2><p>可以直接编辑 <code>minimal.json</code> 来快速配置
+&gt; 注意! minimal.jsom 和 example.json 这两个文件将不会被读取</p><div class=highlight><pre class=chroma><code class=language-json data-lang=json><span class=ln>1</span><span class=p>{</span>
+<span class=ln>2</span>    <span class=nt>&#34;Enabled&#34;</span><span class=p>:</span> <span class=kc>true</span><span class=p>,</span>
+<span class=ln>3</span>    <span class=nt>&#34;SteamLogin&#34;</span><span class=p>:</span> <span class=s2>&#34;{{ steam 用户名 }}&#34;</span><span class=p>,</span>
+<span class=ln>4</span>    <span class=nt>&#34;SteamPassword&#34;</span><span class=p>:</span> <span class=s2>&#34;{{ steam 密码 }}&#34;</span>
+<span class=ln>5</span><span class=p>}</span></code></pre></div><p>可以增加几条实用的选项
+- FarmOffline: true # 在离线模式下挂卡
+- DismissInventoryNotifications: false # 显示挂卡获得卡的邮件</p><h1 id=开始挂卡>开始挂卡</h1><p>因为 Linux 的运行是断开 SSH 直接杀掉进程的 所以我们需要用 tmux 来进行会话管理</p><pre><code>tmux
+mono ASF.exe
+</code></pre><p>这样就在 tmux 中运行了 ASF 下次运行只需要 <code>tmux a</code> 就可以进入这个 session 了</p></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/use-redsocks-proxy-global-via-redsocks/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">在 Linux 上使用 redsocks 进行全局 socks5</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/use-brower-mine/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">使用浏览器进行ICO挖矿</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

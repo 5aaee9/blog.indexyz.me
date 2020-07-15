@@ -1,0 +1,32 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>Shadowsocks的正确食用方法 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/how-to-use-shadowsocks/ itemprop=url>Shadowsocks的正确食用方法</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-08-09T17:54:18Z>2017-08-09</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/usage itemprop=url rel=index><span itemprop=name>Usage</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><blockquote><p>最近开了一个ShadowSocks的服务器，然而发现很多的童鞋都不会用SS科学上网
+我只能说:&ldquo;Naive!&rdquo;</p></blockquote><h2 id=shadowsocks简介>ShadowSocks简介</h2><blockquote><p>Shadowsocks（中文名称：影梭）是使用Python等语言开发的、基于Apache许可证开源的代理<br>软件。Shadowsocks使用socks5代理，用于保护网络流量。在中国大陆被广泛用于突破防火长城（GFW），以浏览被封锁的内容。
+From <a href=https://zh.wikipedia.org/wiki/Shadowsocks>Wikipedia</a></p></blockquote><p>那么问题来了，我们要怎么使用SS进行科学上网呢</p><h1 id=使用shadowsocks科学上网>使用ShadowSocks科学上网</h1><h2 id=获取软件>获取软件</h2><p>首先，这是一个开源项目，托管在GitHub上,因此我们可以很方便的进行获取源代码和协助开发
+&gt; Tips:
+ShadowSocks的作者曾经被请去喝茶，所以我们现在看到的主分支是rm,只要切换到master就好了</p><p>Windows的项目: <a href=https://github.com/shadowsocks/shadowsocks-windows/>Widnows</a>
+Android的项目: <a href=https://github.com/shadowsocks/shadowsocks-android>Android</a>
+IOS的项目: <a href=https://github.com/shadowsocks/shadowsocks-iOS>IOS</a></p><p>单击项目上的Release,可以找到最新的构建版本，我们就可以用它来进行我们的科学上网了,当然,你也可以自己下载master分支的源代码进行构建</p><hr><h2 id=android>Android</h2><p>可以通过扫描二维码来快速添加服务器</p><p><img src=https://img10.360buyimg.com/img/jfs/t1/76709/11/9574/232805/5d73c50dE9d01ce99/761f8dd86abe243a.png alt="Android 2code.png"></p><p>然后返回到主界面 就可以链接服务器了, Android 自身会报警,同意就可以了
+<img src=https://img10.360buyimg.com/img/jfs/t1/78501/15/9574/201343/5d73c50eE7d31bd9c/86e4ebb524064236.png alt="Android warn.png"></p><p>然后就可以畅享自由的互联网了
+<img src=https://img10.360buyimg.com/img/jfs/t1/83747/1/9468/94326/5d73c50fEecdddccd/c0437cea88a88278.png alt="Android done.png"></p><hr><h2 id=windows>Windows</h2><h3 id=链接服务器>链接服务器</h3><p>获取你自己Shadow的账号和密码
+如果你的服务器有提供二维码进行输入的话
+可以通过状态栏,服务器,扫描二维码来进行扫描<img src=https://img10.360buyimg.com/img/jfs/t1/40925/11/14364/19874/5d73c510E55f89e5d/c876226a9bd6da55.png alt=Use2Code.png></p><p>这时候,你的SS已经链接到服务器了, 但是我们还需要使用一个客户端,
+链接到SS上，进行科学上网</p><h4 id=方法一-使用全局pac>方法一:使用全局PAC</h4><p>ShadowSocks自带了从GFW List获取PAC的方法
+只需要在状态栏图标右键,PAC,从GFWList更新本地PAC就可以了
+<img src=https://ae01.alicdn.com/kf/Hed9eead8c38c4d1d877ce30e9017bcdch.png alt="Get PAC.png"></p><p>这时候默认的IE浏览器就可以访问自由的互联网了</p><h5 id=高级篇-自定义pac>高级篇——自定义PAC</h5><p>待填坑</p><h4 id=方法二-使用浏览器插件>方法二:使用浏览器插件</h4><h5 id=chrome>Chrome</h5><p>安装插件 Proxy SwitchyOmega: <a href="https://chrome.google.com/webstore/detail/proxy-switchyomega/padekgcemlokbadohgkifijomclgjgif?hl=zh-CN">谷歌商店地址</a> <a href=https://github.com/FelisCatus/SwitchyOmega>GitHub</a>
+<img src=https://ae01.alicdn.com/kf/U581d2d171c844aef984f87bb16907e08F.png alt="Chrome Proxy SwirchOmega.png"></p><p>然后打开拓展的配置页
+添加一个规则, 这里叫做ShadowSocks
+<img src=https://img10.360buyimg.com/img/jfs/t1/47533/16/10026/72413/5d73c513E67dc04b2/9ce8e1d4ed816189.png alt=NewProxy.png></p><p>修改它为本地的代理服务器
+<img src=https://img10.360buyimg.com/img/jfs/t1/68736/20/9547/51767/5d73c514Eb7c6d052/6a7ad3ed0b1e9a66.png alt=RulesDeteil.png></p><p>然后点击任务栏图标, 单击刚刚添加的规则就可以科学上网了
+<img src=https://ae01.alicdn.com/kf/U2d302fdb969e4cb0a6aaf5754b78ef3aW.png alt=Rules.png></p><h4 id=firefox篇>FireFox篇</h4><p>安装附加组件<a href=https://addons.mozilla.org/zh-CN/firefox/addon/autoproxy/>AutoProxy</a>
+<img src=https://img10.360buyimg.com/img/jfs/t1/49430/6/10197/96146/5d73c516Edc2d5294/3be393b7ecb19360.png alt="Install AutoProxy.png"></p><p>然后打开附加组件的控制GUI(重启后)
+添加代理服务器
+<img src=https://img10.360buyimg.com/img/jfs/t1/70057/32/9704/23788/5d73c517Ec69d3d3a/b45596bfe04663e1.png alt=Edit1.png></p><p>端口填入本地端口
+<img src=https://img10.360buyimg.com/img/jfs/t1/83944/15/9592/30701/5d73c518Ea12f2e5e/9f8c1148ad4238ee.png alt=Edit2.png></p><p>现在选择全局代理模式就可以跨越防火长城了
+<img src=https://img10.360buyimg.com/img/jfs/t1/44055/16/14143/14290/5d73c519E5a586d5e/21c68736c5c98689.png alt="Firefox all proxy.png"></p></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/how-to-install-tsunamiudp/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">在Linux上安装TsunamiUDP进行快速传输</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/upgrade-git-on-centos/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">更新CentOS6上的Git版本</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

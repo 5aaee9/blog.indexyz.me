@@ -1,0 +1,35 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>Hyper的使用教程以及VPN的搭建 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/how-to-use-hyper_sh/ itemprop=url>Hyper的使用教程以及VPN的搭建</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-08-09T18:09:02Z>2017-08-09</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/linux itemprop=url rel=index><span itemprop=name>Linux</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><blockquote><p>Hyper_是世界上第一家 Container-native 的 Docker 云服务.
+它的核心是底层的HyperContainer虚拟化容器技术, 以及Hypernetes多租户的 Kubernetes
+系统. 而使用方式与传统 VPS 也有很大不同.</p></blockquote><h2 id=hyper>Hyper_</h2><p>最近在逛V2EX的时候看见了Hyper_的广告
+于是就注册了来了一发, 感觉使用体验还不错
+如果你不介意的话, 使用我的邀请码注册, 可获得10刀奖励
+<a href=https://console.hyper.sh/register/invite/xMlMNKnr87Hp9pMxrKpQhKo3MJpE33FJ>Hyper_注册链接</a></p><p>本文以在Hyper上安装CentOS容器和安装OpenVPN为例, 简单介绍下如何使用Hyper_</p><h2 id=安装和配置hyper客户端>安装和配置Hyper客户端</h2><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>wget https://hyper-install.s3.amazonaws.com/hyper-linux-x86_64.tar.gz
+<span class=ln>2</span>tar xzf hyper-linux-x86_64.tar.gz
+<span class=ln>3</span>chmod +x hyper
+<span class=ln>4</span>./hyper config</code></pre></div><h2 id=基础教程>基础教程</h2><h3 id=float-ip>Float IP</h3><p>创建一个新的Float IP
+&gt; Tips:
+&gt; 如果IP创建完成, 没用满一个月, 也是算你使用了一个月
+&gt; 官方回应: It&rsquo;s a feature.</p><p>这里的209.xxx.xxx.xxx就是分配到的IP了</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=c1># ./hyper fip allocate 1</span>
+<span class=ln>2</span><span class=m>209</span>.xxx.xxx.xxx</code></pre></div><p>绑定IP到名为centos的容器上</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>./hyper fip attach <span class=m>209</span>.xxx.xxx.xxx centos</code></pre></div><h3 id=shadowsock安装>Shadowsock安装</h3><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>./hyper run --size s1 -d --name shadowsocks -p <span class=m>8989</span> 
+<span class=ln>2</span>oddrationale/docker-shadowsocks -s <span class=m>0</span>.0.0.0 -p <span class=m>8989</span> -k Indexyz -m aes-256-cfb</code></pre></div><p>为容器绑定IP</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>./hyper fip attach <span class=m>209</span>.xxx.xxx.xxx shadowsocks</code></pre></div><p>这段命令创建了一个名为<code>shadowsocks</code>的容器,
+使用的映像来自于<code>oddrationale/docker-shadowsocks</code>
+同时绑定了<code>209.xxx.xxx.xxx</code>作为容器IP
+密码为 <code>Indexyz</code>
+端口为 <code>8989</code>
+加密方式 <code>aes-256-cfb</code></p><h3 id=openvpn的安装>OpenVPN的安装</h3><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>./hyper run --size s2 -p <span class=m>8080</span>:8080 -p <span class=m>22</span>:22 --name<span class=o>=</span>centos-ssh -i -t 
+<span class=ln>2</span>centos:centos6 /bin/bash</code></pre></div><p>使用完这个会打开一个bash进程
+在终端进行以下操作打开一个ssh链接</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>yum install passwd openssl openssh-server -y
+<span class=ln>2</span>sed -i <span class=s2>&#34;s/UsePAM.*/UsePAM no/g&#34;</span> /etc/ssh/sshd_config
+<span class=ln>3</span>service sshd start
+<span class=ln>4</span>passwd root                                           <span class=c1># 修改Root密码</span></code></pre></div><p>如果一不小心断开了容器, 请使用以下命令重新启动容器</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>./hyper start -i <span class=o>{</span>容器ID<span class=o>}</span></code></pre></div><p>使用ssh链接到服务器
+然后参考<a href=https://blog.iinde.xyz/index.php/archives/32/>OpenVPN安装和面板的对接</a>搭建OpenVPN相关服务
+&gt; Tips:
+&gt; 使用GCC编译Mproxy可能出错, 使用别的CentOS6编译出来的Mproxy即可解决</p></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/happy-mid-autumn-festival/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">中秋快乐</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/how-to-use-extra-disk-in-vm/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">在Linux主机上扩展主机硬盘</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

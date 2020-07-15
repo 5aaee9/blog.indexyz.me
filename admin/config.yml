@@ -1,0 +1,46 @@
+backend:
+  name: github
+  repo: Indexyz/blog.indexyz.me
+  accept_roles:
+    - admin
+
+media_folder: static/img
+public_folder: /img
+
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "_"
+
+collections:
+  - name: "posts"
+    label: "Post"
+    folder: "content/posts"
+    create: true
+    slug: "{{fields.filename}}"
+    fields:
+      - {label: "Title", name: "title", widget: "string"}
+      - {label: "Filename", name: "filename", widget: "string"}
+      - {label: "Publish Date", name: "date", widget: "datetime"}
+      - {label: "Updated Date", name: "updated", widget: "datetime"}
+      - {label: "Tags", name: "tags", widget: "list", required: false}
+      - {label: "Categories", name: "categories", widget: "list"}
+      - {label: "Body", name: "body", widget: "markdown"}
+  - name: pages
+    label: Pages
+    files:
+      - label: Friend Links
+        name: friends
+        file: content/friends.md
+        fields:
+          - {label: "Title", name: "title", widget: "string"}
+          - {label: "Layout", name: "layout", widget: "hidden", default: "card"}
+          - {label: "Type", name: "type", widget: "hidden", default: "links"}
+          - label: Links
+            name: links
+            widget: list
+            fields:
+              - {label: Name, name: name, widget: string}
+              - {label: Description, name: descp, widget: string}
+              - {label: URL, name: url, widget: text}
+              - {label: Image, name: image, widget: image, required: false}

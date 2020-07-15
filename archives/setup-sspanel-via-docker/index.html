@@ -1,0 +1,50 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>使用 Docker 快速安装 ss-panel-v3-mod - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/setup-sspanel-via-docker/ itemprop=url>使用 Docker 快速安装 ss-panel-v3-mod</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-12-26T15:43:08Z>2017-12-26</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/docker itemprop=url rel=index><span itemprop=name>Docker</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p><code>ss-panel-v3-mod</code> 是一个美观 功能强大的代理管理面板 但是依赖什么的对新手简直是爆炸 装个 <code>lnmp</code> 都要一个小时左右 现在使用 <code>Docker</code> 可以快速的完成面板的搭建</p><h1 id=始>始</h1><p>我们需要首先安装 <code>Docker</code></p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>curl -sSL get.docker.com <span class=p>|</span> bash
+<span class=ln>2</span><span class=c1># 在 Arch Linux 当中 官方源已经有了 Docker 我们直接安装就好了</span>
+<span class=ln>3</span>pacman -S docker
+<span class=ln>4</span>systemctl <span class=nb>enable</span> docker
+<span class=ln>5</span>systemctl start docker</code></pre></div><p>我们需要 <code>Pull</code> 以下映像
+- mysql
+- indexyz/ss-panel-v3-mod-docker
+- indexyz/php-crontab
+- phpmyadmin/phpmyadmin</p><p>全部的文件储存在 <code>/data</code> 这个 <code>Endpoint</code> 下面
+使用</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>mkdir /data
+<span class=ln>2</span><span class=nb>cd</span> /data</code></pre></div><p>来开始</p><h1 id=开始搭建>开始搭建</h1><h2 id=搭建-mysql>搭建 MySQL</h2><p>我们需要安装 <code>MySQL</code> 作为数据库存储信息
+使用 <code>Docker</code> 运行数据库只需要
+&gt; 我们假定数据库密码为 pa44w@rd</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=c1># 如果想只使用 Web API 进行链接 可以取消掉 -p 那一段</span>
+<span class=ln>2</span>docker run --name panel-database <span class=se>\
+</span><span class=ln>3</span><span class=se></span>    --restart<span class=o>=</span>always -p <span class=m>3306</span>:3306 <span class=se>\
+</span><span class=ln>4</span><span class=se></span>    -e <span class=nv>MYSQL_ROOT_PASSWORD</span><span class=o>=</span>pa44w@rd -d <span class=se>\
+</span><span class=ln>5</span><span class=se></span>    mysql:5.7.22</code></pre></div><h2 id=安装-phpmyadmin>安装 PHPMyAdmin</h2><p><code>PHPMyAdmin</code> 是一个方便的 MySQL数据库 管理工具</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>docker run --name panel-phpmyadmin <span class=se>\
+</span><span class=ln>2</span><span class=se></span>    -d --link panel-database:db <span class=se>\
+</span><span class=ln>3</span><span class=se></span>    -p <span class=m>8080</span>:80 <span class=se>\
+</span><span class=ln>4</span><span class=se></span>    phpmyadmin/phpmyadmin</code></pre></div><p>然后访问 <code>http://localhost:8080</code> 就能看到 <code>PHPMyAdmin</code> 的界面了
+使用用户名 <code>root</code> 和密码 <code>pa44w@rd</code> 就能登录到数据库了</p><h2 id=创建数据库>创建数据库</h2><p>在 PHPMyAdmin 创建一个数据库
+&gt; 在本教程中 数据库名称为 panel</p><p><img src=https://img10.360buyimg.com/img/jfs/t1/72933/18/9536/100137/5d73b65dE60a82763/86168413f1143d56.png alt=Create-Database>
+导入这个 <a href=https://github.com/esdeathlove/ss-panel-v3-mod/raw/new_master/sql/glzjin_all.sql>数据库文件</a> 到刚刚创建的数据库中</p><h2 id=安装面板>安装面板</h2><p>首先我们先把配置文件下载过来 使用</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>wget https://github.com/esdeathlove/ss-panel-v3-mod/raw/new_master/config/.config.php.example -O config.php</code></pre></div><p>然后我们就能创建容器了</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>docker run --name panel -d <span class=se>\
+</span><span class=ln>2</span><span class=se></span>    -v /data/config.php:/data/www/config/.config.php <span class=se>\
+</span><span class=ln>3</span><span class=se></span>    --link panel-database:db <span class=se>\
+</span><span class=ln>4</span><span class=se></span>    -p <span class=m>10080</span>:80 <span class=se>\
+</span><span class=ln>5</span><span class=se></span>    indexyz/ss-panel-v3-mod-docker</code></pre></div><p>这时候可以访问 <code>http://localhost:10080</code> 了 不过我们还没有配置数据库 所以还是会返回 <code>500</code> 错误</p><h2 id=配置-ss-panel>配置 ss-panel</h2><p>我们使用文本编辑器打开 <code>config.php</code>
+找到以下内容</p><div class=highlight><pre class=chroma><code class=language-php data-lang=php><span class=ln>1</span>$System_Config[&#39;db_host&#39;] = &#39;localhost&#39;;
+<span class=ln>2</span>$System_Config[&#39;db_database&#39;] = &#39;&#39;;
+<span class=ln>3</span>$System_Config[&#39;db_username&#39;] = &#39;&#39;;
+<span class=ln>4</span>$System_Config[&#39;db_password&#39;] = &#39;&#39;;</code></pre></div><p>修改为</p><div class=highlight><pre class=chroma><code class=language-php data-lang=php><span class=ln>1</span>$System_Config[&#39;db_host&#39;] = &#39;db&#39;;
+<span class=ln>2</span>$System_Config[&#39;db_database&#39;] = &#39;panel&#39;;
+<span class=ln>3</span>$System_Config[&#39;db_username&#39;] = &#39;root&#39;;
+<span class=ln>4</span>$System_Config[&#39;db_password&#39;] = &#39;pa44w@rd&#39;;</code></pre></div><p>别的配置项按自己的需要配置 或者按自己的心情配置 配置完成之后重启下容器</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>docker restart panel</code></pre></div><p>然后就能显示站点了（</p><h2 id=配置定时任务>配置定时任务</h2><p>这部分很简单 只需要</p><pre><code>docker run -d \
+    -v /data/config.php:/data/www/config/.config.php \
+    --link panel-database:db \
+    indexyz/php-crontab
+</code></pre><h1 id=常见问题>常见问题</h1><h2 id=我该怎么创建管理员帐号>我该怎么创建管理员帐号</h2><p>有两种方法 往数据库的邀请码加入邀请注册后直接改 <code>is_admin</code>
+还有一种就是进入容器进行添加</p><pre><code>docker exec -it panel bash
+/usr/local/php/bin/php /data/www/xcat createAdmin
+# 然后提供邮箱什么的信息 就创建完成了
+</code></pre></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/automatic-deploy-rancher/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">自动更新 Rancher 上的应用</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/grafana-collectd-collectd-monitor/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">Linux 搭建 grafana &#43; influxdb &#43; collectd</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

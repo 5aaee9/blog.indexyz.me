@@ -1,0 +1,51 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>关于OpenVPN的用户认证的研究 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/openvpn-auth-system/ itemprop=url>关于OpenVPN的用户认证的研究</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-08-09T17:58:46Z>2017-08-09</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/linux itemprop=url rel=index><span itemprop=name>Linux</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><blockquote><p>最近在研究OpenVPN
+然后想把自己的Evplex和ss-panel接入OpenVPN认证，于是就开始研究了</p></blockquote><h2 id=1-etc-server-conf>1. /etc/server.conf</h2><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=c1># 添加下列行 会调用verify.sh进行认证并且不要求CA证书</span>
+<span class=ln>2</span>auth-user-pass-verify ./verify.sh via-env
+<span class=ln>3</span>client-cert-not-required
+<span class=ln>4</span>username-as-common-name
+<span class=ln>5</span>
+<span class=ln>6</span><span class=c1># 添加下列行会调用connect和disconnect进行对链接的传入和传出进行控制</span>
+<span class=ln>7</span>script-security <span class=m>3</span> system
+<span class=ln>8</span>client-connect ./connect.sh
+<span class=ln>9</span>client-disconnect ./disconnect.sh</code></pre></div><h3 id=对disconnect-sh和connect-sh-的参数解释>对disconnect.sh和connect.sh 的参数解释</h3><table><thead><tr><th>Value Name</th><th align=right>Mean</th></tr></thead><tbody><tr><td>$bytes_received</td><td align=right>收到的流量</td></tr><tr><td>$bytes_sent</td><td align=right>发送的流量</td></tr><tr><td>$trusted_ip</td><td align=right>链接的IP</td></tr><tr><td>$trusted_port</td><td align=right>链接的端口</td></tr><tr><td>$ifconfig_pool_remote_ip</td><td align=right>链接者的IP</td></tr><tr><td>$common_name</td><td align=right>用户名</td></tr></tbody></table><h2 id=对面板的用户获取>对面板的用户获取</h2><p>大家知道 ss-panel的V3有webapi, Evplex当然也有webapi
+Evplex的WebApi是为了接入更多类型的节点和方便不使用mysql作为数据库的用户</p><div class=highlight><pre class=chroma><code class=language-python data-lang=python><span class=ln> 1</span><span class=n>Main</span><span class=o>.</span><span class=n>py</span><span class=p>:</span>
+<span class=ln> 2</span><span class=o>---</span>
+<span class=ln> 3</span><span class=kn>import</span> <span class=nn>Config</span>
+<span class=ln> 4</span><span class=kn>import</span> <span class=nn>urllib</span>
+<span class=ln> 5</span><span class=kn>import</span> <span class=nn>json</span>
+<span class=ln> 6</span><span class=kn>import</span> <span class=nn>time</span>
+<span class=ln> 7</span>
+<span class=ln> 8</span><span class=k>def</span> <span class=nf>main</span><span class=p>():</span>
+<span class=ln> 9</span>    <span class=n>API_obj</span>  <span class=o>=</span> <span class=n>urllib</span><span class=o>.</span><span class=n>urlopen</span><span class=p>(</span><span class=n>Config</span><span class=o>.</span><span class=n>API_URL</span> <span class=o>+</span> <span class=s2>&#34;users?key=&#34;</span> <span class=o>+</span> <span class=n>Config</span><span class=o>.</span><span class=n>API_PASS</span><span class=p>)</span>
+<span class=ln>10</span>
+<span class=ln>11</span>    <span class=n>API_json</span> <span class=o>=</span> <span class=n>json</span><span class=o>.</span><span class=n>load</span><span class=p>(</span><span class=n>API_obj</span><span class=p>)</span>
+<span class=ln>12</span>    <span class=n>user_list</span> <span class=o>=</span> <span class=p>[]</span>
+<span class=ln>13</span>    <span class=k>if</span> <span class=n>API_json</span><span class=p>[</span><span class=s2>&#34;ret&#34;</span><span class=p>]:</span>
+<span class=ln>14</span>        <span class=k>for</span> <span class=n>item</span> <span class=ow>in</span> <span class=n>API_json</span><span class=p>[</span><span class=s2>&#34;data&#34;</span><span class=p>]:</span>
+<span class=ln>15</span>            <span class=k>if</span> <span class=n>item</span><span class=p>[</span><span class=s2>&#34;enable&#34;</span><span class=p>]:</span>
+<span class=ln>16</span>                <span class=n>user_list</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>item</span><span class=p>[</span><span class=s2>&#34;user_name&#34;</span><span class=p>]</span> <span class=o>+</span> <span class=s2>&#34; &#34;</span> <span class=o>+</span> <span class=n>item</span><span class=p>[</span><span class=s2>&#34;passwd&#34;</span><span class=p>])</span>
+<span class=ln>17</span>    <span class=k>with</span> <span class=nb>open</span><span class=p>(</span><span class=n>Config</span><span class=o>.</span><span class=n>STOAGE_PATH</span><span class=p>,</span> <span class=s2>&#34;w&#34;</span><span class=p>)</span> <span class=k>as</span> <span class=nb>file</span><span class=p>:</span>
+<span class=ln>18</span>        <span class=nb>file</span><span class=o>.</span><span class=n>write</span><span class=p>(</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>&#34;</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>user_list</span><span class=p>))</span>
+<span class=ln>19</span>        
+<span class=ln>20</span><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+<span class=ln>21</span>    <span class=k>while</span> <span class=bp>True</span><span class=p>:</span>
+<span class=ln>22</span>        <span class=n>main</span><span class=p>()</span>
+<span class=ln>23</span>        <span class=n>time</span><span class=o>.</span><span class=n>sleep</span><span class=p>(</span><span class=n>Config</span><span class=o>.</span><span class=n>RSYNC_TIME</span> <span class=o>*</span> <span class=mi>60</span><span class=p>)</span>
+<span class=ln>24</span><span class=o>---</span>
+<span class=ln>25</span>
+<span class=ln>26</span><span class=n>Config</span><span class=o>.</span><span class=n>py</span>
+<span class=ln>27</span><span class=o>---</span>
+<span class=ln>28</span><span class=n>API_URL</span>     <span class=o>=</span> <span class=s2>&#34;http://127.0.0.1:8000/api/&#34;</span>
+<span class=ln>29</span><span class=n>API_PASS</span>    <span class=o>=</span> <span class=s2>&#34;Pleasechangeit&#34;</span>
+<span class=ln>30</span>
+<span class=ln>31</span><span class=n>STOAGE_PATH</span> <span class=o>=</span> <span class=s2>&#34;users&#34;</span>
+<span class=ln>32</span><span class=n>RSYNC_TIME</span>  <span class=o>=</span> <span class=mf>0.1</span>                       <span class=c1># min</span>
+<span class=ln>33</span><span class=o>---</span></code></pre></div></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/how-to-use-openvpn/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">OpenVPN食用方法</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/how-to-install-openvpn/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">OpenVPN安装和面板的对接</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

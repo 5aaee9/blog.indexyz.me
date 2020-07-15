@@ -1,0 +1,67 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>Rancher 的使用和容器的管理 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/how-to-use-rancher-to-manage-docker/ itemprop=url>Rancher 的使用和容器的管理</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-08-09T18:20:33Z>2017-08-09</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/linux itemprop=url rel=index><span itemprop=name>Linux</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><blockquote><p>Rancher is an open source project that provides a complete platform for
+operating Docker in production. It provides infrastructure services such as
+multi-host networking, global and local load balancing, and volume snapshots. It
+integrates native Docker management capabilities such as Docker Machine and
+Docker Swarm. It offers a rich user experience that enables devops admins to
+operate Docker in production at large scale.
+&ndash; GitHub</p></blockquote><h2 id=前言>前言</h2><p>最近一直在找一个好用的容器管理服务, 也尝试了很多 例如
+<a href=https://github.com/gaoyangxiaozhu/DockerVI>gaoyangxiaozhu/DockerVI</a>
+但是无一例外有很多的缺点. 例如部署困难、界面不友好、不是自由/开放源代码软件.
+今天, 我在一个关于Docker的文章中见到了 Rancher 然后部署并且试用之后就喜欢上了它.</p><h2 id=安装>安装</h2><p><a href=http://rancher.com/>官方网站</a></p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>docker run -d --restart<span class=o>=</span>always<span class=se>\
+</span><span class=ln>2</span><span class=se></span>       -v /data/rancher/db:/var/lib/mysql <span class=se>\
+</span><span class=ln>3</span><span class=se></span>       --name rancher-server <span class=se>\
+</span><span class=ln>4</span><span class=se></span>       -p <span class=m>8888</span>:8080 <span class=se>\
+</span><span class=ln>5</span><span class=se></span>       rancher/server</code></pre></div><p>只需要启动这一个容器 然后访问localhost:8888 就可以看到Rancher的界面了
+在界面的右下角可以切换语言为简体中文</p><h3 id=用户验证>用户验证</h3><p>在<code>系统管理/访问控制</code>下可以进行用户的验证
+<img src=https://img10.360buyimg.com/img/jfs/t1/69129/22/9644/22177/5d73c506E2e528312/3bec8c006a60b143.png alt=BFBVJQ{DOH}YX)Z\])0M5$XX.png></p><p>我选择的是使用GitHub进行身份验证 按照提示生成<code>Client ID</code>和<code>Secret</code>
+<img src=https://img10.360buyimg.com/img/jfs/t1/43375/11/14390/45512/5d73c507E5016c418/53b765745bbfeea8.png alt=QQ截图20170102011147.png></p><p>保存之后进行一次验证 验证完成之后就自动记录了进行验证的GitHub ID,
+以后就可以用这个ID进行OAuth验证登陆了</p><p><img src=https://img10.360buyimg.com/img/jfs/t1/56676/14/10054/22781/5d73c508Ebb3421c6/8c362d12962deeda.png alt=QQ截图20170102011615.png></p><h2 id=添加主机>添加主机</h2><p>在<code>基础构架/主机</code>下可以见到主机列表 点击<code>添加主机</code>进行添加主机的流程
+<img src=https://img10.360buyimg.com/img/jfs/t1/76659/12/9547/61674/5d73c509E10501a69/64193b824a9e7439.png alt=QQ截图20170102011943.png></p><p>使用SSH登陆到主机上 执行</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>curl -sSL get.docker.com <span class=p>|</span> bash
+<span class=ln>2</span>systemctl start docker
+<span class=ln>3</span>systemctl <span class=nb>enable</span> docker</code></pre></div><p>来安装Docker
+然后输入生成了的脚本安装
+这里如果使用运行Rancher的服务器安装的话在第<code>4</code>个步骤的输入框内填入服务器的IP
+然后你就可以在<code>基础构架/主机</code>下看到你添加的服务器了
+<img src=https://img10.360buyimg.com/img/jfs/t1/68951/22/9549/25477/5d73c50aEe1418d60/8802e87eb229f149.png alt=QQ截图20170102012808.png></p><h2 id=运行容器>运行容器</h2><p>在每个主机的最后有一个按钮可以添加容器
+<img src=https://ae01.alicdn.com/kf/H48a2e8f5fcb241b7bb7a9157a2fd25e5K.png alt=QQ截图20170102013007.png></p><p>这里以运行<code>hyalx/ssr-with-net-speeder</code>为例子 演示一下容器的运行方法
+进行一下设置然后点击创建<img src=https://img10.360buyimg.com/img/jfs/t1/52559/21/10076/35468/5d73c50cE770254af/e97e0390d09bcd3c.png alt=QQ截图20170102013319.png></p><p>Rancher便会自动Pull下来映像并且运行</p><h2 id=反向代理>反向代理</h2><p>当然 如果我们要使用一个服务 有时候那么长长的一串IP和端口不是那么的美观
+在这里我使用了Nginx来进行反向代理
+安装Nginx (Yum 安装)</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>rpm -Uvh 
+<span class=ln>2</span>http://nginx.org/packages/centos/7/noarch/RPMS/nginx-release-centos-7-0.el7.ngx.noarch.rpm
+<span class=ln>3</span>yum install nginx
+<span class=ln>4</span>systemctl start nginx 
+<span class=ln>5</span>systemctl <span class=nb>enable</span> nginx</code></pre></div><p>访问IP 出现Nginx默认页面
+在<code>cd /etc/nginx/conf.d/</code>下可以编辑默认配置文件 这里提供我的配置文件作为参考</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell><span class=ln> 1</span>map <span class=nv>$http_upgrade</span> <span class=nv>$connection_upgrade</span> <span class=o>{</span>
+<span class=ln> 2</span>    default upgrade<span class=p>;</span>
+<span class=ln> 3</span>    <span class=s1>&#39;&#39;</span>      close<span class=p>;</span>
+<span class=ln> 4</span><span class=o>}</span>
+<span class=ln> 5</span>server <span class=o>{</span>
+<span class=ln> 6</span>    listen       <span class=m>80</span><span class=p>;</span>
+<span class=ln> 7</span>    server_name  localhost<span class=p>;</span>
+<span class=ln> 8</span>
+<span class=ln> 9</span>    location / <span class=o>{</span>
+<span class=ln>10</span>        proxy_pass http://127.0.0.1:端口<span class=p>;</span>
+<span class=ln>11</span>        proxy_set_header X-Real-IP <span class=nv>$remote_addr</span><span class=p>;</span>
+<span class=ln>12</span>        proxy_set_header Host <span class=nv>$host</span><span class=p>;</span>
+<span class=ln>13</span>        proxy_set_header X-Forwarded-For <span class=nv>$proxy_add_x_forwarded_for</span><span class=p>;</span>
+<span class=ln>14</span>        proxy_http_version <span class=m>1</span>.1<span class=p>;</span>
+<span class=ln>15</span>        proxy_set_header Upgrade <span class=nv>$http_upgrade</span><span class=p>;</span>
+<span class=ln>16</span>        proxy_set_header Connection <span class=s2>&#34;upgrade&#34;</span><span class=p>;</span>
+<span class=ln>17</span>        sub_filter IP地址:端口 IP地址:80<span class=p>;</span>
+<span class=ln>18</span>        sub_filter_once off<span class=p>;</span>
+<span class=ln>19</span>    <span class=o>}</span>
+<span class=ln>20</span>
+<span class=ln>21</span>    error_page   <span class=m>500</span> <span class=m>502</span> <span class=m>503</span> <span class=m>504</span>  /50x.html<span class=p>;</span>
+<span class=ln>22</span>    <span class=nv>location</span> <span class=o>=</span> /50x.html <span class=o>{</span>
+<span class=ln>23</span>        root   /usr/share/nginx/html<span class=p>;</span>
+<span class=ln>24</span>    <span class=o>}</span>
+<span class=ln>25</span><span class=o>}</span></code></pre></div><blockquote><p>修改了地址请在GitHub修改应用的redict url和homepage
+要不然每次登陆都会跳转会原来的地址</p><p>因为Rancher使用了Webshock 所以和正常的反代方式有些不同</p></blockquote></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/how-to-use-mulitmc/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">MultiMC 的简单使用教程</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/a-great-software-wgstures/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">安利 - WGestures - 一款阿姆斯克郎式旋转无敌棒的软件</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

@@ -1,0 +1,23 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>在Linux上安装TsunamiUDP进行快速传输 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/how-to-install-tsunamiudp/ itemprop=url>在Linux上安装TsunamiUDP进行快速传输</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-08-09T17:56:17Z>2017-08-09</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/linux itemprop=url rel=index><span itemprop=name>Linux</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><blockquote><p>TsunamiUDP 是一个专为网络加速诞生的小工具。
+思路很简单，使用TCP进行传输控制、UDP进行数据传输。</p></blockquote><h1 id=安装>安装</h1><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=c1># 安装依赖</span>
+<span class=ln>2</span>yum install autoconf automake gcc unzip
+<span class=ln>3</span><span class=c1># 下载源代码编译</span>
+<span class=ln>4</span>wget https://github.com/cheetahmobile/tsunami-udp/archive/1.8.1.zip
+<span class=ln>5</span>unzip <span class=m>1</span>.8.1.zip
+<span class=ln>6</span><span class=nb>cd</span> tsunami-udp-1.8.1
+<span class=ln>7</span>./recompile.sh
+<span class=ln>8</span>make install</code></pre></div><h1 id=开启输出服务器>开启输出服务器</h1><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=nb>cd</span> /data
+<span class=ln>2</span>tsunamid *</code></pre></div><h1 id=链接服务器获取数据>链接服务器获取数据</h1><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=nb>cd</span> / data
+<span class=ln>2</span>tsunami
+<span class=ln>3</span>&gt; connect <span class=o>{</span>serverip<span class=o>}</span>
+<span class=ln>4</span>Connected.
+<span class=ln>5</span>&gt; get *</code></pre></div><p>晒一张德国服务器和美国服务器互传的速度截图
+<img src=https://img10.360buyimg.com/img/jfs/t1/82732/29/9593/69296/5d73c529Ea671c7b7/3998c5618f44ded1.png alt=速度截图></p></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/how-to-install-openvpn/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">OpenVPN安装和面板的对接</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/how-to-use-shadowsocks/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">Shadowsocks的正确食用方法</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

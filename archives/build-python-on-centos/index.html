@@ -1,0 +1,24 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>CentOS编译安装Python - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/build-python-on-centos/ itemprop=url>CentOS编译安装Python</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2017-08-09T17:50:31Z>2017-08-09</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/linux itemprop=url rel=index><span itemprop=name>Linux</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p>在CentOS6上，默认安装的Python版本是2.6，然而有些软件需要使用Python2.7</p><p>于是只能手动编译升级Python版本</p><ol><li><p>安装依赖</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>yum install -y gcc openssl-devel</code></pre></div></li><li><p>下载源码包并且编译安装</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>wget https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz
+<span class=ln>2</span>tar xvf Python-2.7.11.tgz
+<span class=ln>3</span><span class=nb>cd</span> Python-2.7.11
+<span class=ln>4</span>./configure --prefix<span class=o>=</span>/usr/local/python27
+<span class=ln>5</span>make
+<span class=ln>6</span>make install
+<span class=ln>7</span><span class=c1># 这时候旧的Python还存在，需要移动或者删除掉</span>
+<span class=ln>8</span>rm /usr/bin/python
+<span class=ln>9</span>ln -s /usr/local/python27/bin/python /usr/bin/python</code></pre></div></li><li><p>解决yum等软件的问题</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span><span class=c1># CentOS6的yum是不支持Python2.7的，我们需要手动切换到Python2.6</span>
+<span class=ln>2</span><span class=c1># 编辑/usr/bin/yum</span>
+<span class=ln>3</span>vim /usr/bin/yum
+<span class=ln>4</span><span class=c1># 将头部的</span>
+<span class=ln>5</span><span class=c1>#!/usr/bin/python</span>
+<span class=ln>6</span><span class=c1># 改为</span>
+<span class=ln>7</span><span class=c1>#!/usr/bin/python2.6</span></code></pre></div></li><li><p>安装pip和easy_install</p><div class=highlight><pre class=chroma><code class=language-shell data-lang=shell><span class=ln>1</span>wget https://bootstrap.pypa.io/get-pip.py
+<span class=ln>2</span>python get-pip.py</code></pre></div></li></ol></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/upgrade-git-on-centos/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">更新CentOS6上的Git版本</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/transfer-wordpress-to-typecho/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">从WordPress迁移到了Typecho</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

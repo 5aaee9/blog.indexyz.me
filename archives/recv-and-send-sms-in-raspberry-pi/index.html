@@ -1,0 +1,91 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>使用树莓派来收发短信 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/recv-and-send-sms-in-raspberry-pi/ itemprop=url>使用树莓派来收发短信</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2018-12-24T15:47:00&#43;0800>2018-12-24</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/linux itemprop=url rel=index><span itemprop=name>Linux</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p>之前手机卡多了很多…… 手机不够放了（逃）
+然后正好有个树莓派 就打算使用树莓派收短信</p><h1 id=前提准备>前提准备</h1><ul><li>树莓派 3B 一只</li><li>华为 E173 一只</li></ul><p>使用的系统为官方的 <code>raspbian-stretch</code> 最新版本</p><h1 id=开始安装>开始安装</h1><p>首先将移动网卡插上树莓派然后 <code>lsusb</code> 可以看到识别出来了</p><p><code>Bus 001 Device 005: ID 12d1:1c05 Huawei Technologies Co., Ltd. Broadband stick (modem on)</code></p><blockquote><p>如果发现是 modem off 的时候需要使用 <code>sudo apt-get install usb-modeswitch</code> 来切换模式</p></blockquote><p>这时候在 <code>/dev/</code> 下面可以看到 ttyUSB 的文件了</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=c1># ls /dev/ttyUSB*</span>
+<span class=ln>2</span>/dev/ttyUSB0  /dev/ttyUSB1  /dev/ttyUSB2</code></pre></div><p>然后我们使用</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>apt-get install gammu -y</code></pre></div><p>来安装 <code>gammu</code></p><h2 id=配置-gammu>配置 gammu</h2><p>使用 <code>gammu-config</code> 来进行配置 我们只需要将 Port 改为 <code>/dev/ttyUSB2</code> 即可</p><blockquote><p>此处的 ttyUSB2 应该根据个机器来确定</p></blockquote><p>这是时候, 我们使用</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=c1># gammu --identify</span>
+<span class=ln>2</span>Device               : /dev/ttyUSB2
+<span class=ln>3</span>Manufacturer         : Huawei
+<span class=ln>4</span>Model                : E173 <span class=o>(</span>E173<span class=o>)</span>
+<span class=ln>5</span>Firmware             : <span class=m>21</span>.017.10.00.00
+<span class=ln>6</span>IMEI                 : 3xxxxxxxxxxxxx4
+<span class=ln>7</span>SIM IMSI             : 4xxxxxxxxxxxxx5</code></pre></div><p>来验证配置是否成功
+此时 可以使用</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=c1># echo &#34;test&#34; | sudo gammu sendsms TEXT 手机号</span>
+<span class=ln>2</span>If you want break, press Ctrl+C...
+<span class=ln>3</span>Sending SMS <span class=m>1</span>/1....waiting <span class=k>for</span> network answer..OK, message <span class=nv>reference</span><span class=o>=</span><span class=m>1</span></code></pre></div><p>来测试发送短信</p><h2 id=将-gammu-smsd-收到的短信转发到-telegram-上去>将 gammu-smsd 收到的短信转发到 Telegram 上去</h2><p>我使用 njs 写了个脚本 所以首先安装 nodejs 和 yarn</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>curl -sL https://deb.nodesource.com/setup_10.x <span class=p>|</span> sudo -E bash -
+<span class=ln>2</span>apt-get install gcc g++ make -y
+<span class=ln>3</span>curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg <span class=p>|</span> sudo apt-key add -
+<span class=ln>4</span><span class=nb>echo</span> <span class=s2>&#34;deb https://dl.yarnpkg.com/debian/ stable main&#34;</span> <span class=p>|</span> sudo tee /etc/apt/sources.list.d/yarn.list
+<span class=ln>5</span>apt-get update -y
+<span class=ln>6</span>apt-get install yarn nodejs -y</code></pre></div><p>安装 gammu-smsd</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>apt-get install gammu-smsd -y
+<span class=ln>2</span>systemctl start gammu-smsd
+<span class=ln>3</span>systemctl <span class=nb>enable</span> gammu-smsd</code></pre></div><p>编辑 gammu-smsd 配置文件</p><pre><code># cat /etc/gammu-smsdrc
+
+[gammu]
+port = /dev/ttyUSB2
+connection = at
+
+[smsd]
+RunOnReceive=/root/gammu-telegram/index.js
+service = files
+logfile = syslog
+debuglevel = 0
+
+inboxpath = /var/spool/gammu/inbox/
+outboxpath = /var/spool/gammu/outbox/
+sentsmspath = /var/spool/gammu/sent/
+errorsmspath = /var/spool/gammu/error/
+
+# systemctl restart gammu-smsd
+</code></pre><p>在 <code>/root/gammu-telegram</code> 下创建
+<code>package.json</code></p><div class=highlight><pre class=chroma><code class=language-json data-lang=json><span class=ln> 1</span><span class=p>{</span>
+<span class=ln> 2</span>  <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;gammu-telegram&#34;</span><span class=p>,</span>
+<span class=ln> 3</span>  <span class=nt>&#34;version&#34;</span><span class=p>:</span> <span class=s2>&#34;1.0.0&#34;</span><span class=p>,</span>
+<span class=ln> 4</span>  <span class=nt>&#34;main&#34;</span><span class=p>:</span> <span class=s2>&#34;index.js&#34;</span><span class=p>,</span>
+<span class=ln> 5</span>  <span class=nt>&#34;license&#34;</span><span class=p>:</span> <span class=s2>&#34;MIT&#34;</span><span class=p>,</span>
+<span class=ln> 6</span>  <span class=nt>&#34;dependencies&#34;</span><span class=p>:</span> <span class=p>{</span>
+<span class=ln> 7</span>    <span class=nt>&#34;axios&#34;</span><span class=p>:</span> <span class=s2>&#34;^0.18.0&#34;</span><span class=p>,</span>
+<span class=ln> 8</span>    <span class=nt>&#34;socks-proxy-agent&#34;</span><span class=p>:</span> <span class=s2>&#34;^4.0.1&#34;</span>
+<span class=ln> 9</span>  <span class=p>}</span>
+<span class=ln>10</span><span class=p>}</span></code></pre></div><p><code>index.js</code></p><div class=highlight><pre class=chroma><code class=language-javascript data-lang=javascript><span class=ln> 1</span><span class=ch>#!/usr/bin/node
+</span><span class=ln> 2</span><span class=ch></span><span class=k>const</span> <span class=nx>fs</span> <span class=o>=</span> <span class=nx>require</span><span class=p>(</span><span class=s1>&#39;fs&#39;</span><span class=p>)</span>
+<span class=ln> 3</span><span class=k>const</span> <span class=nx>path</span> <span class=o>=</span> <span class=nx>require</span><span class=p>(</span><span class=s1>&#39;path&#39;</span><span class=p>)</span>
+<span class=ln> 4</span><span class=k>const</span> <span class=nx>axios</span> <span class=o>=</span> <span class=nx>require</span><span class=p>(</span><span class=s1>&#39;axios&#39;</span><span class=p>)</span>
+<span class=ln> 5</span><span class=k>const</span> <span class=nx>SocksProxyAgent</span> <span class=o>=</span> <span class=nx>require</span><span class=p>(</span><span class=s1>&#39;socks-proxy-agent&#39;</span><span class=p>)</span>
+<span class=ln> 6</span>
+<span class=ln> 7</span><span class=k>const</span> <span class=nx>botToken</span> <span class=o>=</span> <span class=s2>&#34;你的 BOT TOKEN&#34;</span>
+<span class=ln> 8</span><span class=k>const</span> <span class=nx>chatId</span> <span class=o>=</span> <span class=nx>你的会话ID</span>
+<span class=ln> 9</span>
+<span class=ln>10</span><span class=k>const</span> <span class=nx>proxyOptions</span> <span class=o>=</span> <span class=s1>&#39;socks5://127.0.0.1:1080&#39;</span>
+<span class=ln>11</span><span class=k>const</span> <span class=nx>httpsAgent</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>SocksProxyAgent</span><span class=p>(</span><span class=nx>proxyOptions</span><span class=p>)</span>
+<span class=ln>12</span>
+<span class=ln>13</span><span class=k>const</span> <span class=nx>client</span> <span class=o>=</span> <span class=nx>axios</span><span class=p>.</span><span class=nx>create</span><span class=p>({</span> <span class=nx>baseURL</span><span class=o>:</span> <span class=sb>`https://api.telegram.org/bot</span><span class=si>${</span><span class=nx>botToken</span><span class=si>}</span><span class=sb>`</span><span class=p>,</span> <span class=nx>httpsAgent</span><span class=p>})</span>
+<span class=ln>14</span>
+<span class=ln>15</span><span class=c1>// fs.writeFileSync(path.resolve(__dirname + &#39;/env&#39;), JSON.stringify(process.env))
+</span><span class=ln>16</span><span class=c1></span><span class=k>const</span> <span class=p>{</span> <span class=nx>SMS_1_NUMBER</span><span class=p>,</span> <span class=nx>SMS_1_TEXT</span><span class=p>,</span> <span class=nx>DECODED_0_TEXT</span> <span class=p>}</span> <span class=o>=</span> <span class=nx>process</span><span class=p>.</span><span class=nx>env</span>
+<span class=ln>17</span>
+<span class=ln>18</span><span class=kd>let</span> <span class=nx>smsData</span>
+<span class=ln>19</span>
+<span class=ln>20</span><span class=k>if</span> <span class=p>(</span><span class=nx>DECODED_0_TEXT</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>21</span>  <span class=nx>smsData</span> <span class=o>=</span> <span class=nx>DECODED_0_TEXT</span>
+<span class=ln>22</span><span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+<span class=ln>23</span>  <span class=nx>smsData</span> <span class=o>=</span> <span class=nx>SMS_1_TEXT</span>
+<span class=ln>24</span><span class=p>}</span>
+<span class=ln>25</span>
+<span class=ln>26</span><span class=kr>async</span> <span class=kd>function</span> <span class=nx>main</span><span class=p>()</span> <span class=p>{</span>
+<span class=ln>27</span>  <span class=kr>await</span> <span class=nx>client</span><span class=p>.</span><span class=nx>post</span><span class=p>(</span><span class=s1>&#39;/sendMessage&#39;</span><span class=p>,</span> <span class=p>{</span>
+<span class=ln>28</span>    <span class=nx>chat_id</span><span class=o>:</span> <span class=nx>chatId</span><span class=p>,</span>
+<span class=ln>29</span>    <span class=nx>text</span><span class=o>:</span> <span class=s2>&#34;Phone Number: `&#34;</span> <span class=o>+</span> <span class=nx>SMS_1_NUMBER</span> <span class=o>+</span> <span class=s2>&#34;`\n&#34;</span> <span class=o>+</span> <span class=s2>&#34;Tag: #sms\nData: `&#34;</span> <span class=o>+</span> <span class=nx>smsData</span> <span class=o>+</span> <span class=s2>&#34;`&#34;</span><span class=p>,</span>
+<span class=ln>30</span>    <span class=nx>parse_mode</span><span class=o>:</span> <span class=s1>&#39;Markdown&#39;</span>
+<span class=ln>31</span>  <span class=p>})</span>
+<span class=ln>32</span><span class=p>}</span>
+<span class=ln>33</span>
+<span class=ln>34</span><span class=nx>main</span><span class=p>()</span>
+<span class=ln>35</span>  <span class=p>.</span><span class=k>catch</span><span class=p>(</span><span class=nx>err</span> <span class=p>=&gt;</span> <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>err</span><span class=p>))</span>
+</code></pre></div><p>然后执行</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>yarn install
+<span class=ln>2</span>chmod +x index.js</code></pre></div><p>然后每次有新消息的时候就会在 Telegram 上提醒了</p><h2 id=发送短信>发送短信</h2><p>（咕咕咕）</p></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/rancher-share-volume-in-different-hosts/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">Rancher 使用 NFS 在多个主机之间共享 Volume</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/use-dns-over-tls-in-golang/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">使 Go App 使用 DNS over TLS</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

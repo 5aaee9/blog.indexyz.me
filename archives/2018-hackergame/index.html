@@ -1,0 +1,103 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>2018 LUG HackerGame 解题笔记 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/2018-hackergame/ itemprop=url>2018 LUG HackerGame 解题笔记</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2018-10-10T00:16:00&#43;0800>2018-10-10</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/ctf itemprop=url rel=index><span itemprop=name>CTF</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p>最近玩了一下 LUG 的 2018 HackerGame, 下面是解题笔记</p><p>推荐阅读:</p><p><a href=https://coxxs.me/879>Coxxs 大佬的 Blog</a>
+<a href=https://github.com/ustclug/hackergame2018-writeups>官方 writeups</a>
+<a href=https://soha.moe/post/ustc-ctf-2018-writeup.html>Soha 大佬的</a></p><h2 id=签到题>签到题</h2><p>这题没啥好讲的, 只要把 maxlength 改成相应的长度就好了</p><h2 id=猫咪问答>猫咪问答</h2><p>拿着题目去问 Google / 百度</p><h2 id=游园会的集章卡片>游园会的集章卡片</h2><p>拼图游戏, （我用画图拼的）</p><h2 id=word-文档>Word 文档</h2><p>将附件下载之后后缀改为 zip 然后解压出 flag.txt
+(因为 docx 就是 zip + XML 之前 LTT 还是哪里都有做过一期科普)</p><h2 id=黑曜石浏览器>黑曜石浏览器</h2><p>搜索得到官网 <a href=https://heicore.com/>https://heicore.com/</a> (看 whois 是八月份注册的)
+然后用 chrome 打开 dev tools 会直接 crash 掉浏览器
+直接用 Firefox 打开就好了 (或者 curl 一下)
+崩掉浏览器应该用的是</p><pre><code>setInterval(() =&gt; {
+    var r = /./;
+    r.toString = function () {
+        eval(&quot;console.clear();&quot;);
+        document.documentElement.innerHTML = '';
+    };
+    if(navigator.userAgent.includes('Safari') &amp;&amp; !navigator.userAgent.includes('Edge'))
+        console.log('%c', r);
+}, 50);
+</code></pre><p>然后搜索找到 <code>isLatestHEICORE</code> 这个函数 用其中的 UA 请求 flag.txt 就拿到了 flag</p><h2 id=回到过去>回到过去</h2><p>下载附件 去掉最上面的 <code>q</code> 和 <code>ed</code>
+然后根据 <code>ed</code> 的 man page, 在倒数第三行加入 <code>w flag.txt</code>, 然后将 input pipe 进 ed, 然后生成的 flag.txt 就是 flag 了</p><h2 id=我是谁>我是谁</h2><h3 id=第一关>第一关</h3><p>请求页面 会发现 status code 是 <code>418 I'm a teapot</code>, 回答你是 teapot 就可以拿到 flag 了</p><h3 id=第二关>第二关</h3><p>提示换种请求方式, 使用 POST 得到</p><pre><code>&lt;p&gt;The method &quot;POST&quot; is deprecated.&lt;/p&gt;
+&lt;p&gt;See RFC-7168 for more information.&lt;/p&gt;
+</code></pre><p>然后根据 RFC-7168 使用 BREW 请求服务器 拿到 flag
+&gt; 这里据大佬将可以使用 curl 进行请求, 我直接使用 nc 发了请求 233</p><h2 id=猫咪克星>猫咪克星</h2><p>就是一个自动应答, 我用 nodejs 写了一个脚本来完成</p><div class=highlight><pre class=chroma><code class=language-javascript data-lang=javascript><span class=ln> 1</span><span class=k>const</span> <span class=nx>process</span> <span class=o>=</span> <span class=nx>require</span><span class=p>(</span><span class=s1>&#39;child_process&#39;</span><span class=p>)</span>
+<span class=ln> 2</span>
+<span class=ln> 3</span><span class=k>const</span> <span class=nx>nc</span> <span class=o>=</span> <span class=nx>process</span><span class=p>.</span><span class=nx>spawn</span><span class=p>(</span><span class=s1>&#39;nc&#39;</span><span class=p>,</span> <span class=p>[</span><span class=s1>&#39;202.38.95.46&#39;</span><span class=p>,</span> <span class=s1>&#39;12009&#39;</span><span class=p>])</span>
+<span class=ln> 4</span>
+<span class=ln> 5</span><span class=k>const</span> <span class=nx>calc</span> <span class=o>=</span> <span class=p>(</span><span class=nx>payload</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+<span class=ln> 6</span>    <span class=k>const</span> <span class=nx>t</span> <span class=o>=</span> <span class=nx>process</span><span class=p>.</span><span class=nx>spawnSync</span><span class=p>(</span><span class=s1>&#39;/usr/bin/python&#39;</span><span class=p>,</span> <span class=p>[],</span> <span class=p>{</span>
+<span class=ln> 7</span>        <span class=nx>input</span><span class=o>:</span> <span class=sb>`print(</span><span class=si>${</span><span class=nx>payload</span><span class=si>}</span><span class=sb>); exit()`</span>
+<span class=ln> 8</span>    <span class=p>})</span>
+<span class=ln> 9</span>
+<span class=ln>10</span>    <span class=k>return</span> <span class=nx>t</span><span class=p>.</span><span class=nx>stdout</span><span class=p>.</span><span class=nx>toString</span><span class=p>().</span><span class=nx>trim</span><span class=p>()</span>
+<span class=ln>11</span>        <span class=p>.</span><span class=nx>replace</span><span class=p>(</span><span class=sr>/\r/g</span><span class=p>,</span> <span class=s1>&#39;&#39;</span><span class=p>)</span>
+<span class=ln>12</span>        <span class=p>.</span><span class=nx>replace</span><span class=p>(</span><span class=sr>/\n/g</span><span class=p>,</span> <span class=s1>&#39;&#39;</span><span class=p>)</span>
+<span class=ln>13</span><span class=p>}</span>
+<span class=ln>14</span>
+<span class=ln>15</span><span class=nx>nc</span><span class=p>.</span><span class=nx>stdout</span><span class=p>.</span><span class=nx>on</span><span class=p>(</span><span class=s1>&#39;data&#39;</span><span class=p>,</span> <span class=nx>chunk</span> <span class=p>=&gt;</span> <span class=p>{</span>
+<span class=ln>16</span>    <span class=kd>let</span> <span class=nx>data</span> <span class=o>=</span> <span class=nx>chunk</span><span class=p>.</span><span class=nx>toString</span><span class=p>().</span><span class=nx>trim</span><span class=p>()</span>
+<span class=ln>17</span>
+<span class=ln>18</span>    <span class=k>if</span> <span class=p>(</span><span class=nx>data</span> <span class=o>===</span> <span class=s1>&#39;You have only 30 seconds&#39;</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>19</span>        <span class=k>return</span>
+<span class=ln>20</span>    <span class=p>}</span>
+<span class=ln>21</span>
+<span class=ln>22</span>    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`&lt;== </span><span class=si>${</span><span class=nx>data</span><span class=si>}</span><span class=sb>`</span><span class=p>)</span>
+<span class=ln>23</span>
+<span class=ln>24</span>    <span class=nx>data</span> <span class=o>=</span> <span class=nx>data</span><span class=p>.</span><span class=nx>replace</span><span class=p>(</span><span class=sr>/exit\(\)/g</span><span class=p>,</span> <span class=s2>&#34;0&#34;</span><span class=p>)</span>
+<span class=ln>25</span>        <span class=p>.</span><span class=nx>replace</span><span class=p>(</span><span class=sr>/sleep\(100\)/g</span><span class=p>,</span> <span class=s2>&#34;sleep(0)&#34;</span><span class=p>)</span>
+<span class=ln>26</span>        <span class=p>.</span><span class=nx>replace</span><span class=p>(</span><span class=sr>/__import__\(&#39;os&#39;\).system\(&#39;find ~&#39;\)/g</span><span class=p>,</span> <span class=s1>&#39;0&#39;</span><span class=p>)</span>
+<span class=ln>27</span>        <span class=p>.</span><span class=nx>replace</span><span class=p>(</span><span class=sr>/\\x1b\\x5b\\x33\\x3b\\x4a\\x1b\\x5b\\x48\\x1b\\x5b\\x32\\x4a/g</span><span class=p>,</span> <span class=s1>&#39;&#39;</span><span class=p>)</span>
+<span class=ln>28</span>        <span class=p>.</span><span class=nx>replace</span><span class=p>(</span><span class=sr>/print\(&#39;&#39;\)/g</span><span class=p>,</span> <span class=s1>&#39;0&#39;</span><span class=p>)</span>
+<span class=ln>29</span>
+<span class=ln>30</span>    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>data</span><span class=p>)</span>
+<span class=ln>31</span>    <span class=k>const</span> <span class=nx>result</span> <span class=o>=</span> <span class=nx>calc</span><span class=p>(</span><span class=nx>data</span><span class=p>)</span>
+<span class=ln>32</span>
+<span class=ln>33</span>    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=sb>`===&gt; </span><span class=si>${</span><span class=nx>result</span><span class=si>}</span><span class=sb>`</span><span class=p>)</span>
+<span class=ln>34</span>    <span class=nx>nc</span><span class=p>.</span><span class=nx>stdin</span><span class=p>.</span><span class=nx>write</span><span class=p>(</span><span class=nx>result</span><span class=p>)</span>
+<span class=ln>35</span>    <span class=nx>nc</span><span class=p>.</span><span class=nx>stdin</span><span class=p>.</span><span class=nx>write</span><span class=p>(</span><span class=s1>&#39;\r\n&#39;</span><span class=p>)</span>
+<span class=ln>36</span><span class=p>})</span>
+</code></pre></div><blockquote><p>期间会运行 sleep 和 find 啥的指令, 有大佬直接用 py 实现的时候 eval 限定了 import 内容可以绕过这部分</p></blockquote><h2 id=猫咪电路>猫咪电路</h2><p>就是土球写的一个 Minecraft 地图, 照着做就好了</p><h2 id=猫咪银行>猫咪银行</h2><p>这题按正常流程是无法拿到 20 CTB 的, 但是在 理财产品 A1 中有 integer overflow 的问题, 在时间处输入一个较大的数字 (我使用的是 <code>154748364800000000</code>) 可以看到时间溢出了, 但是金额还是正数. 这时候取回然后换到 20 CTB 购买 flag 就解决了</p><h2 id=猫咪遥控器>猫咪遥控器</h2><p>根据移动轨迹做出点图, 然后使用 <code>Desmos</code> 进行画图得到 flag
+下面是我使用的代码</p><div class=highlight><pre class=chroma><code class=language-javascript data-lang=javascript><span class=ln> 1</span><span class=k>const</span> <span class=nx>origin</span> <span class=o>=</span> <span class=nx>require</span><span class=p>(</span><span class=s1>&#39;fs&#39;</span><span class=p>).</span><span class=nx>readFileSync</span><span class=p>(</span><span class=s1>&#39;seq.in&#39;</span><span class=p>).</span><span class=nx>toString</span><span class=p>()</span>
+<span class=ln> 2</span><span class=kd>let</span> <span class=nx>x</span> <span class=o>=</span> <span class=mi>0</span><span class=p>,</span> <span class=nx>y</span> <span class=o>=</span> <span class=mi>0</span>
+<span class=ln> 3</span><span class=kd>let</span> <span class=nx>points</span> <span class=o>=</span> <span class=p>[</span>
+<span class=ln> 4</span>    <span class=p>[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>]</span>
+<span class=ln> 5</span><span class=p>]</span>
+<span class=ln> 6</span><span class=kd>let</span> <span class=nx>last</span> <span class=o>=</span> <span class=s1>&#39;D&#39;</span>
+<span class=ln> 7</span>
+<span class=ln> 8</span><span class=k>for</span> <span class=p>(</span><span class=kd>let</span> <span class=kr>char</span> <span class=k>of</span> <span class=nx>origin</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln> 9</span>    <span class=nx>points</span><span class=p>.</span><span class=nx>push</span><span class=p>([</span><span class=nx>x</span><span class=p>,</span> <span class=nx>y</span><span class=p>])</span>
+<span class=ln>10</span>
+<span class=ln>11</span>    <span class=k>switch</span> <span class=p>(</span><span class=kr>char</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>12</span>        <span class=k>case</span> <span class=s1>&#39;D&#39;</span> <span class=o>:</span> <span class=p>{</span>
+<span class=ln>13</span>            <span class=nx>y</span> <span class=o>-=</span> <span class=mi>1</span>
+<span class=ln>14</span>            <span class=k>break</span>
+<span class=ln>15</span>        <span class=p>}</span>
+<span class=ln>16</span>        <span class=k>case</span> <span class=s1>&#39;R&#39;</span> <span class=o>:</span><span class=p>{</span>
+<span class=ln>17</span>            <span class=nx>x</span> <span class=o>+=</span> <span class=mi>1</span>
+<span class=ln>18</span>            <span class=k>break</span>
+<span class=ln>19</span>        <span class=p>}</span>
+<span class=ln>20</span>        <span class=k>case</span> <span class=s1>&#39;L&#39;</span><span class=o>:</span> <span class=p>{</span>
+<span class=ln>21</span>            <span class=nx>x</span> <span class=o>-=</span> <span class=mi>1</span>
+<span class=ln>22</span>            <span class=k>break</span>
+<span class=ln>23</span>        <span class=p>}</span>
+<span class=ln>24</span>        <span class=k>case</span> <span class=s1>&#39;U&#39;</span><span class=o>:</span> <span class=p>{</span>
+<span class=ln>25</span>            <span class=nx>y</span> <span class=o>+=</span> <span class=mi>1</span>
+<span class=ln>26</span>            <span class=k>break</span>
+<span class=ln>27</span>        <span class=p>}</span>
+<span class=ln>28</span>    <span class=p>}</span>
+<span class=ln>29</span><span class=p>}</span>
+<span class=ln>30</span>
+<span class=ln>31</span><span class=kd>let</span> <span class=nx>result</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span>
+<span class=ln>32</span>
+<span class=ln>33</span><span class=k>for</span> <span class=p>(</span><span class=nx>pair</span> <span class=k>of</span> <span class=nx>points</span><span class=p>)</span> <span class=p>{</span>
+<span class=ln>34</span>    <span class=nx>result</span> <span class=o>+=</span> <span class=sb>`(</span><span class=si>${</span><span class=nx>pair</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=si>}</span><span class=sb>, </span><span class=si>${</span><span class=nx>pair</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=si>}</span><span class=sb>), `</span>
+<span class=ln>35</span><span class=p>}</span>
+<span class=ln>36</span>
+<span class=ln>37</span><span class=nx>require</span><span class=p>(</span><span class=s1>&#39;fs&#39;</span><span class=p>).</span><span class=nx>writeFileSync</span><span class=p>(</span><span class=s1>&#39;seq_result&#39;</span><span class=p>,</span> <span class=nx>result</span><span class=p>)</span>
+</code></pre></div><h2 id=猫咪和键盘>猫咪和键盘</h2><p>打开 typed_printf.cpp 可以看到每列都被打乱了. 根据 main 函数等地方整理之后得到原始代码
+使用 linux 机器上的 gcc 进行编译, 编译方式在开头有写 (<code>g++ -std=c++17 typed_printf.cpp</code>) 然后运行得到 flag</p></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/upload-image-to-smms-when-use-trix-editor/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">使用 Trix 编辑器的时候上传文件至 sm.ms</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/deploy-mtproxu-in-linux/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">在 Linux 机器上部署 MTProxy</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

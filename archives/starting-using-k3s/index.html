@@ -1,0 +1,126 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>k3s 踩坑 - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/starting-using-k3s/ itemprop=url>k3s 踩坑</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2019-04-16T11:44:00&#43;0800>2019-04-16</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/kubernetes itemprop=url rel=index><span itemprop=name>Kubernetes</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p>Kubernetes 之前很火, 但是因为对每个计算节点的配置要求非常之高, 我一直是在使用 Rancher 的 <code>Cattle</code> 而并非使用 k8s.
+最近听说 Rancher Labs 推出了 k3s 并且据说资源占用特别小, 那就来踩下坑（跑</p><h1 id=开始安装>开始安装</h1><h2 id=已知问题>已知问题</h2><p>因为默认的 Ingress <code>traefik</code> 有问题, 在 Rancher 2 上添加 Load Balancing 会导致这个 Ingress 一直 <code>Initializing</code>, 但是实际上是能用的.</p><p><a href=https://github.com/rancher/rancher/issues/19135>Issue in Rancher #19135</a></p><p>同时因为 <code>traefik</code> 很多奇怪的问题, 我将会将其换为 <code>nginx-ingress</code></p><p>因为我是要跨平台组集群 而 <code>flannel</code> 在各个节点之间的通信是不加密的, 此处不使用 <code>flannel</code> 作为 cni 驱动, 我将其换为了 <code>calico</code> 和 <code>zerotier</code> 的组合.</p><blockquote><p>此处主控和节点已经处在同一个 zerotier 网络中</p></blockquote><h2 id=安装主控端>安装主控端</h2><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>curl -sfL https://get.k3s.io -o k3s.sh
+<span class=ln>2</span>chmod +x k3s.sh
+<span class=ln>3</span>
+<span class=ln>4</span>bash k3s.sh --no-deploy traefik --no-flannel
+<span class=ln>5</span>
+<span class=ln>6</span>rm -f k3s.sh</code></pre></div><h2 id=修改主控端-node-ip>修改主控端 node ip</h2><p>如果你和我一样是使用的 zerotier 或者 wireguard 等软件搭建的内网, 需要修改 server 和 agent 的启动参数</p><p>在运行安装脚本的时候加入 <code>--node-ip 内网IP --flannel-iface 网卡</code></p><h2 id=安装-calico>安装 calico</h2><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>curl https://docs.projectcalico.org/v3.6/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml -O
+<span class=ln>2</span>sed -i -e <span class=s2>&#34;s?192.168.0.0/16?10.42.0.0/16?g&#34;</span> calico.yaml
+<span class=ln>3</span>kubectl apply -f calico.yaml</code></pre></div><h2 id=安装被控端>安装被控端</h2><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>curl -sfL https://get.k3s.io -o k3s.sh
+<span class=ln>2</span>chmod +x k3s.sh
+<span class=ln>3</span>
+<span class=ln>4</span><span class=nv>K3S_URL</span><span class=o>=</span>https://SERVER_IP:6443 <span class=se>\
+</span><span class=ln>5</span><span class=se></span>    <span class=nv>K3S_TOKEN</span><span class=o>=</span>TOKEN <span class=se>\
+</span><span class=ln>6</span><span class=se></span>    bash k3s.sh --no-flannel
+<span class=ln>7</span>
+<span class=ln>8</span>rm -f k3s.sh</code></pre></div><blockquote><p>Token 可以从主控端的 <code>/var/lib/rancher/k3s/server/node-token</code> 中获得</p></blockquote><h1 id=使用>使用</h1><h2 id=安装-nginx-ingress>安装 Nginx-Ingress</h2><p>apply 这个 yml</p><div class=highlight><pre class=chroma><code class=language-yaml data-lang=yaml><span class=ln> 1</span>apiVersion<span class=p>:</span><span class=w> </span>helm.cattle.io/v1<span class=w>
+</span><span class=ln> 2</span><span class=w></span>kind<span class=p>:</span><span class=w> </span>HelmChart<span class=w>
+</span><span class=ln> 3</span><span class=w></span>metadata<span class=p>:</span><span class=w>
+</span><span class=ln> 4</span><span class=w>  </span>name<span class=p>:</span><span class=w> </span>nginx-ingress<span class=w>
+</span><span class=ln> 5</span><span class=w>  </span>namespace<span class=p>:</span><span class=w> </span>kube-system<span class=w>
+</span><span class=ln> 6</span><span class=w></span>spec<span class=p>:</span><span class=w>
+</span><span class=ln> 7</span><span class=w>  </span>chart<span class=p>:</span><span class=w> </span>stable/nginx-ingress<span class=w>
+</span><span class=ln> 8</span><span class=w>  </span>valuesContent<span class=p>:</span><span class=w> </span>|<span class=sd>-
+</span><span class=ln> 9</span><span class=sd>    controller:</span><span class=w>
+</span><span class=ln>10</span><span class=w>      </span>kind<span class=p>:</span><span class=w> </span>DaemonSet<span class=w>
+</span><span class=ln>11</span><span class=w>      </span>daemonset<span class=p>:</span><span class=w>
+</span><span class=ln>12</span><span class=w>        </span>useHostPort<span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
+</span><span class=ln>13</span><span class=w>      </span>nodeSelector<span class=p>:</span><span class=w>
+</span><span class=ln>14</span><span class=w>        </span>nodeRole<span class=p>:</span><span class=w> </span>nginx-edge<span class=w>
+</span><span class=ln>15</span><span class=w>      </span>service<span class=p>:</span><span class=w>
+</span><span class=ln>16</span><span class=w>        </span>type<span class=p>:</span><span class=w> </span>ClusterIP</code></pre></div><blockquote><p>注意要给能 nginx 访问的 node 打上 <code>nodeRole=nginx-edge</code> 的 label</p></blockquote><h2 id=安装-cert-manager>安装 cert-manager</h2><blockquote><p>此处例子为配置 DNS 解析, 使用 DigitalOcean 更多操作请查看 <a href=https://docs.cert-manager.io/en/latest/>官方文档</a></p></blockquote><p>因为 k3s 的问题, 我们需要部署不带 webhook 的 cert-manager</p><p><a href=https://github.com/jetstack/cert-manager/issues/1519>Issue in cert-manager #1519</a>
+<a href=https://github.com/rancher/k3s/issues/117>Issue in k3s #117</a>
+<a href=https://github.com/rancher/k3s/issues/120>Issue in k3s #120</a></p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>kubectl create namespace cert-manager
+<span class=ln>2</span>kubectl label namespace cert-manager certmanager.k8s.io/disable-validation<span class=o>=</span><span class=nb>true</span>
+<span class=ln>3</span>
+<span class=ln>4</span>kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.7/deploy/manifests/cert-manager-no-webhook.yaml</code></pre></div><p>然后这时候 cert-manager 就安装完了
+新建一个 Screct 存一下 DO 的 API Key</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span><span class=nb>echo</span> <span class=s2>&#34;TOKEN&#34;</span> &gt; token
+<span class=ln>2</span>kubectl create secret generic digitalocean-dns-api --namespace<span class=o>=</span>cert-manager --from-file<span class=o>=</span>token</code></pre></div><p>然后创建一个 Issuer</p><div class=highlight><pre class=chroma><code class=language-yml data-lang=yml><span class=ln> 1</span>apiVersion<span class=p>:</span><span class=w> </span>certmanager.k8s.io/v1alpha1<span class=w>
+</span><span class=ln> 2</span><span class=w></span>kind<span class=p>:</span><span class=w> </span>ClusterIssuer<span class=w>
+</span><span class=ln> 3</span><span class=w></span>metadata<span class=p>:</span><span class=w>
+</span><span class=ln> 4</span><span class=w>  </span>name<span class=p>:</span><span class=w> </span>digitalocean-issuer<span class=w>
+</span><span class=ln> 5</span><span class=w>  </span>namespace<span class=p>:</span><span class=w> </span>kube-system<span class=w>
+</span><span class=ln> 6</span><span class=w></span>spec<span class=p>:</span><span class=w>
+</span><span class=ln> 7</span><span class=w>  </span>acme<span class=p>:</span><span class=w>
+</span><span class=ln> 8</span><span class=w>    </span>email<span class=p>:</span><span class=w> </span>indexyz@protonmail.com<span class=w>
+</span><span class=ln> 9</span><span class=w>    </span>server<span class=p>:</span><span class=w> </span>https<span class=p>:</span>//acme-v02.api.letsencrypt.org/directory<span class=w>
+</span><span class=ln>10</span><span class=w>    </span>privateKeySecretRef<span class=p>:</span><span class=w>
+</span><span class=ln>11</span><span class=w>      </span>name<span class=p>:</span><span class=w> </span>acme-issuer-account-key<span class=w>
+</span><span class=ln>12</span><span class=w>    </span>dns01<span class=p>:</span><span class=w>
+</span><span class=ln>13</span><span class=w>      </span>providers<span class=p>:</span><span class=w>
+</span><span class=ln>14</span><span class=w>      </span>-<span class=w> </span>name<span class=p>:</span><span class=w> </span>digitalocean-acme<span class=w>
+</span><span class=ln>15</span><span class=w>        </span>digitalocean<span class=p>:</span><span class=w>
+</span><span class=ln>16</span><span class=w>          </span>tokenSecretRef<span class=p>:</span><span class=w>
+</span><span class=ln>17</span><span class=w>            </span>name<span class=p>:</span><span class=w> </span>digitalocean-dns-api<span class=w>
+</span><span class=ln>18</span><span class=w>            </span>key<span class=p>:</span><span class=w> </span>token</code></pre></div><p>然后我们就能签下来我们的证书了</p><div class=highlight><pre class=chroma><code class=language-yml data-lang=yml><span class=ln> 1</span>apiVersion<span class=p>:</span><span class=w> </span>certmanager.k8s.io/v1alpha1<span class=w>
+</span><span class=ln> 2</span><span class=w></span>kind<span class=p>:</span><span class=w> </span>Certificate<span class=w>
+</span><span class=ln> 3</span><span class=w></span>metadata<span class=p>:</span><span class=w>
+</span><span class=ln> 4</span><span class=w>  </span>name<span class=p>:</span><span class=w> </span>dashboard-cert<span class=w>
+</span><span class=ln> 5</span><span class=w>  </span>namespace<span class=p>:</span><span class=w> </span>kube-system<span class=w>
+</span><span class=ln> 6</span><span class=w></span>spec<span class=p>:</span><span class=w>
+</span><span class=ln> 7</span><span class=w>  </span>secretName<span class=p>:</span><span class=w> </span>dashboard-cert-tls<span class=w>
+</span><span class=ln> 8</span><span class=w>  </span>issuerRef<span class=p>:</span><span class=w>
+</span><span class=ln> 9</span><span class=w>    </span>name<span class=p>:</span><span class=w> </span>digitalocean-issuer<span class=w>
+</span><span class=ln>10</span><span class=w>    </span>kind<span class=p>:</span><span class=w> </span>ClusterIssuer<span class=w>
+</span><span class=ln>11</span><span class=w>  </span>commonName<span class=p>:</span><span class=w> </span><span class=s1>&#39;kubernetes.bogon.dev&#39;</span><span class=w>
+</span><span class=ln>12</span><span class=w>  </span>dnsNames<span class=p>:</span><span class=w>
+</span><span class=ln>13</span><span class=w>  </span>-<span class=w> </span>kubernetes.bogon.dev<span class=w>
+</span><span class=ln>14</span><span class=w>  </span>acme<span class=p>:</span><span class=w>
+</span><span class=ln>15</span><span class=w>    </span>config<span class=p>:</span><span class=w>
+</span><span class=ln>16</span><span class=w>    </span>-<span class=w> </span>dns01<span class=p>:</span><span class=w>
+</span><span class=ln>17</span><span class=w>        </span>provider<span class=p>:</span><span class=w> </span>digitalocean-acme<span class=w>
+</span><span class=ln>18</span><span class=w>      </span>domains<span class=p>:</span><span class=w>
+</span><span class=ln>19</span><span class=w>      </span>-<span class=w> </span>kubernetes.bogon.dev</code></pre></div><h2 id=安装-kubernetes-dashboard>安装 kubernetes dashboard</h2><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml</code></pre></div><p>然后我们需要建立一个能够 Cluster Role view 的账户</p><div class=highlight><pre class=chroma><code class=language-yml data-lang=yml><span class=ln> 1</span>apiVersion<span class=p>:</span><span class=w> </span>v1<span class=w>
+</span><span class=ln> 2</span><span class=w></span>kind<span class=p>:</span><span class=w> </span>ServiceAccount<span class=w>
+</span><span class=ln> 3</span><span class=w></span>metadata<span class=p>:</span><span class=w>
+</span><span class=ln> 4</span><span class=w>  </span>name<span class=p>:</span><span class=w> </span>kubedash<span class=w>
+</span><span class=ln> 5</span><span class=w>  </span>namespace<span class=p>:</span><span class=w> </span>kube-system<span class=w>
+</span><span class=ln> 6</span><span class=w></span>---<span class=w>
+</span><span class=ln> 7</span><span class=w></span>kind<span class=p>:</span><span class=w> </span>ClusterRoleBinding<span class=w>
+</span><span class=ln> 8</span><span class=w></span>apiVersion<span class=p>:</span><span class=w> </span>rbac.authorization.k8s.io/v1beta1<span class=w>
+</span><span class=ln> 9</span><span class=w></span>metadata<span class=p>:</span><span class=w>
+</span><span class=ln>10</span><span class=w>  </span>name<span class=p>:</span><span class=w> </span>dashboard<span class=w>
+</span><span class=ln>11</span><span class=w></span>subjects<span class=p>:</span><span class=w>
+</span><span class=ln>12</span><span class=w>  </span>-<span class=w> </span>kind<span class=p>:</span><span class=w> </span>ServiceAccount<span class=w>
+</span><span class=ln>13</span><span class=w>    </span>name<span class=p>:</span><span class=w> </span>kubedash<span class=w>
+</span><span class=ln>14</span><span class=w>    </span>namespace<span class=p>:</span><span class=w> </span>kube-system<span class=w>
+</span><span class=ln>15</span><span class=w></span>roleRef<span class=p>:</span><span class=w>
+</span><span class=ln>16</span><span class=w>  </span>kind<span class=p>:</span><span class=w> </span>ClusterRole<span class=w>
+</span><span class=ln>17</span><span class=w>  </span>name<span class=p>:</span><span class=w> </span>cluster-admin<span class=w>
+</span><span class=ln>18</span><span class=w>  </span>apiGroup<span class=p>:</span><span class=w> </span>rbac.authorization.k8s.io</code></pre></div><p>然后使用 <code>kubectl apply -f</code> 进行导入并使用</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>kubectl -n kube-system describe secret <span class=k>$(</span>kubectl -n kube-system get secret <span class=p>|</span> grep kubedash <span class=p>|</span> awk <span class=s1>&#39;{print $1}&#39;</span><span class=k>)</span></code></pre></div><p>获取到账户的 Token</p><p>为了能进行外网访问， 我们还需要建立一个 Ingress 来将其开放到公网</p><p>创建一个 TLS 证书类型的 secret</p><blockquote><p>如果你使用 cert-manager 创建证书的话, 可以跳过此步</p></blockquote><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>kubectl create secret tls dashboard-cert-tls --key k8s.key --cert k8s.crt --namespace<span class=o>=</span>kube-system
+<span class=ln>2</span><span class=c1># 证书哪里拿我应该不用讲了</span></code></pre></div><p>创建 Ingress</p><div class=highlight><pre class=chroma><code class=language-yml data-lang=yml><span class=ln> 1</span>apiVersion<span class=p>:</span><span class=w> </span>extensions/v1beta1<span class=w>
+</span><span class=ln> 2</span><span class=w></span>kind<span class=p>:</span><span class=w> </span>Ingress<span class=w>
+</span><span class=ln> 3</span><span class=w></span>metadata<span class=p>:</span><span class=w>
+</span><span class=ln> 4</span><span class=w>  </span>name<span class=p>:</span><span class=w> </span>dashboard-ingress<span class=w>
+</span><span class=ln> 5</span><span class=w>  </span>namespace<span class=p>:</span><span class=w> </span>kube-system<span class=w>
+</span><span class=ln> 6</span><span class=w>  </span>annotations<span class=p>:</span><span class=w>
+</span><span class=ln> 7</span><span class=w>    </span>ingress.kubernetes.io/protocol<span class=p>:</span><span class=w> </span>https<span class=w>
+</span><span class=ln> 8</span><span class=w>    </span>nginx.ingress.kubernetes.io/backend-protocol<span class=p>:</span><span class=w> </span>https<span class=w>
+</span><span class=ln> 9</span><span class=w>
+</span><span class=ln>10</span><span class=w></span>spec<span class=p>:</span><span class=w>
+</span><span class=ln>11</span><span class=w>  </span>rules<span class=p>:</span><span class=w>
+</span><span class=ln>12</span><span class=w>  </span>-<span class=w> </span>host<span class=p>:</span><span class=w> </span>kubernetes.bogon.dev<span class=w>
+</span><span class=ln>13</span><span class=w>    </span>http<span class=p>:</span><span class=w>
+</span><span class=ln>14</span><span class=w>      </span>paths<span class=p>:</span><span class=w>
+</span><span class=ln>15</span><span class=w>        </span>-<span class=w> </span>backend<span class=p>:</span><span class=w>
+</span><span class=ln>16</span><span class=w>            </span>serviceName<span class=p>:</span><span class=w> </span>kubernetes-dashboard<span class=w>
+</span><span class=ln>17</span><span class=w>            </span>servicePort<span class=p>:</span><span class=w> </span><span class=m>443</span><span class=w>
+</span><span class=ln>18</span><span class=w>  </span>tls<span class=p>:</span><span class=w>
+</span><span class=ln>19</span><span class=w>  </span>-<span class=w> </span>hosts<span class=p>:</span><span class=w>
+</span><span class=ln>20</span><span class=w>    </span>-<span class=w> </span>kubernetes.bogon.dev<span class=w>
+</span><span class=ln>21</span><span class=w>    </span>secretName<span class=p>:</span><span class=w> </span>dashboard-cert-tls</code></pre></div><p>然后我们就完成了最简单的一部分
+<img src=https://i.loli.net/2019/04/10/5cadecf754402.png alt="k8s dashboard"></p><h1 id=踩坑>踩坑</h1><h2 id=dind-中创建出来的容器-mtu-不正常>Dind 中创建出来的容器 MTU 不正常</h2><p>这个其实不是 k3s 的锅, 事实上你就算是 k8s 也有这个问题</p><p>这个问题困扰了我很久, 最后我在 Drone 的论坛中发现了一个<a href=https://discourse.drone.io/t/docker-mtu-problem/1207/4>解决方法</a></p><p>在创建 dind 的容器时修改 iptables 开启 <code>clamp-mss-to-pmtu</code> 就可以解决因为网卡 MTU 大小导致 Docker 的 Bridge 发不出去包的问题</p><p>就算你给 docker daemon 或者修改了 config 改掉了 docker 的网卡 MTU, 创建出来容器中的 bridge 网卡 MTU 还是 1500</p><div class=highlight><pre class=chroma><code class=language-yaml data-lang=yaml><span class=ln>1</span>-<span class=w> </span>name<span class=p>:</span><span class=w> </span>drone-dind<span class=w>
+</span><span class=ln>2</span><span class=w>  </span>image<span class=p>:</span><span class=w> </span><span class=s2>&#34;docker:17.12.0-ce-dind&#34;</span><span class=w>
+</span><span class=ln>3</span><span class=w>  </span>imagePullPolicy<span class=p>:</span><span class=w> </span>IfNotPresent<span class=w>
+</span><span class=ln>4</span><span class=w>  </span>command<span class=p>:</span><span class=w> </span><span class=p>[</span><span class=s2>&#34;/bin/sh&#34;</span><span class=p>]</span><span class=w>
+</span><span class=ln>5</span><span class=w>  </span>args<span class=p>:</span><span class=w> 
+</span><span class=ln>6</span><span class=w>    </span>-<span class=w> </span><span class=s2>&#34;-c&#34;</span><span class=w>
+</span><span class=ln>7</span><span class=w>    </span>-<span class=w> </span><span class=s2>&#34;iptables -N DOCKER-USER; iptables -I DOCKER-USER -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu; dockerd --host=unix:///var/run/docker.sock --host=tcp://127.0.0.1:2375&#34;</span></code></pre></div><h2 id=修改-calico-网卡的-mtu>修改 Calico 网卡的 MTU</h2><p>有时候因为用了虚拟网卡, 需要修改 calico 网卡的 MTU</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>kubectl edit cm -n kube-system calico-config# 修改 veth_mtu 的值kubectl delete pod <span class=k>$(</span>kubectl get pod -n kube-system <span class=p>|</span> grep calico-node <span class=p>|</span> awk <span class=s1>&#39;{print $1}&#39;</span><span class=k>)</span> -n kube-system</code></pre></div><h1 id=changelog>ChangeLog</h1><ul><li>2019/8/14: 添加了 修改主控端 node ip 部分, 修改了 HelmCharts 的 apiVersion, 对应 <a href=https://github.com/rancher/k3s/releases/tag/v0.6.1>Release v0.6.1</a></li></ul></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/install-pingfang-font-in-windwows/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">提取 macOS 上的苹方字体并在 Windows 上安装</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/rancher-share-volume-in-different-hosts/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">Rancher 使用 NFS 在多个主机之间共享 Volume</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>

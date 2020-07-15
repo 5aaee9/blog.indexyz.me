@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Game on Indexyz Blog</title><link>https://blog.indexyz.me/categories/game/</link><description>Recent content in Game on Indexyz Blog</description><generator>Hugo -- gohugo.io</generator><language>zh-cn</language><copyright>Copyright © 2018-{year}, Indexyz</copyright><lastBuildDate>Wed, 09 Aug 2017 18:31:55 +0000</lastBuildDate><atom:link href="https://blog.indexyz.me/categories/game/feed.xml" rel="self" type="application/rss+xml"/><item><title>在Linux上安装并且运行求生之路2服务器</title><link>https://blog.indexyz.me/archives/how-to-run-left-4-dead-2-server-in-linux/</link><pubDate>Wed, 09 Aug 2017 18:31:55 +0000</pubDate><guid>https://blog.indexyz.me/archives/how-to-run-left-4-dead-2-server-in-linux/</guid><description>&lt;p&gt;&lt;del&gt;话说求生火了这么久 怎么还不出3啊233&lt;/del&gt;&lt;/p&gt;</description></item><item><title>Left 4 Dead 2 服务器Rsync同步源</title><link>https://blog.indexyz.me/archives/left4dead2-rsync-source/</link><pubDate>Wed, 09 Aug 2017 18:04:09 +0000</pubDate><guid>https://blog.indexyz.me/archives/left4dead2-rsync-source/</guid><description>&lt;blockquote&gt;
+&lt;p&gt;最近因为L4D2的某些原因(Downtown插件需要GLIBC2.15以上然而CentOS6无法提供),
+重装了服务器, 然而阿里云上的SteamCMD老是拉不下来端,
+于是我在国外的文件服务器上搭建了Rsync源来解决服务端问题&lt;/p&gt;
+&lt;/blockquote&gt;</description></item><item><title>L4D2的mod安装教程</title><link>https://blog.indexyz.me/archives/how-to-install-mod-in-l4d2/</link><pubDate>Wed, 09 Aug 2017 18:00:34 +0000</pubDate><guid>https://blog.indexyz.me/archives/how-to-install-mod-in-l4d2/</guid><description>&lt;blockquote&gt;
+&lt;p&gt;又到了一年一度的暑假啦, 小伙伴们是不是很兴奋呐&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;话说这次Steam夏折又剁了好多份l4d2, 最近l4d2有点上瘾. 我都把DOOM的键位改成l4d2的了
+本教程在Steam版L4D2版本2.1.4.6上测试通过&lt;/p&gt;</description></item></channel></rss>

@@ -1,0 +1,79 @@
+<!doctype html><html lang=en><head><meta name=generator content="Hugo 0.57.2"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Sharing light, even in death"><title>将 Docker 集群管理转为了 swarm - Indexyz Blog</title><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/spectre.css@0.5.8/dist/spectre.min.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/normalize.css@8.0.1/normalize.min.css><link rel=stylesheet href=https://blog.indexyz.me/css/syntax.css><link rel=stylesheet href=https://blog.indexyz.me/sass/main.min.bfe6bc4bb48fe5e39fc1dcbd6f38413f8c6c9bfcbb5541281b9be860cf0c3d8b.css><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/disqusjs@1.2/dist/disqusjs.css><script src=https://cdn.jsdelivr.net/npm/disqusjs@1.1/dist/disqus.js></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-97074604-1"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());gtag('config','UA-97074604-1');</script></head><body><header id=page-header><div class="container grid-lg"><a href=https://blog.indexyz.me/ class=title>Indexyz Blog</a><h2 class=description>Sharing light, even in death</h2><div><nav id=nav-menu role=navigation><a href=/>首页</a>
+<a href=/friends/>友链</a></nav></div></div></header><main><div class="container grid-lg"><section id=posts class=post-single><article temscope itemtype=http://schema.org/Article><header><h1 class=post-title itemprop="name headline"><a href=https://blog.indexyz.me/archives/switch-rancher-to-swarm/ itemprop=url>将 Docker 集群管理转为了 swarm</a></h1><div class=post-meta-list><span class=post-meta><span>时间:</span>
+<time datetime=2018-10-01T11:03:00&#43;0800>2018-10-01</time></span>
+<span class=post-meta><span>分类:</span>
+<a href=/categories/docker itemprop=url rel=index><span itemprop=name>Docker</span></a>
+&nbsp;</span></span></div></header><div class=post-body itemprop=articleBody><p>之前使用 rancher 做为我个人的 docker 容器管理引擎, rancher 在大部分时候都工作的很好. 但是 Rancher 1 将会在最早于明年夏天 (<a href=https://forums.rancher.com/t/future-support-for-rancher-1-x-cattle/7442>Rancher Forums</a>) 结束支持, 因为 k8s 的占用过于庞大, 我因此不是很想转换到 rancher 2 上 (而且也不能平滑升级) 这时候就尝试试一下 swarm</p><p><del>swarm 真香</del></p><h1 id=节点的部署>节点的部署</h1><p>在 manager 机器上使用 <code>docker swarm init</code> 你将会得到用与加入 swarm 集群的命令 将这个命令在 worker 机器上执行就可以将机器加入集群了</p><h2 id=注意事项>注意事项</h2><h3 id=在-1-1-nat-的机器上网络通信的问题>在 1:1 NAT 的机器上网络通信的问题</h3><p>在某些 1:1 NAT 的机器上 (例如 Google Cloud / AWS) 上你可能会遇到这个问题, 问题具体表现为你加入集群之后是没问题的 但是节点之间 overlay 的 network 并不能跨机通信</p><p>答案: 在 docker swarm join 的时候加上 <code>--advertise-addr 外网IP</code> 这个 参数</p><h1 id=创建服务>创建服务</h1><h2 id=traefik>traefik</h2><p><a href=https://traefik.io/>Traefik</a> 是一个用使用 golang 编写的负载均衡 / 反向代理服务端, 可以通过 service 的 label 来配置外网的访问</p><p>首先创建文件夹</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln>1</span>mkdir -p /data/traefik
+<span class=ln>2</span>touch acme.json  traefik.toml</code></pre></div><p>然后编辑 <code>/data/traefik/traefik.toml</code> 这一个配置文件 以下为我的配置文件</p><div class=highlight><pre class=chroma><code class=language-plain data-lang=plain><span class=ln> 1</span>debug = true
+<span class=ln> 2</span>defaultEntryPoints = [&#34;http&#34;, &#34;https&#34;]
+<span class=ln> 3</span>
+<span class=ln> 4</span>[web]
+<span class=ln> 5</span>address = &#34;:8080&#34;
+<span class=ln> 6</span>ReadOnly = true
+<span class=ln> 7</span>  [web.auth.basic]
+<span class=ln> 8</span>  users = [&#34;Indexyz:$apr1$h7AhHWe1$I7OTEhwmTR5GUg1mPv6yS/&#34;]
+<span class=ln> 9</span>
+<span class=ln>10</span>[entryPoints]
+<span class=ln>11</span>  [entryPoints.http]
+<span class=ln>12</span>  address = &#34;:80&#34;
+<span class=ln>13</span>    [entryPoints.http.redirect]
+<span class=ln>14</span>    entryPoint = &#34;https&#34;
+<span class=ln>15</span>  [entryPoints.https]
+<span class=ln>16</span>  address = &#34;:443&#34;
+<span class=ln>17</span>  compress = true
+<span class=ln>18</span>    [entryPoints.https.tls]
+<span class=ln>19</span>
+<span class=ln>20</span>[retry]
+<span class=ln>21</span>
+<span class=ln>22</span>[acme]
+<span class=ln>23</span>email = &#34;acme@indexyz.me&#34;
+<span class=ln>24</span>storage = &#34;acme.json&#34;
+<span class=ln>25</span>entryPoint = &#34;https&#34;
+<span class=ln>26</span>onHostRule = true
+<span class=ln>27</span>[acme.httpChallenge]
+<span class=ln>28</span>  entryPoint = &#34;http&#34;</code></pre></div><p>使用以下命令来创建 traefik 服务</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln> 1</span>docker network create --driver overlay <span class=se>\
+</span><span class=ln> 2</span><span class=se></span>    --attachable <span class=se>\
+</span><span class=ln> 3</span><span class=se></span>    traefik
+<span class=ln> 4</span>
+<span class=ln> 5</span>docker service create --name traefik <span class=se>\
+</span><span class=ln> 6</span><span class=se></span>    --name traefik <span class=se>\
+</span><span class=ln> 7</span><span class=se></span>    --constraint<span class=o>=</span>node.role<span class=o>==</span>manager <span class=se>\
+</span><span class=ln> 8</span><span class=se></span>    --publish <span class=m>80</span>:80 <span class=se>\
+</span><span class=ln> 9</span><span class=se></span>    --publish <span class=m>443</span>:443 <span class=se>\
+</span><span class=ln>10</span><span class=se></span>    --mount <span class=nv>type</span><span class=o>=</span>bind,source<span class=o>=</span>/var/run/docker.sock,target<span class=o>=</span>/var/run/docker.sock <span class=se>\
+</span><span class=ln>11</span><span class=se></span>    --mount <span class=nv>type</span><span class=o>=</span>bind,source<span class=o>=</span>/data/traefik/traefik.toml,target<span class=o>=</span>/traefik.toml <span class=se>\
+</span><span class=ln>12</span><span class=se></span>    --mount <span class=nv>type</span><span class=o>=</span>bind,source<span class=o>=</span>/data/traefik/acme.json,target<span class=o>=</span>/acme.json <span class=se>\
+</span><span class=ln>13</span><span class=se></span>    --network traefik <span class=se>\
+</span><span class=ln>14</span><span class=se></span>    --label traefik.port<span class=o>=</span><span class=m>8080</span> <span class=se>\
+</span><span class=ln>15</span><span class=se></span>    --label traefik.frontend.rule<span class=o>=</span>Host:traefik.indexyz.me <span class=se>\
+</span><span class=ln>16</span><span class=se></span>    --label traefik.docker.network<span class=o>=</span>traefik <span class=se>\
+</span><span class=ln>17</span><span class=se></span>    --label <span class=s1>&#39;traefik.frontend.auth.basic=Indexyz:$PASSWORD$&#39;</span> <span class=se>\
+</span><span class=ln>18</span><span class=se></span>    traefik <span class=se>\
+</span><span class=ln>19</span><span class=se></span>    --docker <span class=se>\
+</span><span class=ln>20</span><span class=se></span>    --docker.swarmmode <span class=se>\
+</span><span class=ln>21</span><span class=se></span>    --docker.domain<span class=o>=</span>indexyz.me <span class=se>\
+</span><span class=ln>22</span><span class=se></span>    --docker.watch <span class=se>\
+</span><span class=ln>23</span><span class=se></span>    --web</code></pre></div><p>将其中的 <code>$PASSWORD$</code> 替换为 apr1 加密过的密码 (使用 <code>openssl passwd --apr1</code>)</p><h3 id=docker-proxy>docker-proxy</h3><p>一些事件只能在 master 的 docker.sock 上监听到 因此很多应用都有部署到 manage 上的要求 我们可以使用 <code>rancher/socat-docker</code> 来将 master 的 docker.sock 在 tcp 上监听</p><p>利用以下命令来运行 docker-proxy</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln> 1</span>docker network create --driver overlay <span class=se>\
+</span><span class=ln> 2</span><span class=se></span>    --attachable <span class=se>\
+</span><span class=ln> 3</span><span class=se></span>    docker-proxy
+<span class=ln> 4</span>
+<span class=ln> 5</span>docker service create <span class=se>\
+</span><span class=ln> 6</span><span class=se></span>    --name docker-proxy <span class=se>\
+</span><span class=ln> 7</span><span class=se></span>    --mount <span class=s2>&#34;type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock&#34;</span> <span class=se>\
+</span><span class=ln> 8</span><span class=se></span>    --constraint <span class=s1>&#39;node.role==manager&#39;</span> <span class=se>\
+</span><span class=ln> 9</span><span class=se></span>    --network docker-proxy <span class=se>\
+</span><span class=ln>10</span><span class=se></span>    rancher/socat-docker</code></pre></div><h3 id=portainer>Portainer</h3><p><a href=https://portainer.io/>Portainer</a> 是一个 可视化的 docker 管理器, 支持 swarm 集群的管理, 毕竟我们一直用命令行进行创建 service 比较麻烦</p><p>使用以下命令来创建 Portainer 服务</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash><span class=ln> 1</span>docker service create <span class=se>\
+</span><span class=ln> 2</span><span class=se></span>    --name portainer <span class=se>\
+</span><span class=ln> 3</span><span class=se></span>    --replicas<span class=o>=</span><span class=m>1</span> <span class=se>\
+</span><span class=ln> 4</span><span class=se></span>    --constraint <span class=s1>&#39;node.role == manager&#39;</span> <span class=se>\
+</span><span class=ln> 5</span><span class=se></span>    --mount <span class=nv>type</span><span class=o>=</span>bind,src<span class=o>=</span>/var/run/docker.sock,dst<span class=o>=</span>/var/run/docker.sock <span class=se>\
+</span><span class=ln> 6</span><span class=se></span>    --mount <span class=nv>type</span><span class=o>=</span>bind,src<span class=o>=</span>/data/portainer,dst<span class=o>=</span>/data <span class=se>\
+</span><span class=ln> 7</span><span class=se></span>    --label traefik.port<span class=o>=</span><span class=m>9000</span> <span class=se>\
+</span><span class=ln> 8</span><span class=se></span>    --label traefik.frontend.rule<span class=o>=</span>Host:portainer.indexyz.me <span class=se>\
+</span><span class=ln> 9</span><span class=se></span>    --label traefik.docker.network<span class=o>=</span>traefik <span class=se>\
+</span><span class=ln>10</span><span class=se></span>    --network traefik <span class=se>\
+</span><span class=ln>11</span><span class=se></span>    portainer/portainer <span class=se>\
+</span><span class=ln>12</span><span class=se></span>    -H unix:///var/run/docker.sock</code></pre></div></div></article><ul class=pagination><li class="page-item page-prev"><a href=https://blog.indexyz.me/archives/soyoustart-arm-to-archlinux/><div class=page-item-subtitle>上一篇</div><div class="page-item-title h5">将 Soyoustart 的 Arm 机器转换为 Arch Linux</div></a></li><li class="page-item page-next"><a href=https://blog.indexyz.me/archives/start-typecho/><div class=page-item-subtitle>下一篇</div><div class="page-item-title h5">欢迎使用 Typecho</div></a></li></ul><div id=disqus_thread></div><script>new DisqusJS(JSON.parse("{\"api\":\"https://disqus.skk.moe/disqus/\",\"apikey\":\"VtpQwhbhO3YTIYSZdx1N8vOJ6me3une1xSIeXhpuPcE4jurE17UlJozkc9qhvjDw\",\"shortname\":\"indexyz-blog\",\"sitename\":\"Indexyz Blog\"}"))</script></section></div></main><footer class=page-footer><p>Copyright © 2018-2020, Indexyz</p><p>Power by
+<a href=https://gohugo.io/>Hugo</a> | Theme
+<a href=https://github.com/Indexyz/hugo-theme-index/>Index</a></p></footer></body></html>
