@@ -23,7 +23,7 @@ date: '2020-07-12T02:51:08+08:00'
 
 > The easiest solution is to use WSCSetApplicationCategory WinAPI call for wsl.exe to prevent this. Under the hood the call creates an entry for wsl.exe at `HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WinSock2\Parameters\AppId_Catalog` This tells Windows not to load LSP DLLs into wsl.exe process.
 
-同时 Proxifier 释出了一个 [工具](www.proxifier.com/tmp/Test20200228/NoLsp.exe), 可以帮助设定 NoLSP 的设定
+同时 Proxifier 释出了一个 [工具](https://www.proxifier.com/tmp/Test20200228/NoLsp.exe), 可以帮助设定 NoLSP 的设定
 
 创建一个新的管理员 Powershell, 进入 NoLSP 所在的位置
 
